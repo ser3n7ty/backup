@@ -23,6 +23,7 @@ import '@/permission' // permission control
  * Currently MockJs will be used in the production environment,
  * please remove it before going online ! ! !
  */
+// 调用项目 mock
 if (process.env.NODE_ENV === 'production') {
   const { mockXHR } = require('../mock')
   mockXHR()
@@ -41,3 +42,4 @@ new Vue({
   store,
   render: h => h(App)
 })
+Vue.prototype.$message = ElementUI.Message

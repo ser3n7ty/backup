@@ -1,5 +1,4 @@
 <template>
-  <!--  登录改用邮箱和密码-->
   <div class="login-container">
     <el-form
       ref="loginForm"
@@ -13,15 +12,15 @@
         <h3 class="title">Login Form</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="email">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
           ref="email"
-          v-model="loginForm.username"
-          placeholder="enter the username"
-          name="username"
+          v-model="loginForm.email"
+          placeholder="enter the email"
+          name="email"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -49,8 +48,9 @@
           />
         </span>
       </el-form-item>
-      <!-- TODO：添加验证 -->
       <br>
+      <!-- TODO：第一次登录失败后需要接收邮箱验证码 -->
+
       <el-button
         :loading="loading"
         type="primary"
@@ -63,38 +63,26 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+import { validEmail } from '@/utils/validate'
 
 export default {
   name: 'Login',
   data() {
-    // TODO: 改写验证逻辑
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password could not be less than 6 digits'))
+    const validateEmail = (rule, value, callback) => {
+      if (!validEmail(value)) {
+        callback(new Error('Please enter the correct email'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
+        email: 'admin@example.com',
         password: 'admin123'
       },
       loginRules: {
-        username: [
-          { required: true, trigger: 'blur', validator: validateUsername }
-        ],
-        password: [
-          { required: true, trigger: 'blur', validator: validatePassword }
-        ]
+        email: [{ required: true, trigger: 'blur', validator: validateEmail }],
+        password: [{ required: true, trigger: 'blur' }]
       },
       loading: false,
       passwordType: 'password',
@@ -121,11 +109,13 @@ export default {
       })
     },
     handleLogin() {
+      // console.log(this.$refs.loginForm)
+      // 通过 validate 验证 表单信息是否符合 rules
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          console.log('Login')
           this.loading = true
           this.$store
+            // * store 中 user 模块的 login actions
             .dispatch('user/login', this.loginForm)
             .then(() => {
               this.$router.push({ path: this.redirect || '/' })
@@ -192,7 +182,7 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg: #2d3a4b;
+$bg: #3b5898;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 

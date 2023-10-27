@@ -1,78 +1,154 @@
 <template>
-  <!-- 考虑如何导入 Waf -->
   <div class="app-container">
-    <el-form ref="form" :model="form" label-width="120px">
-      <el-form-item label="Activity name">
-        <el-input v-model="form.name" />
+    <el-form
+      ref="ruleForm"
+      :rules="rules"
+      :model="ruleForm"
+      label-width="120px"
+    >
+      <!-- Waf 名字 -->
+      <el-form-item label="Waf name" prop="name">
+        <el-input
+          v-model="ruleForm.name"
+          placeholder="enter the name"
+        />
       </el-form-item>
-      <el-form-item label="Activity zone">
-        <el-select v-model="form.region" placeholder="please select your zone">
-          <el-option label="Zone one" value="shanghai" />
-          <el-option label="Zone two" value="beijing" />
-        </el-select>
+      <!-- IP 信息 -->
+      <el-form-item label="Waf IP" prop="ip">
+        <el-input
+          v-model="ruleForm.ip"
+          placeholder="enter the ip"
+        />
       </el-form-item>
-      <el-form-item label="Activity time">
-        <el-col :span="11">
-          <el-date-picker v-model="form.date1" type="date" placeholder="Pick a date" style="width: 100%;" />
-        </el-col>
-        <el-col :span="2" class="line">-</el-col>
-        <el-col :span="11">
-          <el-time-picker v-model="form.date2" type="fixed-time" placeholder="Pick a time" style="width: 100%;" />
-        </el-col>
+      <!-- 端口信息 -->
+      <el-form-item label="Waf Port" prop="port">
+        <el-input
+          v-model="ruleForm.port"
+          placeholder="enter the port"
+        />
       </el-form-item>
-      <el-form-item label="Instant delivery">
-        <el-switch v-model="form.delivery" />
+      <!-- 管理信息 -->
+      <el-form-item label="Link" prop="link">
+        <el-input
+          v-model="ruleForm.link"
+          placeholder="enter the web admin address for the current waf"
+        />
       </el-form-item>
-      <el-form-item label="Activity type">
-        <el-checkbox-group v-model="form.type">
-          <el-checkbox label="Online activities" name="type" />
-          <el-checkbox label="Promotion activities" name="type" />
-          <el-checkbox label="Offline activities" name="type" />
-          <el-checkbox label="Simple brand exposure" name="type" />
-        </el-checkbox-group>
+      <!-- 描述信息 -->
+      <el-form-item
+        label="Waf Desc"
+        desc-quot-
+        prop="description"
+      >
+        <el-input
+          v-model="ruleForm.description"
+          placeholder="enter the desc of the waf"
+        />
       </el-form-item>
-      <el-form-item label="Resources">
-        <el-radio-group v-model="form.resource">
-          <el-radio label="Sponsor" />
-          <el-radio label="Venue" />
-        </el-radio-group>
-      </el-form-item>
-      <el-form-item label="Activity form">
-        <el-input v-model="form.desc" type="textarea" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">Create</el-button>
-        <el-button @click="onCancel">Cancel</el-button>
+      <!-- 按钮 -->
+      <el-form-item class="btnGroup">
+        <el-button
+          type="primary"
+          rule-form-
+          @click="submitForm('ruleForm')"
+        >Import
+        </el-button>
+        <el-button @click="resetForm('ruleForm')">Reset</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+import { validIP } from '@/utils/validate'
+
 export default {
-  name: 'CreateWaf',
+  name: 'NewWaf',
   data() {
+    // TODO: 完成 Waf 导入信息的验证
+    const validateName = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('name could not be empty'))
+      } else {
+        callback()
+      }
+    }
+    const validateIP = (rule, value, callback) => {
+      // console.log('ip', value)
+      if (value === '') {
+        callback(new Error('ip could not be empty'))
+      } else if (!validIP(value)) {
+        callback(new Error('ip format is not correct'))
+      } else {
+        callback()
+      }
+    }
+    const validatePort = (rule, value, callback) => {
+      // console.log(value, typeof (value))
+      // console.log(Number(value), typeof (Number(value)))
+      if (value === '') {
+        callback(new Error('port could not be empty'))
+      } else if (Number(value) <= 0 || Number(value) > 65535) {
+        callback(new Error('port is not correct'))
+      } else {
+        callback()
+      }
+    }
     return {
-      form: {
+      ruleForm: {
+        // 后端请求自动生成
+        // id: '',
         name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+        ip: '',
+        port: '',
+        // link 和 description 可以为空，但是不能都为空
+        link: '',
+        description: ''
+      },
+      rules: {
+        name: [
+          { validator: validateName, trigger: 'blur' }
+        ],
+        ip: [
+          { validator: validateIP, trigger: 'blur' }
+        ],
+        port: [
+          { validator: validatePort, trigger: 'blur' }
+        ]
       }
     }
   },
   methods: {
-    onSubmit() {
-      this.$message('submit!')
+    submitForm(form) {
+      this.$refs[form].validate((valid) => {
+        console.log('submit')
+        if (this.ruleForm.description === '' && this.ruleForm.link === '') {
+          this.$message({
+            message: 'link and desc can not both be empty',
+            type: 'error'
+          })
+          return false
+        }
+        // TODO:发送表单给后端
+        if (valid) {
+          this.$message({
+            message: 'Successfully submit!',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: 'Something error!',
+            type: 'warning'
+          })
+          return false
+        }
+      })
     },
-    onCancel() {
+    resetForm(form) {
+      this.$refs[form].resetFields()
       this.$message({
-        message: 'cancel!',
-        type: 'warning'
+        message: 'Successfully reset!',
+        type: 'success'
       })
     }
   }
@@ -80,8 +156,12 @@ export default {
 </script>
 
 <style scoped>
-.line{
-  text-align: center;
+.app-container {
+  display: grid;
+  place-items: center;
+  height: 80vh;
+}
+.el-input {
+  width: 375px;
 }
 </style>
-

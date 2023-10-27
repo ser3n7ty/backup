@@ -13,15 +13,14 @@
           placeholder="please enter the real name"
         />
       </el-form-item>
-      <!-- TODO：添加邮箱，验证 -->
+      <!-- 邮箱 -->
       <el-form-item label="User email" prop="email">
         <el-input
           v-model="ruleForm.email"
           placeholder="please enter the real email"
         />
       </el-form-item>
-      <!-- 用户密码 -->
-      <!-- TODO：规定密码格式，超时或失去焦点时判断是否合法 -->
+      <!-- 密码 -->
       <el-form-item label="User pwd" prop="pwd">
         <el-input
           ref="pwd"
@@ -37,14 +36,7 @@
           />
         </span>
       </el-form-item>
-      <!--      &lt;!&ndash; !可设置多个管理员账号 &ndash;&gt;-->
-      <!--      <el-form-item ref="identity" label="Identity" prop="identity">-->
-      <!--        <el-radio-group v-model="ruleForm.identity">-->
-      <!--          <el-radio label="Admin" />-->
-      <!--          <el-radio label="Common" />-->
-      <!--        </el-radio-group>-->
-      <!--      </el-form-item>-->
-      <!-- TODO：增加验证 -->
+      <!-- TODO：发送验证验证码 -->
       <!-- 按钮 -->
       <el-form-item class="btnGroup">
         <el-button
@@ -59,54 +51,59 @@
 </template>
 
 <script>
+import { validEmail } from '@/utils/validate'
+import { validPwd } from '@/utils/validate'
+
 export default {
   name: 'RegisterUser',
   data() {
     const validateName = (rule, value, callback) => {
+      console.log('validName' + value)
       if (value === '') {
         callback(new Error('username could not be empty'))
+      } else if (value.length <= 1) {
+        callback(new Error('more than one character'))
+      } else {
+        callback()
       }
     }
     const validateEmail = (rule, value, callback) => {
+      console.log('validEmail' + value)
       if (value === '') {
         callback(new Error('email could not be empty'))
+      } else if (!validEmail(value)) {
+        callback(new Error('email format is not correct'))
+      } else {
+        callback()
       }
     }
     const validatePwd = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('pwd could not be empty'))
+      } else if (!validPwd(value)) {
+        callback(new Error('upper and lower case letters and numbers, 8-16 digits'))
       } else {
         callback()
       }
     }
-    // function validateIdentity(rule, value, callback) {
-    //   console.log('验证身份')
-    //   if (value !== 'Admin' && value !== 'Common') {
-    //     callback(new Error('identity must be valid'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
 
     return {
       ruleForm: {
         name: '',
         email: '',
         pwd: ''
-        // 默认创建普通用户，由后端添加字段
-        // identity: 'Common'
       },
       rules: {
-        name: [{ validator: validateName, trigger: 'blur' }],
-        // TODO:完善密码验证逻辑
+        name: [
+          { validator: validateName, trigger: 'blur' },
+          { min: 2, message: 'more than one character', trigger: 'blur' }
+        ],
         pwd: [{ validator: validatePwd, trigger: 'blur' }],
         email: [{ validator: validateEmail, trigger: 'blur' }]
-        // identity: [{ validator: validateIdentity, trigger: 'blur' }]
       },
       passwordType: 'password'
     }
   },
-  // TODO：保留操作记录
   methods: {
     showPwd() {
       if (this.passwordType === 'password') {
@@ -120,10 +117,8 @@ export default {
       })
     },
     submitForm(form) {
-      console.log('Submit form')
-      console.log(this.$refs[form])
       this.$refs[form].validate((valid) => {
-        // 发送表单给后端
+        // TODO:发送表单给后端
         if (valid) {
           this.$message({
             message: 'Successfully submit!',
@@ -139,7 +134,7 @@ export default {
       })
     },
     resetForm(form) {
-      console.log(this.ruleForm)
+      // console.log(this.ruleForm)
       this.$refs[form].resetFields()
       this.ruleForm.pwd = ''
       this.ruleForm.identity = ''
@@ -158,14 +153,13 @@ export default {
   place-items: center;
   height: 80vh;
 }
-
 .show-pwd {
   position: absolute;
   right: 10px;
   font-size: 14px;
 }
 
-.el-input {
-  width: 300px;
+.el-input{
+  width: 375px;
 }
 </style>

@@ -10,11 +10,18 @@ export function isExternal(path) {
   return /^(https?:|mailto:|tel:)/.test(path)
 }
 
-/**
- * @param {string} str
- * @returns {Boolean}
- */
-export function validUsername(str) {
-  const valid_map = ['admin', 'editor']
-  return valid_map.indexOf(str.trim()) >= 0
+// 简单验证邮箱账号的格式
+export function validEmail(email) {
+  const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/
+  return mailReg.test(email)
+}
+
+export function validPwd(pwd) {
+  const pwdReg = /^(?![0-9]+$)(?![a-zA-Z]+ $)[0-9A-Za-z]{8,16}$/
+  return pwdReg.test(pwd)
+}
+
+export function validIP(ip) {
+  const ipReg = /^((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))(\.((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))){3}$/
+  return ipReg.test(ip)
 }
