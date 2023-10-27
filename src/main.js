@@ -42,3 +42,4 @@ new Vue({
   store,
   render: h => h(App)
 })
+Vue.prototype.$message = ElementUI.Message

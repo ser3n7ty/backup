@@ -1,7 +1,6 @@
 import { login, register, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
-// import { reject, resolve } from 'core-js/fn/promise'
 
 const getDefaultState = () => {
   return {
@@ -64,7 +63,7 @@ const actions = {
       })
     })
   },
-
+  // TODO: 找到 Usage
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
@@ -84,7 +83,32 @@ const actions = {
       })
     })
   },
-  // TODO:
+
+  getCurrentInfo({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      this.getCurrentInfo(state.token).then(response => {
+        const { data } = response.data
+        if (!data) {
+          return reject('Something error while getting current user info')
+        }
+        const id = data.id
+        const username = data.username
+        const email = data.email
+        const roles = data.roles
+        const permissions = data.permissions
+
+        commit('SET_ID', id)
+        commit('SET_USERNAME', username)
+        commit('SET_EMAIL', email)
+        commit('SET_ROLES', roles)
+        commit('SET_PERMISSIONS', permissions)
+
+        resolve(data)
+      })
+    })
+  },
+
+  // TODO: 获取当前所有用户
   // query all users
   queryAllUsers({ commit, state }) {
     return new Promise((resolve, reject) => {
@@ -100,7 +124,7 @@ const actions = {
 
           resolve(userList)
         } else {
-          reject(response.msg)
+          reject('Something error while querying all users')
         }
       })
     })

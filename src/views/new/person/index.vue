@@ -13,17 +13,14 @@
           placeholder="please enter the real name"
         />
       </el-form-item>
-
-      <!-- TODO：Done 添加邮箱，验证格式 -->
+      <!-- 邮箱 -->
       <el-form-item label="User email" prop="email">
         <el-input
           v-model="ruleForm.email"
           placeholder="please enter the real email"
         />
       </el-form-item>
-
-      <!-- 用户密码 -->
-      <!-- TODO：规定密码格式，超时或失去焦点时判断是否合法 -->
+      <!-- 密码 -->
       <el-form-item label="User pwd" prop="pwd">
         <el-input
           ref="pwd"
@@ -39,7 +36,7 @@
           />
         </span>
       </el-form-item>
-
+      <!-- TODO：发送验证验证码 -->
       <!-- 按钮 -->
       <el-form-item class="btnGroup">
         <el-button
@@ -64,26 +61,29 @@ export default {
       console.log('validName' + value)
       if (value === '') {
         callback(new Error('username could not be empty'))
-      }
-      if (value.length <= 1) {
+      } else if (value.length <= 1) {
         callback(new Error('more than one character'))
+      } else {
+        callback()
       }
     }
     const validateEmail = (rule, value, callback) => {
       console.log('validEmail' + value)
       if (value === '') {
         callback(new Error('email could not be empty'))
-      }
-      if (!validEmail(value)) {
+      } else if (!validEmail(value)) {
         callback(new Error('email format is not correct'))
+      } else {
+        callback()
       }
     }
     const validatePwd = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('pwd could not be empty'))
-      }
-      if (!validPwd(value)) {
+      } else if (!validPwd(value)) {
         callback(new Error('upper and lower case letters and numbers, 8-16 digits'))
+      } else {
+        callback()
       }
     }
 
@@ -153,7 +153,6 @@ export default {
   place-items: center;
   height: 80vh;
 }
-
 .show-pwd {
   position: absolute;
   right: 10px;
@@ -161,6 +160,6 @@ export default {
 }
 
 .el-input{
-  width: 300px;
+  width: 375px;
 }
 </style>

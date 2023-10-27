@@ -20,3 +20,8 @@ export function validPwd(pwd) {
   const pwdReg = /^(?![0-9]+$)(?![a-zA-Z]+ $)[0-9A-Za-z]{8,16}$/
   return pwdReg.test(pwd)
 }
+
+export function validIP(ip) {
+  const ipReg = /^((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))(\.((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))){3}$/
+  return ipReg.test(ip)
+}

@@ -6,6 +6,11 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
+// TODO：上线时使用
+// 导入 store
+// import store from '@/store'
+// import { Notification } from 'element-ui'
+
 /**
  * Note: sub-menu only appear when route children. Length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -54,7 +59,7 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-
+  // Waf 路由设置
   {
     path: '/waf',
     component: Layout,
@@ -87,6 +92,12 @@ export const constantRoutes = [
       icon: 'user'
     },
     children: [
+      {
+        path: 'info',
+        component: () => import('@/views/staff/info/index'),
+        name: 'UserInfo',
+        meta: { title: 'User Info', icon: 'userInfo' }
+      },
       {
         path: 'menu1',
         component: () => import('@/views/staff/menu1/index'), // Parent router-view
@@ -126,12 +137,6 @@ export const constantRoutes = [
             meta: { title: 'Menu1-3' }
           }
         ]
-      },
-      {
-        path: 'menu2',
-        component: () => import('@/views/staff/menu2/index'),
-        name: 'Menu2',
-        meta: { title: 'menu2' }
       }
     ]
   },
@@ -158,6 +163,21 @@ export const constantRoutes = [
         meta: { title: 'Waf', icon: 'import' }
       }
     ]
+    // TODO: 上线时使用
+    // beforeEnter: (to, from, next) => {
+    //   // console.log('BeforeEnter new', from, to)
+    //   // console.log(from.fullPath)
+    //   if (store.getters.roles !== 'admin') {
+    //     Notification.error({
+    //       title: 'Permission Denied',
+    //       message: 'You are not allowed to access this page.',
+    //       duration: 5000
+    //     })
+    //     router.push(from.fullPath)
+    //   } else {
+    //     next()
+    //   }
+    // }
   },
 
   // 404 page must be placed at the end !!!
