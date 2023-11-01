@@ -70,13 +70,13 @@ export const constantRoutes = [
       {
         path: 'info',
         name: 'Info',
-        component: () => import('@/views/info/index'),
+        component: () => import('@/views/waf/info/index'),
         meta: { title: 'Waf Info', icon: 'wafInfo' }
       },
       {
         path: 'log',
         name: 'Log',
-        component: () => import('@/views/log/index'),
+        component: () => import('@/views/waf/log/index'),
         meta: { title: 'Waf Log', icon: 'log' }
       }
     ]

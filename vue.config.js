@@ -36,17 +36,16 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    // 代理 mock
-    before: require('./mock/mock-server.js')
-    // proxy: {
-    //   [process.env.VUE_APP_BASE_API]: {
-    //     target: 'http://127.0.0.1:4523/m1/3375037-0-default',
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       ['^' + process.env.VUE_APP_BASE_API]: ''
-    //     }
-    //   }
-    // }
+    // 本地 mock 代理地址
+    proxy: {
+      [process.env.VUE_APP_BASE_API]: {
+        target: 'http://127.0.0.1:4523/m1/3375037-0-default',
+        changeOrigin: true,
+        pathRewrite: {
+          ['^' + process.env.VUE_APP_BASE_API]: ''
+        }
+      }
+    }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

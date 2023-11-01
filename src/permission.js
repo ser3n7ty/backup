@@ -7,9 +7,16 @@ import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
+// TODO：修改白名单
+// const whiteList = ['/login'] // no redirect whitelist
+const whiteList = [
+  '/login', '/404', '/', '/dashboard',
+  '/waf', '/waf/info', '/waf/log',
+  '/staff', '/staff/info', '/staff/test',
+  '/new', '/new/person', '/new/waf'
+]
 
-const whiteList = ['/login'] // no redirect whitelist
-
+// 检查是否携带 token
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()

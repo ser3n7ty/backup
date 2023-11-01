@@ -9,8 +9,11 @@ export default {
   name: 'UserInfo',
   data() {
     return {
-
+      userList: ''
     }
+  },
+  mounted() {
+
   }
 }
 </script>

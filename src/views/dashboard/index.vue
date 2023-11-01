@@ -1,8 +1,7 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ name }}</div>
-    <!-- TODO: 添加 Waf 当前工作情况或者其他 -->
-    <div>这里展示大屏</div>
+    <div>这里展示统计数据</div>
   </div>
 </template>
 
