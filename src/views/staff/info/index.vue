@@ -1,5 +1,5 @@
 <template>
-  <div style="padding:30px;" />
+  <div>This the user info page</div>
 </template>
 
 <script>

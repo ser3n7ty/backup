@@ -85,7 +85,7 @@ export const constantRoutes = [
   {
     path: '/staff',
     component: Layout,
-    redirect: '/staff/menu1',
+    redirect: '/staff/info',
     name: 'Staff',
     meta: {
       title: 'Staff',
@@ -99,44 +99,10 @@ export const constantRoutes = [
         meta: { title: 'User Info', icon: 'userInfo' }
       },
       {
-        path: 'menu1',
-        component: () => import('@/views/staff/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/staff/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/staff/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/staff/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/staff/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/staff/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        path: 'test',
+        component: () => import('@/views/staff/test/index'),
+        name: 'Test',
+        meta: { title: 'Test' }
       }
     ]
   },
