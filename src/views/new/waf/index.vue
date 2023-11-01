@@ -27,13 +27,6 @@
           placeholder="enter the port"
         />
       </el-form-item>
-      <!-- 管理信息 -->
-      <el-form-item label="Link" prop="link">
-        <el-input
-          v-model="ruleForm.link"
-          placeholder="enter the web admin address for the current waf"
-        />
-      </el-form-item>
       <!-- 描述信息 -->
       <el-form-item
         label="Waf Desc"
@@ -101,8 +94,6 @@ export default {
         name: '',
         ip: '',
         port: '',
-        // link 和 description 可以为空，但是不能都为空
-        link: '',
         description: ''
       },
       rules: {
@@ -122,19 +113,22 @@ export default {
     submitForm(form) {
       this.$refs[form].validate((valid) => {
         console.log('submit')
-        if (this.ruleForm.description === '' && this.ruleForm.link === '') {
-          this.$message({
-            message: 'link and desc can not both be empty',
-            type: 'error'
-          })
-          return false
-        }
         // TODO:发送表单给后端
         if (valid) {
           this.$message({
             message: 'Successfully submit!',
             type: 'success'
           })
+          // this.$loading = true
+          // this.$store
+          //   .dispatch('waf/add', this.ruleForm)
+          //   .then(() => {
+          //     this.loading = false
+          //   })
+          //   .catch(() => {
+          //     this.loading = false
+          //   })
+          this.$refs[form].resetFields()
         } else {
           this.$message({
             message: 'Something error!',

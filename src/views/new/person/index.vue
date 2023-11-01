@@ -7,9 +7,9 @@
       label-width="120px"
     >
       <!-- 用户名 -->
-      <el-form-item label="User name" prop="name">
+      <el-form-item label="User name" prop="username">
         <el-input
-          v-model="ruleForm.name"
+          v-model="ruleForm.username"
           placeholder="please enter the real name"
         />
       </el-form-item>
@@ -21,11 +21,11 @@
         />
       </el-form-item>
       <!-- 密码 -->
-      <el-form-item label="User pwd" prop="pwd">
+      <el-form-item label="User password" prop="password">
         <el-input
-          ref="pwd"
+          ref="password"
           :key="passwordType"
-          v-model="ruleForm.pwd"
+          v-model="ruleForm.password"
           :type="passwordType"
           placeholder="enter the password"
           auto-complete="off"
@@ -89,16 +89,16 @@ export default {
 
     return {
       ruleForm: {
-        name: '',
+        username: '',
         email: '',
-        pwd: ''
+        password: ''
       },
       rules: {
-        name: [
+        username: [
           { validator: validateName, trigger: 'blur' },
           { min: 2, message: 'more than one character', trigger: 'blur' }
         ],
-        pwd: [{ validator: validatePwd, trigger: 'blur' }],
+        password: [{ validator: validatePwd, trigger: 'blur' }],
         email: [{ validator: validateEmail, trigger: 'blur' }]
       },
       passwordType: 'password'
@@ -124,6 +124,13 @@ export default {
             message: 'Successfully submit!',
             type: 'success'
           })
+          // this.$loading = true
+          // this.$store
+          //   .dispatch('user/register', this.ruleForm)
+          //   .then(() => {
+          //     this.$loading = false
+          //   })
+          this.$refs[form].resetFields()
         } else {
           this.$message({
             message: 'Something error!',
@@ -134,10 +141,8 @@ export default {
       })
     },
     resetForm(form) {
-      // console.log(this.ruleForm)
       this.$refs[form].resetFields()
-      this.ruleForm.pwd = ''
-      this.ruleForm.identity = ''
+      this.ruleForm.password = ''
       this.$message({
         message: 'Successfully reset!',
         type: 'success'

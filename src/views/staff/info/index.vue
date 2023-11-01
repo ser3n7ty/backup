@@ -1,5 +1,5 @@
 <template>
-  <div style="padding:30px;" />
+  <div>This the user info page</div>
 </template>
 
 <script>
@@ -9,8 +9,11 @@ export default {
   name: 'UserInfo',
   data() {
     return {
-
+      userList: ''
     }
+  },
+  mounted() {
+
   }
 }
 </script>

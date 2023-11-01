@@ -89,6 +89,7 @@ export default {
       redirect: undefined
     }
   },
+  // 实时监视路有变化，并根据路由的查询性能参数来更新组件内部的状态
   watch: {
     $route: {
       handler: function(route) {
@@ -109,13 +110,11 @@ export default {
       })
     },
     handleLogin() {
-      // console.log(this.$refs.loginForm)
-      // 通过 validate 验证 表单信息是否符合 rules
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
+          console.log('Login')
           this.loading = true
           this.$store
-            // * store 中 user 模块的 login actions
             .dispatch('user/login', this.loginForm)
             .then(() => {
               this.$router.push({ path: this.redirect || '/' })
