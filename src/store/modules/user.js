@@ -16,6 +16,7 @@ const mutations = {
   RESET_STATE: (state) => {
     Object.assign(state, getDefaultState())
   },
+  // 定义 token
   SET_TOKEN: (state, token) => {
     state.token = token
   },

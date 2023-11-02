@@ -43,3 +43,9 @@ new Vue({
   render: h => h(App)
 })
 Vue.prototype.$message = ElementUI.Message
+
+// 获取 sessionStorage 中的 token，恢复到 store 中
+const token = sessionStorage.getItem('token')
+if (token) {
+  store.commit('SET_TOKEN', token)
+}
