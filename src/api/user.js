@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+
 export function login(data) {
   return request({
     url: '/user/login',
@@ -15,17 +16,32 @@ export function register(data) {
   })
 }
 
-export function getInfo(token) {
+// 查询所有用户信息
+export function query(page, size, search) {
+  return request({
+    url: '/user/query',
+    method: 'get',
+    data: {
+      page,
+      size,
+      search
+    }
+  })
+}
+
+// 查询当前用户信息
+export function getUserInfo() {
   return request({
     url: '/user/info',
     method: 'get'
   })
 }
 
-export function getUserInfo(token) {
+// 删除用户
+export function deleteUser(id) {
   return request({
-    url: '/user/info',
-    method: 'get'
+    url: '/user/${id}',
+    method: 'delete'
   })
 }
 
@@ -33,5 +49,13 @@ export function logout() {
   return request({
     url: '/user/logout',
     method: 'post'
+  })
+}
+
+export function update(form) {
+  return request({
+    url: 'user',
+    method: 'put',
+    form
   })
 }

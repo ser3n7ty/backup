@@ -37,7 +37,7 @@
         </span>
       </el-form-item>
       <!-- TODO：发送验证验证码 -->
-      <!-- 按钮 -->
+      <!-- 按钮 -->..........//
       <el-form-item class="btnGroup">
         <el-button
           type="primary"
@@ -118,18 +118,17 @@ export default {
     },
     submitForm(form) {
       this.$refs[form].validate((valid) => {
-        // TODO:发送表单给后端
         if (valid) {
-          this.$message({
-            message: 'Successfully submit!',
-            type: 'success'
-          })
-          // this.$loading = true
-          // this.$store
-          //   .dispatch('user/register', this.ruleForm)
-          //   .then(() => {
-          //     this.$loading = false
-          //   })
+          this.$loading = true
+          this.$store
+            .dispatch('user/register', this.ruleForm)
+            .then(() => {
+              this.$loading = false
+              this.$message({
+                message: 'Successfully submit!',
+                type: 'success'
+              })
+            })
           this.$refs[form].resetFields()
         } else {
           this.$message({

@@ -49,7 +49,7 @@
         </span>
       </el-form-item>
       <br>
-      <!-- TODO：第一次登录失败后需要接收邮箱验证码 -->
+      <!-- TODO：每次登录接收验证码 -->
 
       <el-button
         :loading="loading"
@@ -89,7 +89,7 @@ export default {
       redirect: undefined
     }
   },
-  // 实时监视路有变化，并根据路由的查询性能参数来更新组件内部的状态
+  // TODO: ?实时监视路有变化，并根据路由的查询性能参数来更新组件内部的状态
   watch: {
     $route: {
       handler: function(route) {
@@ -116,15 +116,27 @@ export default {
           this.loading = true
           this.$store
             .dispatch('user/login', this.loginForm)
-            .then(() => {
-              this.$router.push({ path: this.redirect || '/' })
+            .then((res) => {
+              // TODO: 存储用户信息
+              // sessionStorage 用于本地持久化存储
+              sessionStorage('token', res.data.token)
+              sessionStorage('userInfo', res.data.userInfo)
+              // 调用 mutation 存储 token，用于拦截器使用
+              this.$store.commit('SET_TOKEN', res.data.token)
               this.loading = false
+              this.$message({
+                message: 'Successfully login!',
+                type: 'success'
+              })
             })
             .catch(() => {
               this.loading = false
             })
         } else {
-          console.log('error submit!!')
+          this.$message({
+            message: 'Something error!',
+            type: 'warning'
+          })
           return false
         }
       })
@@ -157,7 +169,6 @@ $cursor: #fff;
     input {
       background: transparent;
       border: 0px;
-      -webkit-appearance: none;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
       color: $light_gray;

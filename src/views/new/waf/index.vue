@@ -89,8 +89,6 @@ export default {
     }
     return {
       ruleForm: {
-        // 后端请求自动生成
-        // id: '',
         name: '',
         ip: '',
         port: '',
@@ -112,22 +110,20 @@ export default {
   methods: {
     submitForm(form) {
       this.$refs[form].validate((valid) => {
-        console.log('submit')
-        // TODO:发送表单给后端
         if (valid) {
+          this.$loading = true
+          this.$store
+            .dispatch('waf/add', this.ruleForm)
+            .then(() => {
+              this.loading = false
+            })
+            .catch(() => {
+              this.loading = false
+            })
           this.$message({
             message: 'Successfully submit!',
             type: 'success'
           })
-          // this.$loading = true
-          // this.$store
-          //   .dispatch('waf/add', this.ruleForm)
-          //   .then(() => {
-          //     this.loading = false
-          //   })
-          //   .catch(() => {
-          //     this.loading = false
-          //   })
           this.$refs[form].resetFields()
         } else {
           this.$message({
