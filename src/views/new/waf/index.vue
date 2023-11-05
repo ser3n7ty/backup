@@ -128,8 +128,8 @@ export default {
           this.$refs[form].resetFields()
         } else {
           this.$message({
-            message: 'Something error!',
-            type: 'warning'
+            message: '表单无效',
+            type: 'error'
           })
           return false
         }

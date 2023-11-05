@@ -106,27 +106,32 @@
       />
 
       <el-dialog :visible.sync="dialogVisible" title="Update" width="30%">
-        <el-form :model="form" label-width="120px">
-          <el-form-item label="名字">
+        <el-form
+          :ref="form"
+          :model="form"
+          :rules="rules"
+          label-width="120px"
+        >
+          <el-form-item label="名字" prop="name">
             <el-input v-model="form.name" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="IP地址">
+          <el-form-item label="IP地址" prop="ip">
             <el-input v-model="form.ip" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="端口">
+          <el-form-item label="端口" prop="port">
             <el-input v-model="form.port" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="状态">
-            <el-input v-model="form.status" style="width: 80%" />
+          <el-form-item label="配置信息" prop="configUrl">
+            <el-input v-model="form.configUrl" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="描述信息">
+          <el-form-item label="描述信息" prop="description">
             <el-input v-model="form.description" type="textarea" style="width: 80%" />
           </el-form-item>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="save">确 认</el-button>
+            <el-button type="primary" @click="save('form')">确 认</el-button>
           </span>
         </template>
       </el-dialog>
@@ -135,10 +140,25 @@
 </template>
 
 <script>
+import { validIP } from '@/utils/validate'
 
 export default {
   name: 'UserInfo',
   data() {
+    const validateIP = (rule, value, callback) => {
+      if (!validIP(value)) {
+        callback(new Error('ip format is not correct'))
+      } else {
+        callback()
+      }
+    }
+    const validatePort = (rule, value, callback) => {
+      if (Number(value) <= 0 || Number(value) > 65535) {
+        callback(new Error('port is not correct'))
+      } else {
+        callback()
+      }
+    }
     return {
       enable: '',
       status: '',
@@ -157,6 +177,25 @@ export default {
       ],
       ids: [],
       form: {
+        name: '',
+        ip: '',
+        port: '',
+        configUrl: '',
+        description: ''
+      },
+      rules: {
+        name: [
+          { required: true, message: '请输入 waf 名字', trigger: 'blur' }
+        ],
+        ip: [
+          { required: true, message: '请输入 waf 的 IP 地址', validator: validateIP, trigger: 'blur' }
+        ],
+        port: [
+          { required: true, message: '请输入 waf 的端口', validator: validatePort, trigger: 'blur' }
+        ],
+        configUrl: [
+          { required: true, message: '请输入第三方配置地址', trigger: 'blur' }
+        ]
       }
     }
   },
@@ -186,28 +225,38 @@ export default {
         })
     },
     handleEdit(row) {
-      this.temp = JSON.parse(JSON.stringify(row))
-      this.form = this.temp
+      const temp = JSON.parse(JSON.stringify(row))
+      for (const key in temp) {
+        this.form[key] = temp[key]
+      }
       this.dialogVisible = true
-      console.log(this.dialogVisible)
     },
-    save() {
-      this.$store
-        .dispatch('waf/updateWaf', this.form)
-        .then((res) => {
-          if (res.status !== 'success') {
-            this.$message({
-              message: res.msg,
-              type: 'error'
+    save(form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.$store
+            .dispatch('waf/updateWaf', this.form)
+            .then((res) => {
+              if (res.status !== 'success') {
+                this.$message({
+                  message: res.msg,
+                  type: 'error'
+                })
+              }
             })
-          }
-        })
-        .catch(() => {
+            .catch(() => {
+              this.$message({
+                message: 'Something error',
+                type: 'error'
+              })
+            })
+        } else {
           this.$message({
-            message: 'Something error',
+            message: '表单无效',
             type: 'error'
           })
-        })
+        }
+      })
     },
     changeEnable(id) {
       const enable = this.enable === 1 ? 0 : 1

@@ -89,8 +89,8 @@
           <el-form-item label="Email">
             <el-input v-model="infoForm.email" style="width: 80%" />
           </el-form-item>
-          <template #footer>
-            <span class="dialog-footer">
+          <template>
+            <span class="dialog-footer" style="">
               <el-button @click="infoDialogVisible = false">取 消</el-button>
               <el-button type="primary" @click="save">确 认</el-button>
             </span>
@@ -192,11 +192,12 @@ export default {
           })
         })
     },
-    // TODO：更新用户信息
+    // TODO: 更新用户信息
     handleEditInfo(row) {
       this.infoForm = JSON.parse(JSON.stringify(row))
       this.infoDialogVisible = true
     },
+    // 修改用户密码
     handleEditPwd(row) {
 
     },
