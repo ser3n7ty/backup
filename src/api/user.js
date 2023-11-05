@@ -17,15 +17,12 @@ export function register(data) {
 }
 
 // 查询所有用户信息
-export function query(page, size, search) {
+// data: {pageNum, pageSize, search}
+export function query(data) {
   return request({
     url: '/user/query',
     method: 'get',
-    data: {
-      page,
-      size,
-      search
-    }
+    data
   })
 }
 
@@ -37,25 +34,45 @@ export function getUserInfo() {
   })
 }
 
+export function logout() {
+  return request({
+    url: '/logout',
+    method: 'get'
+  })
+}
+
 // 删除用户
 export function deleteUser(id) {
   return request({
-    url: '/user/${id}',
+    url: '/user/{id}',
     method: 'delete'
   })
 }
 
-export function logout() {
-  return request({
-    url: '/user/logout',
-    method: 'post'
-  })
-}
-
-export function update(form) {
+// 修改用户基本信息
+// data: {name, email}
+export function updateInfo(data) {
   return request({
     url: 'user',
     method: 'put',
-    form
+    data
+  })
+}
+
+// 修改用户密码
+// data: {oldPassword, newPassword}
+export function changePassword(data) {
+  return request({
+    url: '',
+    method: 'put',
+    data
+  })
+}
+
+// 发送验证码
+export function sendVerifyCode(email) {
+  return request({
+    url: '/email/sendCode/{email}',
+    method: 'get'
   })
 }

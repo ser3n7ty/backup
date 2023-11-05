@@ -7,35 +7,43 @@
       label-width="120px"
     >
       <!-- Waf 名字 -->
-      <el-form-item label="Waf name" prop="name">
+      <el-form-item label="名字" prop="name">
         <el-input
           v-model="ruleForm.name"
-          placeholder="enter the name"
+          placeholder="请输入 waf 名字"
         />
       </el-form-item>
       <!-- IP 信息 -->
-      <el-form-item label="Waf IP" prop="ip">
+      <el-form-item label="IP 地址" prop="ip">
         <el-input
           v-model="ruleForm.ip"
-          placeholder="enter the ip"
+          placeholder="输入 waf 的 IP 地址"
         />
       </el-form-item>
       <!-- 端口信息 -->
-      <el-form-item label="Waf Port" prop="port">
+      <el-form-item label="端口" prop="port">
         <el-input
           v-model="ruleForm.port"
-          placeholder="enter the port"
+          placeholder="请输入 waf 开放的端口信息"
+        />
+      </el-form-item>
+      <!-- 端口信息 -->
+      <el-form-item label="配置地址" prop="configUrl">
+        <el-input
+          v-model="ruleForm.configUrl"
+          placeholder="请输入 waf 配置的 url 链接"
         />
       </el-form-item>
       <!-- 描述信息 -->
       <el-form-item
         label="Waf Desc"
         desc-quot-
-        prop="description"
+        prop="描述信息"
       >
         <el-input
           v-model="ruleForm.description"
-          placeholder="enter the desc of the waf"
+          placeholder="请输入与 waf 有关的管理信息"
+          type="textarea"
         />
       </el-form-item>
       <!-- 按钮 -->
@@ -44,9 +52,9 @@
           type="primary"
           rule-form-
           @click="submitForm('ruleForm')"
-        >Import
+        >导 入
         </el-button>
-        <el-button @click="resetForm('ruleForm')">Reset</el-button>
+        <el-button @click="resetForm('ruleForm')">重 置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -56,32 +64,17 @@
 import { validIP } from '@/utils/validate'
 
 export default {
-  name: 'NewWaf',
+  name: 'ImportWaf',
   data() {
-    // TODO: 完成 Waf 导入信息的验证
-    const validateName = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('name could not be empty'))
-      } else {
-        callback()
-      }
-    }
     const validateIP = (rule, value, callback) => {
-      // console.log('ip', value)
-      if (value === '') {
-        callback(new Error('ip could not be empty'))
-      } else if (!validIP(value)) {
+      if (!validIP(value)) {
         callback(new Error('ip format is not correct'))
       } else {
         callback()
       }
     }
     const validatePort = (rule, value, callback) => {
-      // console.log(value, typeof (value))
-      // console.log(Number(value), typeof (Number(value)))
-      if (value === '') {
-        callback(new Error('port could not be empty'))
-      } else if (Number(value) <= 0 || Number(value) > 65535) {
+      if (Number(value) <= 0 || Number(value) > 65535) {
         callback(new Error('port is not correct'))
       } else {
         callback()
@@ -92,17 +85,21 @@ export default {
         name: '',
         ip: '',
         port: '',
+        configUrl: '',
         description: ''
       },
       rules: {
         name: [
-          { validator: validateName, trigger: 'blur' }
+          { required: true, message: '请输入 waf 名字', trigger: 'blur' }
         ],
         ip: [
-          { validator: validateIP, trigger: 'blur' }
+          { required: true, message: '请输入 waf 的 IP 地址', validator: validateIP, trigger: 'blur' }
         ],
         port: [
-          { validator: validatePort, trigger: 'blur' }
+          { required: true, message: '请输入 waf 的端口', validator: validatePort, trigger: 'blur' }
+        ],
+        configUrl: [
+          { required: true, message: '请输入第三方配置地址', trigger: 'blur' }
         ]
       }
     }
@@ -117,11 +114,15 @@ export default {
             .then(() => {
               this.loading = false
             })
-            .catch(() => {
+            .catch((err) => {
               this.loading = false
+              this.$message({
+                message: err,
+                type: 'error'
+              })
             })
           this.$message({
-            message: 'Successfully submit!',
+            message: '导入成功！',
             type: 'success'
           })
           this.$refs[form].resetFields()
@@ -137,7 +138,7 @@ export default {
     resetForm(form) {
       this.$refs[form].resetFields()
       this.$message({
-        message: 'Successfully reset!',
+        message: '重置成功!',
         type: 'success'
       })
     }

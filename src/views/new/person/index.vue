@@ -7,27 +7,27 @@
       label-width="120px"
     >
       <!-- 用户名 -->
-      <el-form-item label="User name" prop="username">
+      <el-form-item label="用户名" prop="username">
         <el-input
           v-model="ruleForm.username"
-          placeholder="please enter the real name"
+          placeholder="请输入真实姓名"
         />
       </el-form-item>
       <!-- 邮箱 -->
-      <el-form-item label="User email" prop="email">
+      <el-form-item label="邮箱" prop="email">
         <el-input
           v-model="ruleForm.email"
-          placeholder="please enter the real email"
+          placeholder="请输入邮箱"
         />
       </el-form-item>
       <!-- 密码 -->
-      <el-form-item label="User password" prop="password">
+      <el-form-item label="密码" prop="password">
         <el-input
           ref="password"
           :key="passwordType"
           v-model="ruleForm.password"
           :type="passwordType"
-          placeholder="enter the password"
+          placeholder="请输入密码"
           auto-complete="off"
         />
         <span class="show-pwd" @click="showPwd">
@@ -36,15 +36,14 @@
           />
         </span>
       </el-form-item>
-      <!-- TODO：发送验证验证码 -->
-      <!-- 按钮 -->..........//
+      <!-- 按钮 -->
       <el-form-item class="btnGroup">
         <el-button
           type="primary"
           @click="submitForm('ruleForm')"
-        >Create
+        >注 册
         </el-button>
-        <el-button @click="resetForm('ruleForm')">Reset</el-button>
+        <el-button @click="resetForm('ruleForm')">重 置</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -57,30 +56,15 @@ import { validPwd } from '@/utils/validate'
 export default {
   name: 'RegisterUser',
   data() {
-    const validateName = (rule, value, callback) => {
-      console.log('validName' + value)
-      if (value === '') {
-        callback(new Error('username could not be empty'))
-      } else if (value.length <= 1) {
-        callback(new Error('more than one character'))
-      } else {
-        callback()
-      }
-    }
     const validateEmail = (rule, value, callback) => {
-      console.log('validEmail' + value)
-      if (value === '') {
-        callback(new Error('email could not be empty'))
-      } else if (!validEmail(value)) {
+      if (!validEmail(value)) {
         callback(new Error('email format is not correct'))
       } else {
         callback()
       }
     }
     const validatePwd = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('pwd could not be empty'))
-      } else if (!validPwd(value)) {
+      if (!validPwd(value)) {
         callback(new Error('upper and lower case letters and numbers, 8-16 digits'))
       } else {
         callback()
@@ -95,11 +79,17 @@ export default {
       },
       rules: {
         username: [
-          { validator: validateName, trigger: 'blur' },
-          { min: 2, message: 'more than one character', trigger: 'blur' }
+          { required: true, message: '请输入用户真实姓名' },
+          { min: 2, message: '名字不得少于2个字符', trigger: 'blur' }
         ],
-        password: [{ validator: validatePwd, trigger: 'blur' }],
-        email: [{ validator: validateEmail, trigger: 'blur' }]
+        password: [
+          { validator: validatePwd, trigger: 'blur' },
+          { required: true, message: '请输入密码' }
+        ],
+        email: [
+          { validator: validateEmail, trigger: 'blur' },
+          { required: true, message: '请输入邮箱' }
+        ]
       },
       passwordType: 'password'
     }
@@ -125,8 +115,14 @@ export default {
             .then(() => {
               this.$loading = false
               this.$message({
-                message: 'Successfully submit!',
+                message: '成功注册！',
                 type: 'success'
+              })
+            })
+            .catch((err) => {
+              this.$message({
+                message: err,
+                type: 'error'
               })
             })
           this.$refs[form].resetFields()
@@ -143,7 +139,7 @@ export default {
       this.$refs[form].resetFields()
       this.ruleForm.password = ''
       this.$message({
-        message: 'Successfully reset!',
+        message: '重置成功!',
         type: 'success'
       })
     }

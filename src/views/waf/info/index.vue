@@ -6,14 +6,14 @@
     <div class="search" style="margin: 10px 0; display: flex; justify-content: space-between; align-items: center;">
       <!-- 左侧部分，搜索框和查询按钮 -->
       <div style="width: 60%; display: flex; align-items: center;">
-        <el-input v-model="search" placeholder="input the key word" style="width: 60%" clearable />
-        <el-button type="primary" style="margin-left: 5px" @click="load">search</el-button>
+        <el-input v-model="search" placeholder="输入要查找的内容" style="width: 60%" clearable />
+        <el-button type="primary" style="margin-left: 5px" @click="load">搜 索</el-button>
       </div>
 
       <!-- 右侧部分，批量删除按钮 -->
       <el-popconfirm title="确定删除吗？" @confirm="deleteBatch">
         <template #reference>
-          <el-button type="danger" style="margin-right: 110px;">Betch Remove</el-button>
+          <el-button type="danger" style="margin-right: 80px;">批量删除</el-button>
         </template>
       </el-popconfirm>
     </div>
@@ -35,38 +35,58 @@
         <el-table-column
           prop="id"
           label="ID"
+          width="75"
           sortable
         />
         <el-table-column
           prop="name"
-          label="Name"
+          label="名 字"
         />
         <el-table-column
           prop="ip"
-          label="IP"
+          label="IP 地址"
         />
         <el-table-column
           prop="port"
-          label="Port"
-        />
-        <el-table-column
-          prop="status"
-          label="Status"
+          label="端 口"
+          width="80"
         />
         <el-table-column
           prop="description"
-          label="Description"
+          label="描述信息"
+          width="250%"
         />
-        <el-table-column label="Operations" width="240">
-          <!-- scope 是一个用户访问表格数据的作用域对象 -->
+        <el-table-column
+          prop="status"
+          label="运行状态"
+        >
           <template #default="scope">
-            <!-- TODO:访问控制 -->
-            <!-- 可编辑个人账号 -->
-            <!-- 有且仅有管理员可删除账号 -->
-            <el-button size="mini" @click="handleEdit(scope.row)">Edit</el-button>
-            <el-popconfirm title="Sure to delete?" @confirm="handleDelete(scope.row.id)">
+            <div>
+              <span :class="{'status-badge-active': scope.row.status === 1, 'status-badge-inactive': scope.row.status === 0}" />
+              {{ scope.row.status === 1 ? '正常运行' : '已停止' }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="enable"
+          label="启用状态"
+        >
+          <template #default="scope">
+            <div>
+              <span :class="{'status-badge-active': scope.row.enable === 1, 'status-badge-inactive': scope.row.enable === 0}" />
+              {{ scope.row.enable === 1 ? '已启用' : '已停用' }}
+            </div>
+          </template>
+        </el-table-column>
+
+        <!-- TODO: 样式设置 -->
+        <el-table-column label="操 作" width="250%">
+          <template #default="scope">
+            <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
+            <el-button size="mini" @click="changeEnable(scope.row.id)">停用</el-button>
+            <el-popconfirm style="margin: 10px" title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
               <template #reference>
-                <el-button size="mini" type="danger">Delete</el-button>
+                <el-button size="mini" type="danger">删 除</el-button>
               </template>
             </el-popconfirm>
           </template>
@@ -83,30 +103,30 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
         @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
       />
-      <el-dialog v-model="dialogVisible" title="Update" width="30%">
+
+      <el-dialog :visible.sync="dialogVisible" title="Update" width="30%">
         <el-form :model="form" label-width="120px">
-          <el-form-item label="Name">
+          <el-form-item label="名字">
             <el-input v-model="form.name" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="IP">
+          <el-form-item label="IP地址">
             <el-input v-model="form.ip" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="Port">
+          <el-form-item label="端口">
             <el-input v-model="form.port" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="Status">
+          <el-form-item label="状态">
             <el-input v-model="form.status" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="Desc">
-            <el-input v-model="form.description" style="width: 80%" />
+          <el-form-item label="描述信息">
+            <el-input v-model="form.description" type="textarea" style="width: 80%" />
           </el-form-item>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
-            <el-button @click="dialogVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="save">Confirm</el-button>
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="save">确 认</el-button>
           </span>
         </template>
       </el-dialog>
@@ -120,9 +140,8 @@ export default {
   name: 'UserInfo',
   data() {
     return {
-      // TODO: 需要进行代码重构
-      // 用于验证身份
-      userInfo: '',
+      enable: '',
+      status: '',
       search: '',
       // 部署后修改为 true
       loading: false,
@@ -131,22 +150,15 @@ export default {
       pageSize: 10,
       total: 0,
       tableData: [
-        { id: 1, name: 'hah', ip: '192.168.2.1', port: 8899, status: 'alive', description: 'there are some thing...' }
+        { id: 1, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 0, status: 1, description: 'there are some thing...' },
+        { id: 2, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 1, status: 1, description: 'there are some thing...' },
+        { id: 3, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 1, status: 0, description: 'there are some thing...' },
+        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 0, status: 0, description: 'there are some thing...' }
       ],
       ids: [],
       form: {
-        // name: '',
-        // ip: '',
-        // port: '',
-        // status: '',
-        // description: ''
       }
     }
-  },
-  // 用于判断身份
-  created() {
-    const userStr = sessionStorage.getItem('userInfo') || '{}'
-    this.userInfo = JSON.parse(userStr)
   },
   methods: {
     load() {
@@ -174,14 +186,14 @@ export default {
         })
     },
     handleEdit(row) {
-      this.form = JSON.parse(JSON.stringify(row))
+      this.temp = JSON.parse(JSON.stringify(row))
+      this.form = this.temp
       this.dialogVisible = true
-      // console.log('edit', this.dialogVisible)
-      // console.log(this.form.name, this.form.ip, this.form.port, this.form.status, this.form.description)
+      console.log(this.dialogVisible)
     },
     save() {
       this.$store
-        .dispatch('waf/update', this.form)
+        .dispatch('waf/updateWaf', this.form)
         .then((res) => {
           if (res.status !== 'success') {
             this.$message({
@@ -197,11 +209,36 @@ export default {
           })
         })
     },
+    changeEnable(id) {
+      const enable = this.enable === 1 ? 0 : 1
+      this.$store
+        .dispatch('waf/changeEnable', id, enable)
+        .then((res) => {
+          if (res.status === 'success') {
+            this.$message({
+              message: enable === 1 ? '成功启用' : '成功停用',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: res.msg,
+              type: 'error'
+            })
+          }
+        })
+        .catch((err) => {
+          this.$message({
+            message: err,
+            type: 'error'
+          })
+        })
+    },
     handleSelectionChange(val) {
       this.ids = val.map(v => v.id)
     },
     handleDelete(id) {
-      this.$store.commit('waf/deleteWaf', id)
+      console.log('Delete waf')
+      this.$store.dispatch('waf/deleteWaf', id)
         .then((res) => {
           if (res.status !== 'success') {
             this.$message({
@@ -235,5 +272,26 @@ export default {
 </script>
 
 <style scoped>
+.status-badge-active {
+  width: 10px; /* 小色块的宽度 */
+  height: 10px; /* 小色块的高度 */
+  display: inline-block; /* 行内块元素，以确保文字和小色块在同一行 */
+  background-color: green; /* 已启用的小色块颜色 */
+  margin-right: 5px; /* 用于分隔小色块和文字的间距 */
+}
+
+.status-badge-inactive {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  background-color: red; /* 已停用的小色块颜色 */
+  margin-right: 5px;
+}
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 </style>
 

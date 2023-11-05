@@ -56,7 +56,7 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '控制面板', icon: 'dashboard' }
     }]
   },
   // Waf 路由设置
@@ -71,13 +71,13 @@ export const constantRoutes = [
         path: 'info',
         name: 'Info',
         component: () => import('@/views/waf/info/index'),
-        meta: { title: 'Waf Info', icon: 'wafInfo' }
+        meta: { title: 'Waf 信息', icon: 'wafInfo' }
       },
       {
         path: 'log',
         name: 'Log',
         component: () => import('@/views/waf/log/index'),
-        meta: { title: 'Waf Log', icon: 'log' }
+        meta: { title: '处理日志', icon: 'log' }
       }
     ]
   },
@@ -88,7 +88,7 @@ export const constantRoutes = [
     redirect: '/staff/info',
     name: 'Staff',
     meta: {
-      title: 'Staff',
+      title: '用户',
       icon: 'user'
     },
     children: [
@@ -96,7 +96,7 @@ export const constantRoutes = [
         path: 'info',
         component: () => import('@/views/staff/info/index'),
         name: 'UserInfo',
-        meta: { title: 'User Info', icon: 'userInfo' }
+        meta: { title: '用户信息', icon: 'userInfo' }
       },
       {
         path: 'test',
@@ -114,19 +114,19 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/new/person',
     name: 'New',
-    meta: { title: 'New', icon: 'new' },
+    meta: { title: '新建', icon: 'new' },
     children: [
       {
         path: 'person',
         name: 'newPerson',
         component: () => import('@/views/new/person'),
-        meta: { title: 'Person', icon: 'newUser' }
+        meta: { title: '人员注册', icon: 'newUser' }
       },
       {
         path: 'waf',
         name: 'newWaf',
         component: () => import('@/views/new/waf'),
-        meta: { title: 'Waf', icon: 'import' }
+        meta: { title: '导入 Waf', icon: 'import' }
       }
     ]
     // TODO: 上线时使用

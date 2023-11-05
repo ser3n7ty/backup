@@ -6,14 +6,14 @@
     <div class="search" style="margin: 10px 0; display: flex; justify-content: space-between; align-items: center;">
       <!-- 左侧部分，搜索框和查询按钮 -->
       <div style="width: 60%; display: flex; align-items: center;">
-        <el-input v-model="search" placeholder="input the key word" style="width: 60%" clearable />
-        <el-button type="primary" style="margin-left: 5px" @click="load">search</el-button>
+        <el-input v-model="search" placeholder="输入要查找的内容" style="width: 60%" clearable />
+        <el-button type="primary" style="margin-left: 5px" @click="load">搜 索</el-button>
       </div>
 
       <!-- 右侧部分，批量删除按钮 -->
-      <el-popconfirm title="确定删除吗？" @confirm="deleteBatch">
+      <el-popconfirm title="Sure to remove?" @confirm="deleteBatch">
         <template #reference>
-          <el-button type="danger" style="margin-right: 110px;">批量删除</el-button>
+          <el-button type="danger" style="margin-right: 50px;">批量删除</el-button>
         </template>
       </el-popconfirm>
     </div>
@@ -35,34 +35,33 @@
         <el-table-column
           prop="id"
           label="ID"
+          width="75"
           sortable
         />
         <el-table-column
           prop="username"
-          label="username"
+          label="用 户 名"
         />
         <el-table-column
           prop="email"
-          label="email"
+          label="邮 箱"
         />
         <el-table-column
           prop="role"
-          label="role"
+          label="职 能"
         />
         <el-table-column
           prop="permission"
-          label="permission"
+          label="权 限"
         />
-        <el-table-column label="Operations" width="240">
+        <el-table-column label="操 作" width="300">
           <!-- scope 是一个用户访问表格数据的作用域对象 -->
           <template #default="scope">
-            <!-- TODO:访问控制 -->
-            <!-- 可编辑个人账号 -->
-            <!-- 有且仅有管理员可删除账号 -->
-            <el-button size="mini" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-popconfirm title="确定删除吗？" @confirm="handleDelete(scope.row.id)">
+            <el-button size="mini" @click="handleEditInfo(scope.row)">编辑信息</el-button>
+            <el-button size="mini" @click="handleEditPwd(scope.row)">修改密码</el-button>
+            <el-popconfirm style="margin: 10px" title="确认删除？" @confirm="handleDelete(scope.row.id)">
               <template #reference>
-                <el-button size="mini" type="danger">删除</el-button>
+                <el-button size="mini" type="danger">删 除</el-button>
               </template>
             </el-popconfirm>
           </template>
@@ -81,29 +80,22 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
-      <el-dialog v-model="dialogVisible" title="Update" width="30%">
-        <el-form :model="form" label-width="120px">
+      <el-dialog :visible.sync="infoDialogVisible" title="修改基本信息" width="30%">
+        <el-form :model="infoForm" label-width="120px">
 
-          <el-form-item label="username">
-            <el-input v-model="form.username" style="width: 80%" />
+          <el-form-item label="Username">
+            <el-input v-model="infoForm.username" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="email">
-            <el-input v-model="form.email" style="width: 80%" />
+          <el-form-item label="Email">
+            <el-input v-model="infoForm.email" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="password">
-            <el-input
-              v-model="form.password"
-              style="width: 80%"
-              :type="passwordType"
-            />
-          </el-form-item>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="infoDialogVisible = false">取 消</el-button>
+              <el-button type="primary" @click="save">确 认</el-button>
+            </span>
+          </template>
         </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="dialogVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="save">Confirm</el-button>
-          </span>
-        </template>
       </el-dialog>
     </div>
   </div>
@@ -146,12 +138,17 @@ export default {
       }
     }
     return {
-      // TODO: 需要进行代码重构
-      userInfo: '',
-      form: {
-        username: '',
-        email: '',
-        password: ''
+      search: '',
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
+      tableData: [
+        { id: 1, username: 'admin', email: 'test@example.com', role: 'admin', permission: 'all things' },
+        { id: 1, username: 'admin', email: 'test@example.com', role: 'admin', permission: 'all things' }
+      ],
+      ids: [],
+
+      infoForm: {
       },
       rules: {
         username: [
@@ -162,32 +159,15 @@ export default {
         email: [{ validator: validateEmail, trigger: 'blur' }]
       },
       passwordType: 'password',
-      search: '',
+
       // 部署后修改为 true
       loading: false,
-      dialogVisible: false,
-      currentPage: 1,
-      pageSize: 10,
-      total: 0,
-      tableData: [
-        { id: 1, username: 'admin', email: 'test@example.com', role: 'admin', permission: 'all things' },
-        { id: 1, username: 'admin', email: 'test@example.com', role: 'admin', permission: 'all things' },
-        { id: 1, username: 'admin', email: 'test@example.com', role: 'admin', permission: 'all things' },
-        { id: 1, username: 'admin', email: 'test@example.com', role: 'admin', permission: 'all things' },
-        { id: 1, username: 'admin', email: 'test@example.com', role: 'admin', permission: 'all things' },
-        { id: 1, username: 'admin', email: 'test@example.com', role: 'admin', permission: 'all things' }
-      ],
-      ids: []
+      infoDialogVisible: false,
+      pwdDialogVisible: false
+
     }
   },
-  created() {
-    const userStr = sessionStorage.getItem('userInfo') || '{}'
-    this.userInfo = JSON.parse(userStr)
-    // TODO: ？请求服务端，判断当前登录用户的合法性
-  },
   methods: {
-    // 刷新页面数据
-    // 提供搜索功能，当 search 为空时，返回当前 page 大小为 size 的 info
     load() {
       this.loading = true
       this.$store
@@ -213,12 +193,18 @@ export default {
         })
     },
     // TODO：更新用户信息
-    handleEdit(row) {
+    handleEditInfo(row) {
+      this.infoForm = JSON.parse(JSON.stringify(row))
+      this.infoDialogVisible = true
+    },
+    handleEditPwd(row) {
 
     },
-    save() {
+    // 提交用户信息的更新表单
+    // 根据参数区别不同的表单信息
+    save(form) {
       this.$store
-        .dispatch('user/update', this.form)
+        .dispatch('user/updateInfo', form)
         .then((res) => {
           if (res.status !== 'success') {
             this.$message({

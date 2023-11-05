@@ -2,6 +2,8 @@
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ name }}</div>
     <div>这里展示统计数据</div>
+    <p>CPU 占用率</p>
+    <p>内存 占用率</p>
   </div>
 </template>
 

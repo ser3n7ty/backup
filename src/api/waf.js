@@ -1,4 +1,4 @@
-import request from '@utils/request'
+import request from '@/utils/request'
 
 export function add(data) {
   return request({
@@ -8,29 +8,22 @@ export function add(data) {
   })
 }
 
-export function query(page, size, search) {
+export function query(pageNum, pageSize, search) {
+  const data = {
+    pageNum, pageSize, search
+  }
   return request({
     url: '/waf',
     method: 'get',
-    params: {
-      page,
-      size,
-      search
-    }
+    data
   })
 }
 
-export function updateWaf(name, ip, port, status, desc) {
+export function updateWaf(form) {
   return request({
     url: '/waf',
     method: 'put',
-    params: {
-      name,
-      ip,
-      port,
-      status,
-      desc
-    }
+    form
   })
 }
 
@@ -39,5 +32,16 @@ export function deleteWaf(id) {
     url: '/waf',
     method: 'delete',
     id
+  })
+}
+
+export function changeEnable(id, enable) {
+  const data = {
+    id, enable
+  }
+  return request({
+    url: '/waf',
+    method: 'put',
+    data
   })
 }
