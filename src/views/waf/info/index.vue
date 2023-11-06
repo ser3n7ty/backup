@@ -52,6 +52,11 @@
           width="80"
         />
         <el-table-column
+          prop="configUrl"
+          label="配置地址"
+          width="250%"
+        />
+        <el-table-column
           prop="description"
           label="描述信息"
           width="250%"
@@ -62,8 +67,8 @@
         >
           <template #default="scope">
             <div>
-              <span :class="{'status-badge-active': scope.row.status === 1, 'status-badge-inactive': scope.row.status === 0}" />
-              {{ scope.row.status === 1 ? '正常运行' : '已停止' }}
+              <span :class="{'status-badge-active': scope.row.status === '1', 'status-badge-inactive': scope.row.status === '0'}" />
+              {{ scope.row.status === '1' ? '正常运行' : '已停止' }}
             </div>
           </template>
         </el-table-column>
@@ -73,17 +78,16 @@
         >
           <template #default="scope">
             <div>
-              <span :class="{'status-badge-active': scope.row.enable === 1, 'status-badge-inactive': scope.row.enable === 0}" />
+              <span :class="{'status-badge-active': scope.row.enable === '1', 'status-badge-inactive': scope.row.enable === '0'}" />
               {{ scope.row.enable === 1 ? '已启用' : '已停用' }}
             </div>
           </template>
         </el-table-column>
 
-        <!-- TODO: 样式设置 -->
         <el-table-column label="操 作" width="250%">
           <template #default="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
-            <el-button size="mini" @click="changeEnable(scope.row.id)">停用</el-button>
+            <el-button size="mini" @click="changeEnable(scope.row.id)">修改状态</el-button>
             <el-popconfirm style="margin: 10px" title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
               <template #reference>
                 <el-button size="mini" type="danger">删 除</el-button>
@@ -107,31 +111,31 @@
 
       <el-dialog :visible.sync="dialogVisible" title="Update" width="30%">
         <el-form
-          :ref="form"
-          :model="form"
+          :ref="ruleForm"
+          :model="ruleForm"
           :rules="rules"
           label-width="120px"
         >
           <el-form-item label="名字" prop="name">
-            <el-input v-model="form.name" style="width: 80%" />
+            <el-input v-model="ruleForm.name" style="width: 80%" />
           </el-form-item>
           <el-form-item label="IP地址" prop="ip">
-            <el-input v-model="form.ip" style="width: 80%" />
+            <el-input v-model="ruleForm.ip" style="width: 80%" />
           </el-form-item>
           <el-form-item label="端口" prop="port">
-            <el-input v-model="form.port" style="width: 80%" />
+            <el-input v-model="ruleForm.port" style="width: 80%" />
           </el-form-item>
           <el-form-item label="配置信息" prop="configUrl">
-            <el-input v-model="form.configUrl" style="width: 80%" />
+            <el-input v-model="ruleForm.configUrl" style="width: 80%" />
           </el-form-item>
           <el-form-item label="描述信息" prop="description">
-            <el-input v-model="form.description" type="textarea" style="width: 80%" />
+            <el-input v-model="ruleForm.description" type="textarea" style="width: 80%" />
           </el-form-item>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="save('form')">确 认</el-button>
+            <el-button type="primary" @click="save('ruleForm')">确 认</el-button>
           </span>
         </template>
       </el-dialog>
@@ -170,13 +174,13 @@ export default {
       pageSize: 10,
       total: 0,
       tableData: [
-        { id: 1, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 0, status: 1, description: 'there are some thing...' },
-        { id: 2, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 1, status: 1, description: 'there are some thing...' },
-        { id: 3, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 1, status: 0, description: 'there are some thing...' },
-        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 0, status: 0, description: 'there are some thing...' }
+        { id: 1, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '1', configUrl: 'www.baidu.com', description: 'there are some thing...' },
+        { id: 2, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '1', configUrl: 'www.baidu.com', description: 'there are some thing...' },
+        { id: 3, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '0', configUrl: 'www.baidu.com', description: 'there are some thing...' },
+        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '0', configUrl: 'www.baidu.com', description: 'there are some thing...' }
       ],
       ids: [],
-      form: {
+      ruleForm: {
         name: '',
         ip: '',
         port: '',
@@ -203,7 +207,12 @@ export default {
     load() {
       this.loading = true
       this.$store
-        .dispatch('waf/query', this.currentPage, this.pageSize, this.search)
+        .dispatch({
+          type: 'waf/query',
+          pageNum: this.currentPage,
+          pageSize: this.pageSize,
+          search: this.search
+        })``
         .then((res) => {
           if (res.status === 'success') {
             this.loading = false
@@ -227,45 +236,54 @@ export default {
     handleEdit(row) {
       const temp = JSON.parse(JSON.stringify(row))
       for (const key in temp) {
-        this.form[key] = temp[key]
+        if (key !== 'id' && key !== 'enable' && key !== 'status') {
+          this.ruleForm[key] = temp[key]
+        }
       }
       this.dialogVisible = true
     },
-    save(form) {
-      this.$refs[form].validate((valid) => {
-        if (valid) {
-          this.$store
-            .dispatch('waf/updateWaf', this.form)
-            .then((res) => {
-              if (res.status !== 'success') {
-                this.$message({
-                  message: res.msg,
-                  type: 'error'
-                })
-              }
-            })
-            .catch(() => {
-              this.$message({
-                message: 'Something error',
-                type: 'error'
-              })
-            })
-        } else {
-          this.$message({
-            message: '表单无效',
-            type: 'error'
-          })
-        }
-      })
+    save() {
+      console.log(this.ruleForm)
+      console.log(this.$refs.ruleForm)
+      console.log(this.$refs['ruleForm'])
+      // this.$refs[form].validate(valid => {
+      //   if (valid) {
+      //     this.$store
+      //       .dispatch('waf/updateWaf', form)
+      //       .then((res) => {
+      //         if (res.status !== 'success') {
+      //           this.$message({
+      //             message: res.msg,
+      //             type: 'error'
+      //           })
+      //         }
+      //       })
+      //       .catch(() => {
+      //         this.$message({
+      //           message: 'Something error',
+      //           type: 'error'
+      //         })
+      //       })
+      //   } else {
+      //     this.$message({
+      //       message: '表单无效',
+      //       type: 'error'
+      //     })
+      //   }
+      // })
     },
     changeEnable(id) {
-      const enable = this.enable === 1 ? 0 : 1
+      const enabled = this.enable === '1' ? '0' : '1'
       this.$store
-        .dispatch('waf/changeEnable', id, enable)
+        .dispatch({
+          type: 'waf/changeEnable',
+          id: id,
+          enable: enabled
+        })
         .then((res) => {
           if (res.status === 'success') {
             this.$message({
-              message: enable === 1 ? '成功启用' : '成功停用',
+              message: enabled === '1' ? '成功启用' : '成功停用',
               type: 'success'
             })
           } else {
@@ -296,9 +314,9 @@ export default {
             })
           }
         })
-        .catch(() => {
+        .catch((error) => {
           this.$message({
-            message: 'Something error',
+            message: error,
             type: 'error'
           })
         })
@@ -335,11 +353,6 @@ export default {
   display: inline-block;
   background-color: red; /* 已停用的小色块颜色 */
   margin-right: 5px;
-}
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 </style>

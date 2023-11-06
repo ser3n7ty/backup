@@ -167,7 +167,7 @@ export default {
     },
     sendVerifyCode() {
       this.$store
-        .dispatch('user/send', this.email)
+        .dispatch('user/sendVerifyCode', this.email)
         .then((res) => {
           if (res.status === 'success') {
             this.$message({

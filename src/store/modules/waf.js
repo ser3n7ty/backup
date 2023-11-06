@@ -25,7 +25,7 @@ const actions = {
   },
   // 查询某页 Waf 信息
   // data: {pageNum, pageSize, search}
-  queryAllWaf({ commit }, data) {
+  query({ commit }, data) {
     return new Promise((resolve, reject) => {
       query(data)
         .then(({ code, data }) => {

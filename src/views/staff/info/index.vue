@@ -11,7 +11,7 @@
       </div>
 
       <!-- 右侧部分，批量删除按钮 -->
-      <el-popconfirm title="Sure to remove?" @confirm="deleteBatch">
+      <el-popconfirm title="确定删除?" @confirm="deleteBatch">
         <template #reference>
           <el-button type="danger" style="margin-right: 50px;">批量删除</el-button>
         </template>
@@ -55,7 +55,6 @@
           label="权 限"
         />
         <el-table-column label="操 作" width="300">
-          <!-- scope 是一个用户访问表格数据的作用域对象 -->
           <template #default="scope">
             <el-button size="mini" @click="handleEditInfo(scope.row)">编辑信息</el-button>
             <el-button size="mini" @click="handleEditPwd(scope.row)">修改密码</el-button>
@@ -89,8 +88,8 @@
           <el-form-item label="Email">
             <el-input v-model="infoForm.email" style="width: 80%" />
           </el-form-item>
-          <template>
-            <span class="dialog-footer" style="">
+          <template #footer>
+            <span class="dialog-footer">
               <el-button @click="infoDialogVisible = false">取 消</el-button>
               <el-button type="primary" @click="save">确 认</el-button>
             </span>
@@ -171,7 +170,12 @@ export default {
     load() {
       this.loading = true
       this.$store
-        .dispatch('user/query', this.currentPage, this.pageSize, this.search)
+        .dispatch({
+          type: 'user/query',
+          pageNum: this.currentPage,
+          pageSize: this.pageSize,
+          search: this.search
+        })
         .then((res) => {
           if (res.status === 'success') {
             this.loading = false
@@ -225,7 +229,7 @@ export default {
       this.ids = val.map(v => v.id)
     },
     handleDelete(id) {
-      this.$store.commit('user/deleteUser', id)
+      this.$store.dispatch('user/deleteUser', id)
         .then((res) => {
           if (res.status !== 'success') {
             this.$message({
@@ -234,9 +238,9 @@ export default {
             })
           }
         })
-        .catch(() => {
+        .catch((error) => {
           this.$message({
-            message: 'Something error',
+            message: error,
             type: 'error'
           })
         })

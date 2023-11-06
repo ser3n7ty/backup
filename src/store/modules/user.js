@@ -188,7 +188,9 @@ const actions = {
       sendVerifyCode(email)
         .then(code => {
           if (code !== 200) {
-            return reject('Something error while sending auth code')
+            reject('Something error while sending auth code')
+          } else {
+            resolve()
           }
         })
     })
