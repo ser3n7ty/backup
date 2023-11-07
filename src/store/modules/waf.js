@@ -77,9 +77,9 @@ const actions = {
 
   // 改变 waf 使用状态
   // enable: 1 表示启用，0 表示禁用
-  changeEnable({ commit }, enable) {
+  changeEnable({ commit }, { id, enable }) {
     return new Promise((resolve, reject) => {
-      changeEnable(enable)
+      changeEnable({ id, enable })
         .then(response => {
           if (response.code !== 200) {
             reject('Something error while changing waf status')

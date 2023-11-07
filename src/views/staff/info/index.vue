@@ -59,11 +59,12 @@
           <template #default="scope">
             <el-button size="mini" @click="handleEditInfo(scope.row)">编辑信息</el-button>
             <el-button size="mini" @click="handleEditPwd(scope.row)">修改密码</el-button>
-            <el-popconfirm style="margin: 10px" title="确认删除？" @confirm="handleDelete(scope.row.id)">
+            <!-- <el-popconfirm style="margin: 10px" title="确认删除？" @confirm="handleDelete(scope.row.id)">
               <template #reference>
                 <el-button size="mini" type="danger">删 除</el-button>
               </template>
-            </el-popconfirm>
+            </el-popconfirm> -->
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除用户</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -225,7 +226,7 @@ export default {
       this.ids = val.map(v => v.id)
     },
     handleDelete(id) {
-      this.$store.commit('user/deleteUser', id)
+      this.$store.dispatch('user/deleteUser', id)
         .then((res) => {
           if (res.status !== 'success') {
             this.$message({

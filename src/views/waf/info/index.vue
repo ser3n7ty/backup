@@ -51,6 +51,12 @@
           label="端 口"
           width="80"
         />
+        <!-- TODO: 设置 SPA 的链接跳转 -->
+        <el-table-column
+          prop="configUrl"
+          label="配置地址"
+          width="250%"
+        />
         <el-table-column
           prop="description"
           label="描述信息"
@@ -62,8 +68,8 @@
         >
           <template #default="scope">
             <div>
-              <span :class="{'status-badge-active': scope.row.status === 1, 'status-badge-inactive': scope.row.status === 0}" />
-              {{ scope.row.status === 1 ? '正常运行' : '已停止' }}
+              <span :class="{'status-badge-active': scope.row.status === '0', 'status-badge-inactive': scope.row.status === '1'}" />
+              {{ scope.row.status === '0' ? '正常运行' : '已停止' }}
             </div>
           </template>
         </el-table-column>
@@ -73,22 +79,23 @@
         >
           <template #default="scope">
             <div>
-              <span :class="{'status-badge-active': scope.row.enable === 1, 'status-badge-inactive': scope.row.enable === 0}" />
-              {{ scope.row.enable === 1 ? '已启用' : '已停用' }}
+              <span :class="{'status-badge-active': scope.row.enable === '0', 'status-badge-inactive': scope.row.enable === '1'}" />
+              {{ scope.row.enable === '0' ? '已启用' : '已停用' }}
             </div>
           </template>
         </el-table-column>
 
-        <!-- TODO: 样式设置 -->
+        <!-- BUG: this 指向不正确 -->
         <el-table-column label="操 作" width="250%">
           <template #default="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
             <el-button size="mini" @click="changeEnable(scope.row.id)">停用</el-button>
-            <el-popconfirm style="margin: 10px" title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
+            <!-- <el-popconfirm style="margin: 10px" title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
               <template #reference>
                 <el-button size="mini" type="danger">删 除</el-button>
               </template>
-            </el-popconfirm>
+            </el-popconfirm> -->
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -107,7 +114,7 @@
 
       <el-dialog :visible.sync="dialogVisible" title="Update" width="30%">
         <el-form
-          :ref="form"
+          ref="form"
           :model="form"
           :rules="rules"
           label-width="120px"
@@ -131,7 +138,7 @@
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="save('form')">确 认</el-button>
+            <el-button type="primary" @click="save">确 认</el-button>
           </span>
         </template>
       </el-dialog>
@@ -170,10 +177,10 @@ export default {
       pageSize: 10,
       total: 0,
       tableData: [
-        { id: 1, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 0, status: 1, description: 'there are some thing...' },
-        { id: 2, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 1, status: 1, description: 'there are some thing...' },
-        { id: 3, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 1, status: 0, description: 'there are some thing...' },
-        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 0, status: 0, description: 'there are some thing...' }
+        { id: 1, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '1', configUrl: 'localhost', description: 'there are some thing...' },
+        { id: 2, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '1', configUrl: 'localhost', description: 'there are some thing...' },
+        { id: 3, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '0', configUrl: 'localhost', description: 'there are some thing...' },
+        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '0', configUrl: 'localhost', description: 'there are some thing...' }
       ],
       ids: [],
       form: {
@@ -227,12 +234,19 @@ export default {
     handleEdit(row) {
       const temp = JSON.parse(JSON.stringify(row))
       for (const key in temp) {
-        this.form[key] = temp[key]
+        if (key !== 'id' && key !== 'enable' && key !== 'status') {
+          console.log(key)
+          this.form[key] = temp[key]
+        }
       }
       this.dialogVisible = true
     },
-    save(form) {
-      this.$refs[form].validate((valid) => {
+    // BUG: this 指向不正确，出现未定义的 refs 属性
+    save() {
+      console.log(this)
+      console.log(this.$refs['form'])
+      this.$refs['form'].validate((valid) => {
+        console.log('表单有效')
         if (valid) {
           this.$store
             .dispatch('waf/updateWaf', this.form)
@@ -258,14 +272,15 @@ export default {
         }
       })
     },
-    changeEnable(id) {
-      const enable = this.enable === 1 ? 0 : 1
+    // op 为 0 启用，为 1 停用
+    changeEnable(id, enable) {
+      const op = enable === '0' ? '1' : '0'
       this.$store
-        .dispatch('waf/changeEnable', id, enable)
+        .dispatch({ type: 'waf/changeEnable', id: id, enable: op })
         .then((res) => {
           if (res.status === 'success') {
             this.$message({
-              message: enable === 1 ? '成功启用' : '成功停用',
+              message: op === '0' ? '成功启用' : '成功停用',
               type: 'success'
             })
           } else {
