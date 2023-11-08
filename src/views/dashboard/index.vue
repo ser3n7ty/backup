@@ -6,9 +6,7 @@
       <v-chart class="chart" :option="option1" autoresize />
       <v-chart class="chart" :option="option2" autoresize />
     </div>
-    <div class="overview">
-      {{ data.length }}
-    </div>
+    <div class="overview" />
   </div>
 </template>
 
@@ -46,12 +44,12 @@ export default ({
     [THEME_KEY]: 'light'
   },
   // TODO：上线时使用
-  // created() {
-  //   this.load()
+  created() {
+    // this.load()
 
-  //   // 设置定时器，每隔一分钟调用 load()
-  //   setInterval(this.load, 60000)
-  // },
+    // // 设置定时器，每隔一分钟调用 load()
+    // setInterval(this.load, 60000)
+  },
   setup() {
     const option1 = ref({
       title: {
@@ -73,7 +71,7 @@ export default ({
         {
           name: 'CPU 占用率',
           type: 'pie',
-          radius: '48%',
+          radius: '50%',
           center: ['50%', '40%'],
           data: [
             { value: 335, name: 'Direct' },
@@ -110,7 +108,7 @@ export default ({
         {
           name: '内存占用率',
           type: 'pie',
-          radius: '48%', // 控制饼图的半径
+          radius: '50%', // 控制饼图的半径
           center: ['50%', '40%'],
           data: [
             { value: 141, name: 'Direct' },
@@ -184,6 +182,9 @@ export default ({
 .pie-container {
   display: flex;
   justify-self: space-between;
+}
+.overview {
+  text-align: center;
 }
 </style>
 
