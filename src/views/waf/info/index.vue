@@ -125,19 +125,19 @@
           label-width="120px"
         >
           <el-form-item label="名字" prop="name">
-            <el-input v-model="form.name" style="width: 80%" />
+            <el-input v-model="ruleForm.name" style="width: 80%" />
           </el-form-item>
           <el-form-item label="IP地址" prop="ip">
-            <el-input v-model="form.ip" style="width: 80%" />
+            <el-input v-model="ruleForm.ip" style="width: 80%" />
           </el-form-item>
           <el-form-item label="端口" prop="port">
-            <el-input v-model="form.port" style="width: 80%" />
+            <el-input v-model="ruleForm.port" style="width: 80%" />
           </el-form-item>
           <el-form-item label="配置信息" prop="configUrl">
-            <el-input v-model="form.configUrl" style="width: 80%" />
+            <el-input v-model="ruleForm.configUrl" style="width: 80%" />
           </el-form-item>
           <el-form-item label="描述信息" prop="description">
-            <el-input v-model="form.description" type="textarea" style="width: 80%" />
+            <el-input v-model="ruleForm.description" type="textarea" style="width: 80%" />
           </el-form-item>
         </el-form>
         <div style="text-align: right; padding-right: 40px">
@@ -186,7 +186,7 @@ export default {
         { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '0', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' }
       ],
       ids: [],
-      form: {
+      ruleForm: {
         name: '',
         ip: '',
         port: '',
@@ -312,9 +312,9 @@ export default {
             })
           }
         })
-        .catch(() => {
+        .catch((error) => {
           this.$message({
-            message: 'Something error',
+            message: error,
             type: 'error'
           })
         })
@@ -351,11 +351,6 @@ export default {
   display: inline-block;
   background-color: red; /* 已停用的小色块颜色 */
   margin-right: 5px;
-}
-.pagination-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 </style>

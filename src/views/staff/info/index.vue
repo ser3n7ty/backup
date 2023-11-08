@@ -11,7 +11,7 @@
       </div>
 
       <!-- 右侧部分，批量删除按钮 -->
-      <el-popconfirm title="Sure to remove?" @confirm="deleteBatch">
+      <el-popconfirm title="确定删除?" @confirm="deleteBatch">
         <template #reference>
           <el-button type="danger" style="margin-right: 50px;">批量删除</el-button>
         </template>
@@ -55,7 +55,15 @@
           label="权 限"
         />
         <el-table-column label="操 作" width="300">
+<<<<<<< HEAD
           <template slot-scope="scope">
+=======
+<<<<<<< HEAD
+          <template #default="scope">
+=======
+          <template slot-scope="scope">
+>>>>>>> dev
+>>>>>>> master
             <el-button size="mini" @click="handleEditInfo(scope.row)">编辑信息</el-button>
             <el-button size="mini" @click="handleEditPwd(scope.row)">修改密码</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除用户</el-button>
@@ -83,6 +91,17 @@
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="infoForm.email" style="width: 80%" />
           </el-form-item>
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="infoDialogVisible = false">取 消</el-button>
+              <el-button type="primary" @click="save">确 认</el-button>
+            </span>
+          </template>
+=======
+>>>>>>> master
           <div style="text-align: right; padding-right: 40px">
             <el-button @click="infoDialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="handleSubmitInfo">确 认</el-button>
@@ -114,6 +133,10 @@
             <el-button @click="pwdDialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="handleSubmitPwd">确 认</el-button>
           </div>
+<<<<<<< HEAD
+=======
+>>>>>>> dev
+>>>>>>> master
         </el-form>
       </el-dialog>
     </div>
@@ -188,7 +211,12 @@ export default {
     load() {
       this.loading = true
       this.$store
-        .dispatch('user/query', this.currentPage, this.pageSize, this.search)
+        .dispatch({
+          type: 'user/query',
+          pageNum: this.currentPage,
+          pageSize: this.pageSize,
+          search: this.search
+        })
         .then((res) => {
           if (res.status === 'success') {
             this.loading = false
@@ -281,9 +309,9 @@ export default {
             })
           }
         })
-        .catch(() => {
+        .catch((error) => {
           this.$message({
-            message: 'Something error',
+            message: error,
             type: 'error'
           })
         })
