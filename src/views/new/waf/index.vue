@@ -93,7 +93,8 @@ export default {
           { required: true, message: '请输入 waf 名字', trigger: 'blur' }
         ],
         ip: [
-          { required: true, message: '请输入 waf 的 IP 地址', validator: validateIP, trigger: 'blur' }
+          { required: true, message: '请输入 waf 的 IP 地址', trigger: 'blur' },
+          { validator: validateIP, trigger: 'blur' }
         ],
         port: [
           { required: true, message: '请输入 waf 的端口', validator: validatePort, trigger: 'blur' }
@@ -106,11 +107,12 @@ export default {
   },
   methods: {
     submitForm(form) {
+      console.log(this.$refs[form])
       this.$refs[form].validate((valid) => {
         if (valid) {
           this.$loading = true
           this.$store
-            .dispatch('waf/add', this.ruleForm)
+            .dispatch('waf/addWaf', this.ruleForm)
             .then(() => {
               this.loading = false
             })
@@ -121,10 +123,6 @@ export default {
                 type: 'error'
               })
             })
-          this.$message({
-            message: '导入成功！',
-            type: 'success'
-          })
           this.$refs[form].resetFields()
         } else {
           this.$message({
@@ -151,8 +149,5 @@ export default {
   display: grid;
   place-items: center;
   height: 80vh;
-}
-.el-input {
-  width: 375px;
 }
 </style>

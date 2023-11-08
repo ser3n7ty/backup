@@ -107,6 +107,7 @@ export default {
       })
     },
     submitForm(form) {
+      console.log(this.$refs[form])
       this.$refs[form].validate((valid) => {
         if (valid) {
           this.$loading = true
