@@ -146,15 +146,12 @@ const actions = {
     })
   },
 
-  // 更新用户信息
+  // 更新某个用户信息
   updateInfo({ commit }, form) {
-    const { username, email } = form
     return new Promise((resolve, reject) => {
       updateInfo(form)
         .then(response => {
           if (response.code === 200) {
-            commit('SET_USERNAME', username)
-            commit('SER_EMAIL', email)
             resolve()
           } else {
             reject('Something error while updating user info')
@@ -167,10 +164,9 @@ const actions = {
   },
 
   // 修改用户密码
-  changePassword({ commit }, { oldPassword, newPassword }) {
-    const data = { oldPassword, newPassword }
+  changePassword({ commit }, { newPassword }) {
     return new Promise((resolve, reject) => {
-      changePassword(data)
+      changePassword(newPassword)
         .then(response => {
           if (response.code !== 200) {
             reject('Something error while changing password')

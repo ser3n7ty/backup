@@ -1,24 +1,29 @@
 <template>
-  <div class="dashboard-container">
-    <div class="dashboard-text">name: {{ name }}</div>
-    <div>这里展示统计数据</div>
-    <p>CPU 占用率</p>
-    <p>内存 占用率</p>
+  <div class="dashboard">
+    <span>监控信息面板</span>
+    <div ref="charts" class="echarts" />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 
-export default {
+export default ({
   name: 'Dashboard',
   computed: {
     ...mapGetters([
       'name'
     ])
   }
-}
+
+})
 </script>
+
+<style scoped>
+.chart {
+  height: 100vh;
+}
+</style>
 
 <style lang="scss" scoped>
 .dashboard {

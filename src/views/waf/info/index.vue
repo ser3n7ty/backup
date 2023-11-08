@@ -77,7 +77,7 @@
           prop="enable"
           label="启用状态"
         >
-          <template #default="scope">
+          <template slot-scope="scope">
             <div>
               <span :class="{'status-badge-active': scope.row.enable === '0', 'status-badge-inactive': scope.row.enable === '1'}" />
               {{ scope.row.enable === '0' ? '已启用' : '已停用' }}
@@ -85,11 +85,11 @@
           </template>
         </el-table-column>
 
-        <!-- BUG: this 指向不正确 -->
         <el-table-column label="操 作" width="250%">
           <template #default="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
-            <el-button size="mini" @click="changeEnable(scope.row.id)">停用</el-button>
+            <!-- TODO：增加计算属性 -->
+            <el-button size="mini" @click="changeEnable">启用</el-button>
             <!-- <el-popconfirm style="margin: 10px" title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
               <template #reference>
                 <el-button size="mini" type="danger">删 除</el-button>
@@ -135,12 +135,10 @@
             <el-input v-model="form.description" type="textarea" style="width: 80%" />
           </el-form-item>
         </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="save">确 认</el-button>
-          </span>
-        </template>
+        <div style="text-align: right; padding-right: 40px">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="save">确 认</el-button>
+        </div>
       </el-dialog>
     </div>
   </div>
@@ -241,7 +239,6 @@ export default {
       }
       this.dialogVisible = true
     },
-    // BUG: this 指向不正确，出现未定义的 refs 属性
     save() {
       console.log(this)
       console.log(this.$refs['form'])

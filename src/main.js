@@ -14,20 +14,7 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
-
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online ! ! !
- */
-// 调用项目 mock
-// if (process.env.NODE_ENV === 'production') {
-//   const { mockXHR } = require('../mock')
-//   mockXHR()
-// }
+import * as echarts from 'echarts' // ECharts
 
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
@@ -43,6 +30,8 @@ new Vue({
   render: h => h(App)
 })
 Vue.prototype.$message = ElementUI.Message
+// 全局导入 echarts
+Vue.prototype.$echarts = echarts
 
 // 获取 sessionStorage 中的 token，恢复到 store 中
 const token = sessionStorage.getItem('token')

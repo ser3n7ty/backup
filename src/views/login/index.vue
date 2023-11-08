@@ -136,7 +136,6 @@ export default {
           this.$store
             .dispatch('user/login', this.loginForm)
             .then((res) => {
-              // TODO: 存储用户信息
               // TODO: 查找哪里使用了 sessionStorage 里的 token 信息
               // // sessionStorage 用于本地持久化存储
               // sessionStorage('token', res.data.token)
