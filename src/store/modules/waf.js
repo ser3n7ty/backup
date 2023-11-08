@@ -1,4 +1,5 @@
-import { add, query, updateWaf, deleteWaf, changeEnable } from '@/api/waf'
+import { add, queryInfo, updateWaf, deleteWaf, changeEnable, queryLog } from '@/api/waf'
+// import { reject, resolve } from 'core-js/fn/promise'
 
 const state = {}
 
@@ -25,9 +26,9 @@ const actions = {
   },
   // 查询某页 Waf 信息
   // data: {pageNum, pageSize, search}
-  query({ commit }, data) {
+  queryAllWaf({ commit }, data) {
     return new Promise((resolve, reject) => {
-      query(data)
+      queryInfo(data)
         .then(({ code, data }) => {
           if (code === 200) {
             resolve(data)
@@ -77,9 +78,9 @@ const actions = {
 
   // 改变 waf 使用状态
   // enable: 1 表示启用，0 表示禁用
-  changeEnable({ commit }, enable) {
+  changeEnable({ commit }, { id, enable }) {
     return new Promise((resolve, reject) => {
-      changeEnable(enable)
+      changeEnable({ id, enable })
         .then(response => {
           if (response.code !== 200) {
             reject('Something error while changing waf status')
@@ -89,6 +90,25 @@ const actions = {
         })
         .catch(error => {
           reject(error)
+        })
+    })
+  },
+
+  queryWafLog({ commit }, { pageNum, pageSize, search }) {
+    return new Promise((resolve, reject) => {
+      queryLog(({ pageNum, pageSize, search }))
+        .then((response) => {
+          if (response.code !== 200) {
+            reject('Something error while querying waf log')
+          } else {
+            resolve(response.data)
+          }
+        })
+        .catch(error => {
+          this.$message({
+            message: error,
+            type: 'error'
+          })
         })
     })
   }

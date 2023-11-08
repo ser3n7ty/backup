@@ -35,12 +35,13 @@
         <el-table-column
           prop="id"
           label="ID"
-          width="75"
+          width="60"
           sortable
         />
         <el-table-column
           prop="name"
           label="名 字"
+          width="70"
         />
         <el-table-column
           prop="ip"
@@ -52,33 +53,29 @@
           width="80"
         />
         <el-table-column
-          prop="configUrl"
-          label="配置地址"
-          width="250%"
-        />
-        <el-table-column
           prop="description"
           label="描述信息"
-          width="250%"
         />
         <el-table-column
           prop="status"
           label="运行状态"
+          width="120"
         >
           <template #default="scope">
             <div>
-              <span :class="{'status-badge-active': scope.row.status === '1', 'status-badge-inactive': scope.row.status === '0'}" />
-              {{ scope.row.status === '1' ? '正常运行' : '已停止' }}
+              <span :class="{'status-badge-active': scope.row.status === 1, 'status-badge-inactive': scope.row.status === 0}" />
+              {{ scope.row.status === 1 ? '正常运行' : '已停止' }}
             </div>
           </template>
         </el-table-column>
         <el-table-column
           prop="enable"
           label="启用状态"
+          width="120"
         >
-          <template #default="scope">
+          <template slot-scope="scope">
             <div>
-              <span :class="{'status-badge-active': scope.row.enable === '1', 'status-badge-inactive': scope.row.enable === '0'}" />
+              <span :class="{'status-badge-active': scope.row.enable === 1, 'status-badge-inactive': scope.row.enable === 0}" />
               {{ scope.row.enable === 1 ? '已启用' : '已停用' }}
             </div>
           </template>
@@ -87,7 +84,7 @@
         <el-table-column label="操 作" width="250%">
           <template #default="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
-            <el-button size="mini" @click="changeEnable(scope.row.id)">修改状态</el-button>
+            <el-button size="mini" @click="changeEnable(scope.row.id)">停用</el-button>
             <el-popconfirm style="margin: 10px" title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
               <template #reference>
                 <el-button size="mini" type="danger">删 除</el-button>
@@ -107,12 +104,13 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
         @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
       />
 
-      <el-dialog :visible.sync="dialogVisible" title="Update" width="30%">
+      <el-dialog :visible.sync="dialogVisible" title="修改信息" width="30%">
         <el-form
-          :ref="ruleForm"
-          :model="ruleForm"
+          :ref="form"
+          :model="form"
           :rules="rules"
           label-width="120px"
         >
@@ -135,7 +133,7 @@
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">取 消</el-button>
-            <el-button type="primary" @click="save('ruleForm')">确 认</el-button>
+            <el-button type="primary" @click="save('form')">确 认</el-button>
           </span>
         </template>
       </el-dialog>
@@ -174,10 +172,10 @@ export default {
       pageSize: 10,
       total: 0,
       tableData: [
-        { id: 1, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '1', configUrl: 'www.baidu.com', description: 'there are some thing...' },
-        { id: 2, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '1', configUrl: 'www.baidu.com', description: 'there are some thing...' },
-        { id: 3, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '0', configUrl: 'www.baidu.com', description: 'there are some thing...' },
-        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '0', configUrl: 'www.baidu.com', description: 'there are some thing...' }
+        { id: 1, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 0, status: 1, description: 'there are some thing...' },
+        { id: 2, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 1, status: 1, description: 'there are some thing...' },
+        { id: 3, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 1, status: 0, description: 'there are some thing...' },
+        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: 0, status: 0, description: 'there are some thing...' }
       ],
       ids: [],
       ruleForm: {
@@ -207,12 +205,7 @@ export default {
     load() {
       this.loading = true
       this.$store
-        .dispatch({
-          type: 'waf/query',
-          pageNum: this.currentPage,
-          pageSize: this.pageSize,
-          search: this.search
-        })``
+        .dispatch('waf/query', this.currentPage, this.pageSize, this.search)
         .then((res) => {
           if (res.status === 'success') {
             this.loading = false
@@ -236,54 +229,45 @@ export default {
     handleEdit(row) {
       const temp = JSON.parse(JSON.stringify(row))
       for (const key in temp) {
-        if (key !== 'id' && key !== 'enable' && key !== 'status') {
-          this.ruleForm[key] = temp[key]
-        }
+        this.form[key] = temp[key]
       }
       this.dialogVisible = true
     },
-    save() {
-      console.log(this.ruleForm)
-      console.log(this.$refs.ruleForm)
-      console.log(this.$refs['ruleForm'])
-      // this.$refs[form].validate(valid => {
-      //   if (valid) {
-      //     this.$store
-      //       .dispatch('waf/updateWaf', form)
-      //       .then((res) => {
-      //         if (res.status !== 'success') {
-      //           this.$message({
-      //             message: res.msg,
-      //             type: 'error'
-      //           })
-      //         }
-      //       })
-      //       .catch(() => {
-      //         this.$message({
-      //           message: 'Something error',
-      //           type: 'error'
-      //         })
-      //       })
-      //   } else {
-      //     this.$message({
-      //       message: '表单无效',
-      //       type: 'error'
-      //     })
-      //   }
-      // })
+    save(form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.$store
+            .dispatch('waf/updateWaf', this.form)
+            .then((res) => {
+              if (res.status !== 'success') {
+                this.$message({
+                  message: res.msg,
+                  type: 'error'
+                })
+              }
+            })
+            .catch(() => {
+              this.$message({
+                message: 'Something error',
+                type: 'error'
+              })
+            })
+        } else {
+          this.$message({
+            message: '表单无效',
+            type: 'error'
+          })
+        }
+      })
     },
     changeEnable(id) {
-      const enabled = this.enable === '1' ? '0' : '1'
+      const enable = this.enable === 1 ? 0 : 1
       this.$store
-        .dispatch({
-          type: 'waf/changeEnable',
-          id: id,
-          enable: enabled
-        })
+        .dispatch('waf/changeEnable', id, enable)
         .then((res) => {
           if (res.status === 'success') {
             this.$message({
-              message: enabled === '1' ? '成功启用' : '成功停用',
+              message: enable === 1 ? '成功启用' : '成功停用',
               type: 'success'
             })
           } else {

@@ -8,7 +8,7 @@ export function add(data) {
   })
 }
 
-export function query(pageNum, pageSize, search) {
+export function queryInfo(pageNum, pageSize, search) {
   const data = {
     pageNum, pageSize, search
   }
@@ -42,6 +42,17 @@ export function changeEnable(id, enable) {
   return request({
     url: '/waf',
     method: 'put',
+    data
+  })
+}
+
+export function queryLog({ pageNum, pageSize, search }) {
+  const data = {
+    pageNum, pageSize, search
+  }
+  return request({
+    url: '/request',
+    method: 'get',
     data
   })
 }
