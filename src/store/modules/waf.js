@@ -1,4 +1,5 @@
-import { add, query, updateWaf, deleteWaf, changeEnable } from '@/api/waf'
+import { add, queryInfo, updateWaf, deleteWaf, changeEnable, queryLog } from '@/api/waf'
+// import { reject, resolve } from 'core-js/fn/promise'
 
 const state = {}
 
@@ -25,9 +26,9 @@ const actions = {
   },
   // 查询某页 Waf 信息
   // data: {pageNum, pageSize, search}
-  queryAllWaf({ commit }, data) {
+  queryWafInfo({ commit }, data) {
     return new Promise((resolve, reject) => {
-      query(data)
+      queryInfo(data)
         .then(({ code, data }) => {
           if (code === 200) {
             resolve(data)
@@ -89,6 +90,25 @@ const actions = {
         })
         .catch(error => {
           reject(error)
+        })
+    })
+  },
+
+  queryWafLog({ commit }, { pageNum, pageSize, search }) {
+    return new Promise((resolve, reject) => {
+      queryLog(({ pageNum, pageSize, search }))
+        .then((response) => {
+          if (response.code !== 200) {
+            reject('Something error while querying waf log')
+          } else {
+            resolve(response.data)
+          }
+        })
+        .catch(error => {
+          this.$message({
+            message: error,
+            type: 'error'
+          })
         })
     })
   }

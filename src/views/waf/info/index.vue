@@ -88,13 +88,7 @@
         <el-table-column label="操 作" width="250%">
           <template #default="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
-            <!-- TODO：增加计算属性 -->
-            <el-button size="mini" @click="changeEnable">启用</el-button>
-            <!-- <el-popconfirm style="margin: 10px" title="确认删除吗？" @confirm="handleDelete(scope.row.id)">
-              <template #reference>
-                <el-button size="mini" type="danger">删 除</el-button>
-              </template>
-            </el-popconfirm> -->
+            <el-button size="mini" @click="changeEnable">{{ scope.row.enable === '0' ? '下线' : '上线' }}</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -110,6 +104,7 @@
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
         @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
       />
 
       <el-dialog :visible.sync="dialogVisible" title="Update" width="30%">
@@ -208,7 +203,7 @@ export default {
     load() {
       this.loading = true
       this.$store
-        .dispatch('waf/query', this.currentPage, this.pageSize, this.search)
+        .dispatch('waf/queryWafInfo', this.currentPage, this.pageSize, this.search)
         .then((res) => {
           if (res.status === 'success') {
             this.loading = false
