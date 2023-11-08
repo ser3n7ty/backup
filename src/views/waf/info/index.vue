@@ -35,12 +35,13 @@
         <el-table-column
           prop="id"
           label="ID"
-          width="75"
+          width="60"
           sortable
         />
         <el-table-column
           prop="name"
           label="名 字"
+          width="70"
         />
         <el-table-column
           prop="ip"
@@ -51,20 +52,28 @@
           label="端 口"
           width="80"
         />
+        <el-table-column
+          prop="startTime"
+          label="开始时间"
+        />
+        <el-table-column
+          prop="time"
+          label="运行时间"
+          width="80"
+        />
         <!-- TODO: 设置 SPA 的链接跳转 -->
         <el-table-column
           prop="configUrl"
           label="配置地址"
-          width="250%"
         />
         <el-table-column
           prop="description"
           label="描述信息"
-          width="250%"
         />
         <el-table-column
           prop="status"
           label="运行状态"
+          width="120"
         >
           <template #default="scope">
             <div>
@@ -76,6 +85,7 @@
         <el-table-column
           prop="enable"
           label="启用状态"
+          width="120"
         >
           <template slot-scope="scope">
             <div>
@@ -107,7 +117,7 @@
         @current-change="handleCurrentChange"
       />
 
-      <el-dialog :visible.sync="dialogVisible" title="Update" width="30%">
+      <el-dialog :visible.sync="dialogVisible" title="修改信息" width="30%">
         <el-form
           ref="form"
           :model="form"
@@ -170,10 +180,10 @@ export default {
       pageSize: 10,
       total: 0,
       tableData: [
-        { id: 1, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '1', configUrl: 'localhost', description: 'there are some thing...' },
-        { id: 2, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '1', configUrl: 'localhost', description: 'there are some thing...' },
-        { id: 3, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '0', configUrl: 'localhost', description: 'there are some thing...' },
-        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '0', configUrl: 'localhost', description: 'there are some thing...' }
+        { id: 1, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '1', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
+        { id: 2, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '1', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
+        { id: 3, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '0', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
+        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '0', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' }
       ],
       ids: [],
       form: {
@@ -235,7 +245,6 @@ export default {
       this.dialogVisible = true
     },
     save() {
-      console.log(this)
       console.log(this.$refs['form'])
       this.$refs['form'].validate((valid) => {
         console.log('表单有效')

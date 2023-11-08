@@ -10,7 +10,7 @@
         <el-button type="primary" style="margin-left: 5px" @click="load">搜 索</el-button>
       </div>
     </div>
-
+    <!-- TODO: 点击某一行，通过 uuid 查询更多详细信息 -->
     <div class="table">
       <el-table
         v-loading="loading"
@@ -69,6 +69,7 @@
         <el-table-column
           prop="status"
           label="响应状态"
+          width="100"
         >
           <template slot-scope="scope">
             <div>

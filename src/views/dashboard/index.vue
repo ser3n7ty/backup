@@ -1,10 +1,13 @@
 <template>
-  <!-- TODO: CPU 占用率，内存占用率 -->
+  <!-- TODO: CPU 占用率，内存占用率，总览信息， -->
   <div class="dashboard">
-    <h3 class="dashboard-title">调度系统监控信息</h3>
-    <div class="pie">
+    <h2 class="dashboard-title">调度系统监控信息</h2>
+    <div class="pie-container">
       <v-chart class="chart" :option="option1" autoresize />
       <v-chart class="chart" :option="option2" autoresize />
+    </div>
+    <div class="overview">
+      {{ data.length }}
     </div>
   </div>
 </template>
@@ -34,14 +37,21 @@ export default ({
   components: {
     VChart
   },
+  data() {
+    return {
+      data: ''
+    }
+  },
   provide: {
     [THEME_KEY]: 'light'
   },
-  // TODO：组件挂载后立即查询监测数据
-  // TODO：设置定时器自动更新数据
-  created() {
+  // TODO：上线时使用
+  // created() {
+  //   this.load()
 
-  },
+  //   // 设置定时器，每隔一分钟调用 load()
+  //   setInterval(this.load, 60000)
+  // },
   setup() {
     const option1 = ref({
       title: {
@@ -63,10 +73,10 @@ export default ({
         {
           name: 'CPU 占用率',
           type: 'pie',
-          radius: '55%',
-          center: ['50%', '60%'],
+          radius: '48%',
+          center: ['50%', '40%'],
           data: [
-            { value: 335, name: 'DIrect' },
+            { value: 335, name: 'Direct' },
             { value: 310, name: 'Email' },
             { value: 451, name: 'Search Engines' }
           ],
@@ -82,7 +92,7 @@ export default ({
     })
     const option2 = ref({
       title: {
-        text: 'CPU 占用率',
+        text: '内存占用率',
         left: 'center'
       },
       tooltip: {
@@ -98,14 +108,14 @@ export default ({
       // 饼图本体
       series: [
         {
-          name: 'CPU 占用率',
+          name: '内存占用率',
           type: 'pie',
-          radius: '55%',
-          center: ['50%', '60%'],
+          radius: '48%', // 控制饼图的半径
+          center: ['50%', '40%'],
           data: [
-            { value: 335, name: 'DIrect' },
+            { value: 141, name: 'Direct' },
             { value: 310, name: 'Email' },
-            { value: 451, name: 'Search Engines' }
+            { value: 417, name: 'Search Engines' }
           ],
           emphasis: {
             itemStyle: {
@@ -119,18 +129,61 @@ export default ({
     })
 
     return { option1, option2 }
+  },
+  methods: {
+    load() {
+      this.$store
+        .dispatch('waf/queryWafInfo', 1, 100, '')
+        .then((res) => {
+          if (res.code === 200) {
+            this.data = res.data.list
+            // 提取name和cpu
+            const nameAndCpuPairs = res.data.list.map(item => {
+              return { name: item.name, value: item.cpu }
+            })
+
+            // 提取name和memory
+            const nameAndMemoryPairs = res.data.list.map(item => {
+              return { name: item.name, value: item.memory }
+            })
+
+            // 更新option1的数据
+            this.option1.legend.data = nameAndCpuPairs.map(item => item.name)
+            this.option1.series[0].data = nameAndCpuPairs
+
+            // 更新option2的数据
+            this.option2.legend.data = nameAndMemoryPairs.map(item => item.name)
+            this.option2.series[0].data = nameAndMemoryPairs
+          }
+        })
+        .catch(error => {
+          this.$message({
+            message: error,
+            type: 'error'
+          })
+        })
+    }
   }
 })
 </script>
 
 <style scoped>
 .chart {
+  flex: 1;
   height: 100vh;
 }
 .dashboard-title {
   text-align: center;
   margin-top: 20px;
   z-index: 1;
+}
+.chart {
+  flex: 1;
+  max-height: 80vh;
+}
+.pie-container {
+  display: flex;
+  justify-self: space-between;
 }
 </style>
 

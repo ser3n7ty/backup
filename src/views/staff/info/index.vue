@@ -55,15 +55,9 @@
           label="权 限"
         />
         <el-table-column label="操 作" width="300">
-          <!-- scope 是一个用户访问表格数据的作用域对象 -->
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEditInfo(scope.row)">编辑信息</el-button>
             <el-button size="mini" @click="handleEditPwd(scope.row)">修改密码</el-button>
-            <!-- <el-popconfirm style="margin: 10px" title="确认删除？" @confirm="handleDelete(scope.row.id)">
-              <template #reference>
-                <el-button size="mini" type="danger">删 除</el-button>
-              </template>
-            </el-popconfirm> -->
             <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除用户</el-button>
           </template>
         </el-table-column>
@@ -82,11 +76,11 @@
         @current-change="handleCurrentChange"
       />
       <el-dialog :visible.sync="infoDialogVisible" title="修改基本信息" width="30%">
-        <el-form ref="infoForm" :rules="infoForm" :model="infoForm" label-width="120px">
-          <el-form-item label="用户名">
+        <el-form ref="infoForm" :rules="infoRule" :model="infoForm" label-width="120px">
+          <el-form-item label="用户名" prop="username">
             <el-input v-model="infoForm.username" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="邮箱">
+          <el-form-item label="邮箱" prop="email">
             <el-input v-model="infoForm.email" style="width: 80%" />
           </el-form-item>
           <div style="text-align: right; padding-right: 40px">
@@ -97,12 +91,12 @@
       </el-dialog>
 
       <el-dialog :visible.sync="pwdDialogVisible" title="修改用户密码" width="30%">
-        <el-form ref="pwdForm" :rules="pwdForm" :model="pwdForm" label-width="120px">
+        <el-form ref="pwdForm" :rules="pwdRule" :model="pwdForm" label-width="120px">
           <div class="pwdInput">
-            <el-form-item label="新密码">
+            <el-form-item label="新密码" prop="password">
               <el-input
+                ref="password"
                 v-model="pwdForm.password"
-                refs="password"
                 :type="passwordType"
                 placeholder="请输入当前用户的新密码"
                 style="width: 80%;position: relative"
@@ -142,7 +136,7 @@ export default {
     }
     const validatePwd = (rule, value, callback) => {
       if (!validPwd(value)) {
-        callback(new Error('upper and lower case letters and numbers, 8-16 digits'))
+        callback(new Error('password format is not correct'))
       } else {
         callback()
       }
@@ -165,7 +159,7 @@ export default {
       infoRule: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 2, message: '用户名不少于 1 个字符', trigger: 'blur' }
+          { type: 'string', min: 2, message: '用户名不少于 1 个字符', trigger: 'blur' }
         ],
         email: [
           { required: true, message: '请输入邮箱', trigger: 'blur' },
@@ -227,8 +221,8 @@ export default {
     handleEditPwd(row) {
       this.pwdDialogVisible = true
     },
-    // BUG: 表单验证存在问题
     handleSubmitInfo() {
+      console.log(this.$refs['infoForm'])
       this.$refs['infoForm'].validate((valid) => {
         if (valid) {
           this.$store.dispatch('user/updateInfo', this.infoForm)
