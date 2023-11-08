@@ -19,7 +19,7 @@
         <el-input
           ref="email"
           v-model="loginForm.email"
-          placeholder="enter the email"
+          placeholder="请输入用户邮箱"
           name="email"
           type="text"
           tabindex="1"
@@ -48,15 +48,29 @@
           />
         </span>
       </el-form-item>
+      <el-form-item prop="verifyCode" style="display: flex; align-items: center;">
+        <div style="display: flex; align-items: center; justify-content: space-between">
+          <el-input
+            v-model="loginForm.verifyCode"
+            placeholder="请输入验证码"
+            name="verifyCode"
+            type="text"
+            tabindex="3"
+            auto-complete="on"
+          />
+          <el-button
+            type="primary"
+            style="margin-left: 150px"
+            @click="sendVerifyCode"
+          >发送验证码</el-button>
+        </div></el-form-item>
       <br>
-      <!-- TODO：每次登录接收验证码 -->
-
       <el-button
         :loading="loading"
         type="primary"
-        style="width: 100%; margin-bottom: 30px"
+        style="width: 100%; margin-bottom: 30px margin-right: 10px"
         @click.native.prevent="handleLogin"
-      >Login
+      >登 录
       </el-button>
     </el-form>
   </div>
@@ -70,7 +84,7 @@ export default {
   data() {
     const validateEmail = (rule, value, callback) => {
       if (!validEmail(value)) {
-        callback(new Error('Please enter the correct email'))
+        callback(new Error('请输入正确的邮箱'))
       } else {
         callback()
       }
@@ -78,11 +92,16 @@ export default {
     return {
       loginForm: {
         email: 'admin@example.com',
-        password: 'admin123'
+        password: 'admin123',
+        verifyCode: ''
       },
       loginRules: {
-        email: [{ required: true, trigger: 'blur', validator: validateEmail }],
-        password: [{ required: true, trigger: 'blur' }]
+        email: [
+          { required: true, message: '请输入用户邮箱', trigger: 'blur' },
+          { validator: validateEmail, trigger: 'blur' }
+        ],
+        password: [{ required: true, message: '请输入用户密码', trigger: 'blur' }],
+        verifyCode: [{ required: true, message: '请输入验证码', trigger: 'blur' }]
       },
       loading: false,
       passwordType: 'password',
@@ -117,10 +136,10 @@ export default {
           this.$store
             .dispatch('user/login', this.loginForm)
             .then((res) => {
-              // TODO: 存储用户信息
-              // sessionStorage 用于本地持久化存储
-              sessionStorage('token', res.data.token)
-              sessionStorage('userInfo', res.data.userInfo)
+              // TODO: 查找哪里使用了 sessionStorage 里的 token 信息
+              // // sessionStorage 用于本地持久化存储
+              // sessionStorage('token', res.data.token)
+              // sessionStorage('userInfo', res.data.userInfo)
               // 调用 mutation 存储 token，用于拦截器使用
               this.$store.commit('SET_TOKEN', res.data.token)
               this.loading = false
@@ -129,17 +148,44 @@ export default {
                 type: 'success'
               })
             })
-            .catch(() => {
+            .catch((err) => {
               this.loading = false
+              this.$message({
+                message: err,
+                type: 'error'
+              })
             })
         } else {
           this.$message({
-            message: 'Something error!',
-            type: 'warning'
+            message: '表单格式不正确!',
+            type: 'error'
           })
           return false
         }
       })
+    },
+    sendVerifyCode() {
+      this.$store
+        .dispatch('user/send', this.email)
+        .then((res) => {
+          if (res.status === 'success') {
+            this.$message({
+              message: '验证码已发送，请查收您的邮箱',
+              type: 'success'
+            })
+          } else {
+            this.$message({
+              message: '出错，验证码未发送',
+              type: 'error'
+            })
+          }
+        })
+        .catch((err) => {
+          this.$message({
+            message: err,
+            type: 'error'
+          })
+        })
     }
   }
 }
@@ -253,4 +299,6 @@ $light_gray: #eee;
     user-select: none;
   }
 }
+
 </style>
+

@@ -13,11 +13,15 @@
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              Home
+              主页
             </el-dropdown-item>
           </router-link>
+          <!-- TODO: 添加修改密码 -->
+          <el-dropdown-item divided @click="handleEdit">
+            <span style="display:block;">修改密码</span>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;">注销</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -31,9 +35,18 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 
 export default {
+  name: 'Navbar',
   components: {
     Breadcrumb,
     Hamburger
+  },
+  data() {
+    return {
+      name: '',
+      email: '',
+      roles: '',
+      permissions: ''
+    }
   },
   computed: {
     ...mapGetters([
@@ -48,6 +61,32 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    getUserInfo() {
+      this.$dispatch('user/getUserInfo')
+        .then(response => {
+          if (response.code !== 200) {
+            this.$message({
+              message: 'Something error while getting current user info',
+              type: 'error'
+            })
+          } else {
+            const data = response.data
+            this.name = data.username
+            this.email = data.email
+            this.roles = data.roles
+            this.permissions = data.permissions
+          }
+        })
+        .catch(error => {
+          this.$message({
+            message: error,
+            type: 'error'
+          })
+        })
+    },
+    handleEdit() {
+      this.getUserInfo()
     }
   }
 }

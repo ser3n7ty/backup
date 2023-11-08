@@ -1,4 +1,5 @@
-import { login, register, logout, getInfo } from '@/api/user'
+/* eslint-disable no-throw-literal */
+import { login, register, query, getUserInfo, deleteUser, updateInfo, changePassword, logout, sendVerifyCode } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -30,111 +31,85 @@ const mutations = {
 
 const actions = {
   // user login
-  login({ commit }, userInfo) {
-    const { email, password } = userInfo
+  login({ commit }, info) {
     return new Promise((resolve, reject) => {
-      login({
-        email: email.trim(),
-        password: password.trim()
-        // grant_type: 'password',
-        // client_id: 'client',
-        // client_secret: '123456'
-      }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      login({ info })
+        .then(response => {
+          const { token, userInfo } = response.data
+          commit('SET_TOKEN', token)
+          commit('SET_ID', userInfo.id)
+          commit('SET_USERNAME', userInfo.username)
+          commit('SET_EMAIL', userInfo.email)
+          commit('SET_ROLES', userInfo.roles)
+          commit('SET_PERMISSIONS', userInfo.permissions)
+          setToken(token)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
     })
   },
 
   // user register
   register({ commit }, userInfo) {
-    const { name, email, password } = userInfo
     return new Promise((resolve, reject) => {
-      register({ name, email, password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
-    })
-  },
-  // TODO: 找到 Usage
-  // get user info
-  getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-        if (!data) {
-          return reject('Verification failed, please Login again.')
-        }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+      register(userInfo)
+        .then(response => {
+          if (response.code !== 200) {
+            const { data } = response
+            commit('SET_TOKEN', data.token)
+            setToken(data.token)
+            resolve()
+          }
+        })
+        .catch(error => {
+          reject(error)
+        })
     })
   },
 
-  getCurrentInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      this.getCurrentInfo(state.token).then(response => {
-        const { data } = response.data
-        if (!data) {
-          return reject('Something error while getting current user info')
-        }
-        const id = data.id
-        const username = data.username
-        const email = data.email
-        const roles = data.roles
-        const permissions = data.permissions
-
-        commit('SET_ID', id)
-        commit('SET_USERNAME', username)
-        commit('SET_EMAIL', email)
-        commit('SET_ROLES', roles)
-        commit('SET_PERMISSIONS', permissions)
-
-        resolve(data)
-      })
-    })
-  },
-
-  // TODO: 获取当前所有用户
   // query all users
-  queryAllUsers({ commit, state }) {
+  query({ commit }, { pageNum, pageSize, search }) {
     return new Promise((resolve, reject) => {
-      this.queryAllUsers(state.token).then(response => {
-        if (response.code === 20000) {
-          const pageNum = response.data.pageNum
-          const pageSize = response.data.pageSize
-          const userList = response.data.list
-          // 将返回的数据更新到 state
-          commit('SET_USER_LIST', userList)
-          commit('SET_PAGE_NUM', pageNum)
-          commit('SET_PAGE_SIZE', pageSize)
+      query({ pageNum, pageSize, search })
+        .then(({ code, list }) => {
+          if (code === 200) {
+            resolve(list)
+          } else {
+            throw '网络请求出错！！'
+          }
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
 
-          resolve(userList)
-        } else {
-          reject('Something error while querying all users')
-        }
-      })
+  // 查询当前用户信息
+  getUserInfo({ commit }) {
+    return new Promise((resolve, reject) => {
+      getUserInfo()
+        .then(response => {
+          const { data } = response.data
+          if (!data) {
+            return reject('Something error while getting current user info')
+          }
+
+          commit('SET_ID', data.id)
+          commit('SET_USERNAME', data.name)
+          commit('SET_EMAIL', data.email)
+          commit('SET_ROLES', data.roles)
+          commit('SET_PERMISSIONS', data.permissions)
+
+          resolve(data)
+        })
     })
   },
 
   // user logout
-  logout({ commit, state }) {
+  logout({ commit }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout().then(() => {
         removeToken() // must remove  token  first
         resetRouter()
         commit('RESET_STATE')
@@ -152,8 +127,68 @@ const actions = {
       commit('RESET_STATE')
       resolve()
     })
-  }
+  },
 
+  // 删除用户
+  deleteUser({ commit }, id) {
+    return new Promise((resolve, reject) => {
+      deleteUser(id)
+        .then(({ code }) => {
+          if (code !== 200) {
+            reject('Something error while deleting user')
+          } else {
+            resolve()
+          }
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+
+  // 更新某个用户信息
+  updateInfo({ commit }, form) {
+    return new Promise((resolve, reject) => {
+      updateInfo(form)
+        .then(response => {
+          if (response.code === 200) {
+            resolve()
+          } else {
+            reject('Something error while updating user info')
+          }
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+
+  // 修改用户密码
+  changePassword({ commit }, { newPassword }) {
+    return new Promise((resolve, reject) => {
+      changePassword(newPassword)
+        .then(response => {
+          if (response.code !== 200) {
+            reject('Something error while changing password')
+          }
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+
+  // 发送验证码
+  sendVerifyCode(email) {
+    return new Promise((resolve, reject) => {
+      sendVerifyCode(email)
+        .then(code => {
+          if (code !== 200) {
+            return reject('Something error while sending auth code')
+          }
+        })
+    })
+  }
 }
 
 export default {
