@@ -25,17 +25,18 @@
           width="55"
         />
         <el-table-column
-          prop="uuid"
-          label="uuid"
+          prop="id"
+          label="ID"
+          width="80"
         />
         <el-table-column
           prop="sourceip"
           label="源 IP"
         />
-        <el-table-column
+        <!-- <el-table-column
           prop="url"
           label="源地址"
-        />
+        /> -->
         <el-table-column
           prop="method"
           label="请求方法"
@@ -69,7 +70,7 @@
         <el-table-column
           prop="status"
           label="响应状态"
-          width="100"
+          width="180"
         >
           <template slot-scope="scope">
             <div>
@@ -109,10 +110,10 @@ export default {
       pageSize: 10,
       total: 0,
       tableData: [
-        { uuid: 'a', method: 'put', sourceip: '192.168.1.2', url: 'www.baidu.com', startTime: '2023-11-02T15:25:24', time: 5726, status: '0' },
-        { uuid: 'b', method: 'get', sourceip: '192.168.1.2', url: 'www.baidu.com', startTime: '2023-11-02T15:25:24', time: 5726, status: '1' },
-        { uuid: 'c', method: 'post', sourceip: '192.168.1.2', url: 'www.baidu.com', startTime: '2023-11-02T15:25:24', time: 5726, status: '0' },
-        { uuid: 'd', method: 'delete', sourceip: '192.168.1.2', url: 'www.baidu.com', startTime: '2023-11-02T15:25:24', time: 5726, status: '0' }
+        { id: 1, method: 'put', sourceip: '192.168.1.2', startTime: '2023-11-02T15:25:24', time: 5726, status: '0' },
+        { id: 2, method: 'get', sourceip: '192.168.1.2', startTime: '2023-11-02T15:25:24', time: 4575, status: '1' },
+        { id: 3, method: 'post', sourceip: '192.168.1.2', startTime: '2023-11-02T15:25:24', time: 4254, status: '0' },
+        { id: 4, method: 'delete', sourceip: '192.168.1.2', startTime: '2023-11-02T15:25:24', time: 3457, status: '0' }
       ]
     }
   },

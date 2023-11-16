@@ -6,10 +6,9 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 
-// TODO：上线时使用
 // 导入 store
-// import store from '@/store'
-// import { Notification } from 'element-ui'
+import store from '@/store'
+import { Notification } from 'element-ui'
 
 /**
  * Note: sub-menu only appear when route children. Length >= 1
@@ -59,6 +58,13 @@ export const constantRoutes = [
       meta: { title: '控制面板', icon: 'dashboard' }
     }]
   },
+  // 大屏设置
+  {
+    path: '/screen',
+    component: () => import('@/views/screen'),
+    name: 'Screen',
+    meta: { title: '大屏', icon: 'screen' }
+  },
   // Waf 路由设置
   {
     path: '/waf',
@@ -107,7 +113,6 @@ export const constantRoutes = [
     ]
   },
   // 新建 路由设置
-  // TODO：需要增加路由全局守卫，限制权限
   {
     // 这里设置嵌套路由，设为 创建人员 和 导入 Waf
     path: '/new',
@@ -128,22 +133,21 @@ export const constantRoutes = [
         component: () => import('@/views/new/waf'),
         meta: { title: '导入 Waf', icon: 'import' }
       }
-    ]
-    // TODO: 上线时使用
-    // beforeEnter: (to, from, next) => {
-    //   // console.log('BeforeEnter new', from, to)
-    //   // console.log(from.fullPath)
-    //   if (store.getters.roles !== 'admin') {
-    //     Notification.error({
-    //       title: 'Permission Denied',
-    //       message: 'You are not allowed to access this page.',
-    //       duration: 5000
-    //     })
-    //     router.push(from.fullPath)
-    //   } else {
-    //     next()
-    //   }
-    // }
+    ],
+    beforeEnter: (to, from, next) => {
+      if (store.getters.roles !== 'admin') {
+        Notification.error({
+          title: 'Permission Denied',
+          message: 'You are not allowed to access this page.',
+          duration: 5000
+        })
+        // TODO：上线删除
+        // router.push(from.fullPath)
+        next()
+      } else {
+        next()
+      }
+    }
   },
 
   // 404 page must be placed at the end !!!

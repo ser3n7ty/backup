@@ -108,7 +108,6 @@ export default {
       redirect: undefined
     }
   },
-  // TODO: ?实时监视路有变化，并根据路由的查询性能参数来更新组件内部的状态
   watch: {
     $route: {
       handler: function(route) {
