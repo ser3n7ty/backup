@@ -150,4 +150,7 @@ export default {
   place-items: center;
   height: 80vh;
 }
+.el-input {
+  width: 375px
+}
 </style>

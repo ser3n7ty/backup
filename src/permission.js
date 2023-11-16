@@ -13,7 +13,8 @@ const whiteList = [
   '/login', '/404', '/', '/dashboard',
   '/waf', '/waf/info', '/waf/log',
   '/staff', '/staff/info', '/staff/test',
-  '/new', '/new/person', '/new/waf'
+  '/new', '/new/person', '/new/waf',
+  '/screen'
 ]
 
 // 检查是否携带 token

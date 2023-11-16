@@ -41,18 +41,19 @@
         <el-table-column
           prop="name"
           label="名 字"
-          width="70"
+          width="130"
         />
         <el-table-column
           prop="ip"
           label="IP 地址"
+          width="150"
         />
         <el-table-column
           prop="port"
           label="端 口"
           width="80"
         />
-        <el-table-column
+        <!-- <el-table-column
           prop="startTime"
           label="开始时间"
         />
@@ -60,20 +61,21 @@
           prop="time"
           label="运行时间"
           width="80"
-        />
+        /> -->
         <!-- TODO: 设置 SPA 的链接跳转 -->
-        <el-table-column
+        <!-- TODO: 修改为点击名字时间的事件 -->
+        <!-- <el-table-column
           prop="configUrl"
           label="配置地址"
-        />
+        /> -->
         <el-table-column
           prop="description"
           label="描述信息"
         />
         <el-table-column
           prop="status"
-          label="运行状态"
-          width="120"
+          label="后台运行状态"
+          width="140"
         >
           <template #default="scope">
             <div>
@@ -84,8 +86,8 @@
         </el-table-column>
         <el-table-column
           prop="enable"
-          label="启用状态"
-          width="120"
+          label="调度启用状态"
+          width="140"
         >
           <template slot-scope="scope">
             <div>
@@ -180,9 +182,9 @@ export default {
       pageSize: 10,
       total: 0,
       tableData: [
-        { id: 1, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '1', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
-        { id: 2, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '1', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
-        { id: 3, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '1', status: '0', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
+        { id: 1, name: '长亭雷池WAF', ip: '192.168.102.195', port: 8899, enable: '0', status: '1', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
+        { id: 2, name: '这是5个字', ip: '192.168.2.1', port: 8899, enable: '1', status: '1', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
+        { id: 3, name: '很长长长的名字', ip: '192.168.2.1', port: 8899, enable: '1', status: '0', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
         { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '0', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' }
       ],
       ids: [],
