@@ -1,10 +1,10 @@
 import { add, queryInfo, updateWaf, deleteWaf, changeEnable, queryLog } from '@/api/waf'
-// import { reject, resolve } from 'core-js/fn/promise'
 
 const state = {}
 
 const mutations = {}
 
+// TODO:优化 resolve()
 const actions = {
 
   // 导入 Waf
@@ -13,6 +13,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       add(data)
         .then(response => {
+          response.code = undefined
           if (response.code !== 200) {
             reject('Something error while importing waf')
           } else {
@@ -82,6 +83,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       changeEnable({ id, enable })
         .then(response => {
+          response.code = undefined
           if (response.code !== 200) {
             reject('Something error while changing waf status')
           } else {
@@ -98,6 +100,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       queryLog(({ pageNum, pageSize, search }))
         .then((response) => {
+          response.code = undefined
           if (response.code !== 200) {
             reject('Something error while querying waf log')
           } else {

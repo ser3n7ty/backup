@@ -1,5 +1,5 @@
 <template>
-  <div ref="trafficChart" style="width: 600px; height: 400px;" />
+  <div ref="trafficChart" style="width: 500px; height: 300px;" />
 </template>
 
 <script>
@@ -27,6 +27,7 @@ echarts.use([
 export default {
   data() {
     return {
+      data: null,
       xAxisData: [], // 存储横轴数据
       totalRequests: [], // 存储总请求数数据
       maliciousRequests: [] // 存储恶意请求数据
@@ -34,9 +35,7 @@ export default {
   },
   mounted() {
     this.initChart()
-    this.generateInitialData() // 初始化数据
     this.updateChartData() // 更新图表展示初始化数据
-    // 模拟数据更新
     setInterval(this.updateChartData, 600000) // 每隔10分钟更新一次数据（模拟实时数据更新）
   },
   methods: {
@@ -87,21 +86,6 @@ export default {
 
       this.trafficChart.setOption(option)
     },
-    generateInitialData() {
-      // 生成初始数据
-      for (let i = 0; i < 10; i++) {
-        const now = new Date()
-        const time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
-
-        // 模拟随机生成数据
-        const total = Math.floor(Math.random() * 100) + 50 // 总请求数量（50-150）
-        const malicious = Math.floor(Math.random() * 20) // 恶意请求数量（0-20）
-
-        this.xAxisData.push(time)
-        this.totalRequests.push(total)
-        this.maliciousRequests.push(malicious)
-      }
-    },
     updateChartData() {
       // 更新数据
       const now = new Date()
@@ -109,6 +93,10 @@ export default {
 
       const total = Math.floor(Math.random() * 100) + 50 // 总请求数量（50-150）
       const malicious = Math.floor(Math.random() * 20) // 恶意请求数量（0-20）
+
+      // TODO：调用 api 获取最新数据
+      // const total = this.data['total']
+      // const malicious = this.data['malicious']
 
       this.xAxisData.push(time)
       this.totalRequests.push(total)
@@ -136,11 +124,20 @@ export default {
           }
         ]
       })
+    },
+    gainTrafficData() {
+      this.$store.dispatch('screen/gainTrafficData')
+        .then(data => {
+          this.data = data
+        })
+        .catch(error => {
+          this.$message({
+            message: error,
+            type: 'error'
+          })
+        })
     }
   }
 }
 </script>
 
-<style>
-/* 在这里可以添加样式 */
-</style>

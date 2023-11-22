@@ -29,6 +29,7 @@ const mutations = {
   }
 }
 
+// TODO：优化 resolve()
 const actions = {
   // user login
   login({ commit }, info) {

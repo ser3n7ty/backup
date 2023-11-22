@@ -1,5 +1,5 @@
 <template>
-  <div ref="responseTimeChart" style="width: 600px; height: 400px;" />
+  <div ref="responseTimeChart" style="width: 500px; height: 300px;" />
 </template>
 
 <script>
@@ -27,6 +27,7 @@ echarts.use([
 export default {
   data() {
     return {
+      data: null,
       xAxisData: [], // 存储横轴数据
       seriesData: [] // 存储折线图数据
     }
@@ -34,7 +35,7 @@ export default {
   mounted() {
     this.initChart()
     this.updateChartData()// 初始化后立即更新数据
-    setInterval(this.updateChartData, 3000) // 每隔3秒更新一次数据（模拟实时数据更新）
+    setInterval(this.updateChartData, 3000) // 更新一次数据（模拟实时数据更新）
   },
   methods: {
     initChart() {
@@ -71,16 +72,18 @@ export default {
       this.responseTimeChart.setOption(option)
     },
     updateChartData() {
-      // 模拟实时数据更新
       const now = new Date()
       const time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
 
       // 随机生成模拟数据
-      const randomTime = Math.floor(Math.random() * 200) + 100
+      const aveTime = Math.floor(Math.random() * 100) + 80
+
+      // TODO：调用 api 获取最新数据
+      // const aveTime = this.data['time']
 
       // 更新数据
       this.xAxisData.push(time)
-      this.seriesData.push(randomTime)
+      this.seriesData.push(aveTime)
 
       // 限制数据长度，只保留最近的20个数据点
       if (this.xAxisData.length > 20) {
@@ -99,6 +102,18 @@ export default {
           }
         ]
       })
+    },
+    gainData() {
+      this.$store.dispatch('screen/gainAverageTime')
+        .then(data => {
+          this.data = data
+        })
+        .catch(error => {
+          this.$message({
+            message: error,
+            type: 'error'
+          })
+        })
     }
   }
 }
