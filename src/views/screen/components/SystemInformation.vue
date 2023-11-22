@@ -1,5 +1,5 @@
 <template>
-  <div ref="radarChart" style="width: 600px; height: 400px;" />
+  <div ref="radarChart" style="width: 400px; height: 300px;" />
 </template>
 
 <script>
@@ -9,7 +9,7 @@ export default {
   name: 'SystemInformation',
   data() {
     return {
-      // 示例数据
+      radarChart: null,
       radarData: [
         { name: '负载均衡', max: 100 },
         { name: '内存', max: 100 },
@@ -21,15 +21,25 @@ export default {
     }
   },
   mounted() {
-    this.renderChart()
+    this.initRenderChart()
+    // TODO：上线时使用
+    // this.updateData()
+    // setInterval(this.updateData, 600000) // 十分钟更新一次
   },
   methods: {
+    initRenderChart() {
+      this.radarChart = echarts.init(this.$refs.radarChart)
+      this.renderChart()
+    },
     renderChart() {
-      const radarChart = echarts.init(this.$refs.radarChart)
-
       const option = {
         title: {
           text: '系统性能'
+        },
+        // 设置大小
+        grid: {
+          width: '38%',
+          height: '38%'
         },
         tooltip: {},
         radar: {
@@ -46,13 +56,35 @@ export default {
           ]
         }]
       }
-
-      radarChart.setOption(option)
+      this.radarChart.setOption(option)
+    },
+    updateData() {
+      this.$store.dispatch('screen/gainSystemInfo')
+        .then(data => {
+          this.indicatorValues[0] = data['loadBalancing']
+          this.indicatorValues[1] = data['memory']
+          this.indicatorValues[2] = data['storage']
+          this.indicatorValues[3] = data['bandwidth']
+          this.indicatorValues[4] = data['cpu']
+        })
+        .catch(error => {
+          this.$$message({
+            message: error,
+            type: 'error'
+          })
+        })
+    },
+    // 增量更新
+    updateChartWithData() {
+      this.radarChart.setOption({
+        series: [{
+          data: [{
+            value: this.indicatorValues,
+            name: '使用率'
+          }]
+        }]
+      })
     }
   }
 }
 </script>
-
-<style>
-/* 在这里可以添加样式 */
-</style>
