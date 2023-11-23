@@ -37,7 +37,7 @@ export default {
   mounted() {
     this.initChart()
     // TODO：上线时使用
-    // this.startUpdatingData()
+    this.startUpdatingData()
   },
   beforeDestroy() {
     this.stopUpdatingData()
@@ -92,7 +92,7 @@ export default {
     },
     startUpdatingData() {
       this.updateChartData() // 更新图表展示初始化数据
-      this.timer = setInterval(this.updateChartData, 600000) // 每隔10分钟更新一次数据（模拟实时数据更新）
+      this.timer = setInterval(this.updateChartData, 3000) // 每隔10分钟更新一次数据（模拟实时数据更新）
     },
     updateChartData() {
       // 更新数据

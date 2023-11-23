@@ -1,5 +1,4 @@
 import { gainSystemInfo, gainTrafficData, gainAverageTime, gainWafNumber, gainAnimationData } from '@/api/screen'
-import { reject, resolve } from 'core-js/fn/promise'
 
 const state = {}
 

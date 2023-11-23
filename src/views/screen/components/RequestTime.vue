@@ -35,8 +35,7 @@ export default {
   },
   mounted() {
     this.initChart()
-    // TODO：上线时使用
-    // this.startUpdatingData()
+    this.startUpdatingData()
   },
   beforeDestroy() {
     this.stopUpdatingData()

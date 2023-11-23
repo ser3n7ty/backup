@@ -17,7 +17,7 @@ export default {
   },
   mounted() {
     this.initData()
-    this.startUpdatingData()
+    // this.startUpdatingData()
   },
   beforeDestroy() {
     this.stopUpdatingData()
