@@ -9,6 +9,7 @@ export default {
   name: 'SystemInformation',
   data() {
     return {
+      timer: null,
       radarChart: null,
       radarData: [
         { name: '负载均衡', max: 100 },
@@ -23,8 +24,10 @@ export default {
   mounted() {
     this.initRenderChart()
     // TODO：上线时使用
-    // this.updateData()
-    // setInterval(this.updateData, 600000) // 十分钟更新一次
+    // this.startUpdatingData()
+  },
+  beforeDestroy() {
+    this.stopUpdatingData()
   },
   methods: {
     initRenderChart() {
@@ -58,6 +61,10 @@ export default {
       }
       this.radarChart.setOption(option)
     },
+    startUpdatingData() {
+      this.updateData()
+      this.timer = setInterval(this.updateData, 600000) // 十分钟更新一次
+    },
     updateData() {
       this.$store.dispatch('screen/gainSystemInfo')
         .then(data => {
@@ -84,6 +91,9 @@ export default {
           }]
         }]
       })
+    },
+    stopUpdatingData() {
+      clearInterval(this.timer)
     }
   }
 }

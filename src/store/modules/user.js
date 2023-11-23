@@ -29,7 +29,6 @@ const mutations = {
   }
 }
 
-// TODO：优化 resolve()
 const actions = {
   // user login
   login({ commit }, info) {
@@ -70,7 +69,7 @@ const actions = {
   },
 
   // query all users
-  query({ commit }, { pageNum, pageSize, search }) {
+  query({ pageNum, pageSize, search }) {
     return new Promise((resolve, reject) => {
       query({ pageNum, pageSize, search })
         .then(({ code, list }) => {
@@ -131,12 +130,16 @@ const actions = {
   },
 
   // 删除用户
-  deleteUser({ commit }, id) {
+  deleteUser(id) {
     return new Promise((resolve, reject) => {
       deleteUser(id)
-        .then(({ code }) => {
-          if (code !== 200) {
+        .then(response => {
+          if (response.code !== 200) {
             reject('Something error while deleting user')
+            this.$message({
+              message: response.msg + ':' + response.status,
+              type: 'error'
+            })
           } else {
             resolve()
           }
@@ -148,14 +151,18 @@ const actions = {
   },
 
   // 更新某个用户信息
-  updateInfo({ commit }, form) {
+  updateInfo(form) {
     return new Promise((resolve, reject) => {
       updateInfo(form)
         .then(response => {
           if (response.code === 200) {
-            resolve()
+            resolve(response)
           } else {
             reject('Something error while updating user info')
+            this.$message({
+              message: response.msg + ':' + response.status,
+              type: 'error'
+            })
           }
         })
         .catch(error => {
@@ -165,12 +172,16 @@ const actions = {
   },
 
   // 修改用户密码
-  changePassword({ commit }, { newPassword }) {
+  changePassword({ newPassword }) {
     return new Promise((resolve, reject) => {
       changePassword(newPassword)
         .then(response => {
           if (response.code !== 200) {
             reject('Something error while changing password')
+            this.$message({
+              message: response.msg + ':' + response.status,
+              type: 'error'
+            })
           }
         })
         .catch(error => {
@@ -183,9 +194,13 @@ const actions = {
   sendVerifyCode(email) {
     return new Promise((resolve, reject) => {
       sendVerifyCode(email)
-        .then(code => {
-          if (code !== 200) {
+        .then(response => {
+          if (response.code !== 200) {
             reject('Something error while sending auth code')
+            this.$message({
+              message: response.msg + ':' + response.status,
+              type: 'error'
+            })
           } else {
             resolve()
           }

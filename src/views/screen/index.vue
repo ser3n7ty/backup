@@ -101,18 +101,18 @@ export default {
       const month = new Date(timeStamp).getMonth() + 1 < 10
         ? '0' + (new Date(timeStamp).getMonth() + 1)
         : new Date(timeStamp).getMonth() + 1
-      const day = new Date(timeStamp).getDate() + 1 < 10
-        ? '0' + (new Date(timeStamp).getDate() + 1)
-        : new Date(timeStamp).getDate() + 1
-      const hh = new Date(timeStamp).getHours() + 1 < 10
-        ? '0' + (new Date(timeStamp).getHours() + 1)
-        : new Date(timeStamp).getHours() + 1
-      const mm = new Date(timeStamp).getMinutes() + 1 < 10
-        ? '0' + (new Date(timeStamp).getMinutes() + 1)
-        : new Date(timeStamp).getMinutes() + 1
-      const ss = new Date(timeStamp).getSeconds() + 1 < 10
-        ? '0' + (new Date(timeStamp).getSeconds() + 1)
-        : new Date(timeStamp).getSeconds() + 1
+      const day = new Date(timeStamp).getDate() < 10
+        ? '0' + new Date(timeStamp).getDate()
+        : new Date(timeStamp).getDate()
+      const hh = new Date(timeStamp).getHours() < 10
+        ? '0' + new Date(timeStamp).getHours()
+        : new Date(timeStamp).getHours()
+      const mm = new Date(timeStamp).getMinutes() < 10
+        ? '0' + new Date(timeStamp).getMinutes()
+        : new Date(timeStamp).getMinutes()
+      const ss = new Date(timeStamp).getSeconds() < 10
+        ? '0' + new Date(timeStamp).getSeconds()
+        : new Date(timeStamp).getSeconds()
       this.time = year + '年' + month + '月' + day + '日' + hh + '时' + mm + '分' + ss + '秒'
     },
     Jump() {

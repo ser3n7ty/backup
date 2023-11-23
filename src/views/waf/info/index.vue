@@ -216,18 +216,11 @@ export default {
       this.loading = true
       this.$store
         .dispatch('waf/queryWafInfo', this.currentPage, this.pageSize, this.search)
-        .then((res) => {
-          if (res.status === 'success') {
-            this.loading = false
-            this.tableData = res.data.list
-            this.total = res.data.total
-            this.search = ''
-          } else {
-            this.$message({
-              message: res.msg,
-              type: 'error'
-            })
-          }
+        .then((data) => {
+          this.loading = false
+          this.tableData = data.list
+          this.total = data.total
+          this.search = ''
         })
         .catch(() => {
           this.$message({
@@ -253,17 +246,9 @@ export default {
         if (valid) {
           this.$store
             .dispatch('waf/updateWaf', this.form)
-            .then((res) => {
-              if (res.status !== 'success') {
-                this.$message({
-                  message: res.msg,
-                  type: 'error'
-                })
-              }
-            })
-            .catch(() => {
+            .then(response => {
               this.$message({
-                message: 'Something error',
+                message: response.msg + ':' + response.status,
                 type: 'error'
               })
             })
@@ -281,17 +266,10 @@ export default {
       this.$store
         .dispatch({ type: 'waf/changeEnable', id: id, enable: op })
         .then((res) => {
-          if (res.status === 'success') {
-            this.$message({
-              message: op === '0' ? '成功启用' : '成功停用',
-              type: 'success'
-            })
-          } else {
-            this.$message({
-              message: res.msg,
-              type: 'error'
-            })
-          }
+          this.$message({
+            message: op === '0' ? '成功启用' : '成功停用',
+            type: 'success'
+          })
         })
         .catch((err) => {
           this.$message({
@@ -306,14 +284,6 @@ export default {
     handleDelete(id) {
       console.log('Delete waf')
       this.$store.dispatch('waf/deleteWaf', id)
-        .then((res) => {
-          if (res.status !== 'success') {
-            this.$message({
-              message: res.msg,
-              type: 'error'
-            })
-          }
-        })
         .catch((error) => {
           this.$message({
             message: error,

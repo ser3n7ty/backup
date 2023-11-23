@@ -9,7 +9,7 @@ const actions = {
 
   // 导入 Waf
   // data: {name, ip, port, configUrl, desc}
-  addWaf({ commit }, data) {
+  addWaf(data) {
     return new Promise((resolve, reject) => {
       add(data)
         .then(response => {
@@ -27,12 +27,12 @@ const actions = {
   },
   // 查询某页 Waf 信息
   // data: {pageNum, pageSize, search}
-  queryWafInfo({ commit }, data) {
+  queryWafInfo(data) {
     return new Promise((resolve, reject) => {
       queryInfo(data)
-        .then(({ code, data }) => {
-          if (code === 200) {
-            resolve(data)
+        .then(response => {
+          if (response.code === 200) {
+            resolve(response.data)
           } else {
             reject('Something error while querying all waf')
           }
@@ -44,14 +44,18 @@ const actions = {
   },
   // 更新 waf 基本信息
   // data: { name, ip, port, configUrl, desc}
-  updateWaf({ commit }, data) {
+  updateWaf(data) {
     return new Promise((resolve, reject) => {
       updateWaf(data)
         .then(response => {
           if (response.code !== 200) {
             reject('Something error while updating waf info')
+            this.$message({
+              message: response.msg,
+              type: 'error'
+            })
           } else {
-            resolve()
+            resolve(response)
           }
         })
         .catch(error => {
@@ -61,14 +65,18 @@ const actions = {
   },
 
   // 删除 waf
-  deleteWaf({ commit }, id) {
+  deleteWaf(id) {
     return new Promise((resolve, reject) => {
       deleteWaf(id)
         .then(response => {
           if (response.code !== 200) {
             reject('Something error while deleting waf')
+            this.$message({
+              message: response.msg + ':' + response.status,
+              type: 'error'
+            })
           } else {
-            resolve()
+            resolve(response)
           }
         })
         .catch(error => {
@@ -79,15 +87,19 @@ const actions = {
 
   // 改变 waf 使用状态
   // enable: 1 表示启用，0 表示禁用
-  changeEnable({ commit }, { id, enable }) {
+  changeEnable({ id, enable }) {
     return new Promise((resolve, reject) => {
       changeEnable({ id, enable })
         .then(response => {
           response.code = undefined
           if (response.code !== 200) {
             reject('Something error while changing waf status')
+            this.$message({
+              message: response.msg + ':' + response.status,
+              type: 'error'
+            })
           } else {
-            resolve()
+            resolve(response)
           }
         })
         .catch(error => {
@@ -96,13 +108,17 @@ const actions = {
     })
   },
 
-  queryWafLog({ commit }, { pageNum, pageSize, search }) {
+  queryWafLog({ pageNum, pageSize, search }) {
     return new Promise((resolve, reject) => {
       queryLog(({ pageNum, pageSize, search }))
         .then((response) => {
           response.code = undefined
           if (response.code !== 200) {
             reject('Something error while querying waf log')
+            this.$message({
+              message: response.msg + ':' + response.status,
+              type: 'error'
+            })
           } else {
             resolve(response.data)
           }

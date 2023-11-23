@@ -27,6 +27,7 @@ echarts.use([
 export default {
   data() {
     return {
+      timer: null, // 添加 timer 属性存储计时器
       data: null,
       xAxisData: [], // 存储横轴数据
       seriesData: [] // 存储折线图数据
@@ -34,13 +35,15 @@ export default {
   },
   mounted() {
     this.initChart()
-    this.updateChartData()// 初始化后立即更新数据
-    setInterval(this.updateChartData, 3000) // 更新一次数据（模拟实时数据更新）
+    // TODO：上线时使用
+    // this.startUpdatingData()
+  },
+  beforeDestroy() {
+    this.stopUpdatingData()
   },
   methods: {
     initChart() {
       this.responseTimeChart = echarts.init(this.$refs.responseTimeChart)
-
       const option = {
         title: {
           text: '平均响应时间趋势图'
@@ -71,6 +74,10 @@ export default {
 
       this.responseTimeChart.setOption(option)
     },
+    startUpdatingData() {
+      this.updateChartData()// 初始化后立即更新数据
+      this.timer = setInterval(this.updateChartData, 3000) // 更新一次数据（模拟实时数据更新）
+    },
     updateChartData() {
       const now = new Date()
       const time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
@@ -79,7 +86,11 @@ export default {
       const aveTime = Math.floor(Math.random() * 100) + 80
 
       // TODO：调用 api 获取最新数据
-      // const aveTime = this.data['time']
+      // if (this.data === null) {
+      //   const aveTime = this.seriesData[this.seriesData.length - 1]
+      // } else {
+      //   const aveTime = this.data
+      // }
 
       // 更新数据
       this.xAxisData.push(time)
@@ -114,6 +125,9 @@ export default {
             type: 'error'
           })
         })
+    },
+    stopUpdatingData() {
+      clearInterval(this.timer)
     }
   }
 }

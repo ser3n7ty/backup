@@ -27,6 +27,7 @@ echarts.use([
 export default {
   data() {
     return {
+      timer: null,
       data: null,
       xAxisData: [], // 存储横轴数据
       totalRequests: [], // 存储总请求数数据
@@ -35,8 +36,11 @@ export default {
   },
   mounted() {
     this.initChart()
-    this.updateChartData() // 更新图表展示初始化数据
-    setInterval(this.updateChartData, 600000) // 每隔10分钟更新一次数据（模拟实时数据更新）
+    // TODO：上线时使用
+    // this.startUpdatingData()
+  },
+  beforeDestroy() {
+    this.stopUpdatingData()
   },
   methods: {
     initChart() {
@@ -85,6 +89,10 @@ export default {
       }
 
       this.trafficChart.setOption(option)
+    },
+    startUpdatingData() {
+      this.updateChartData() // 更新图表展示初始化数据
+      this.timer = setInterval(this.updateChartData, 600000) // 每隔10分钟更新一次数据（模拟实时数据更新）
     },
     updateChartData() {
       // 更新数据
@@ -136,6 +144,9 @@ export default {
             type: 'error'
           })
         })
+    },
+    stopUpdatingData() {
+      clearInterval(this.timer)
     }
   }
 }

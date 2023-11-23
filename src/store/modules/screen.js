@@ -1,4 +1,5 @@
-import { gainSystemInfo, gainTrafficData, gainAverageTime, gainWafNumber } from '@/api/screen'
+import { gainSystemInfo, gainTrafficData, gainAverageTime, gainWafNumber, gainAnimationData } from '@/api/screen'
+import { reject, resolve } from 'core-js/fn/promise'
 
 const state = {}
 
@@ -67,8 +68,22 @@ const actions = {
           reject(error)
         })
     })
+  },
+  gainAnimationData() {
+    return new Promise((resolve, reject) => {
+      gainAnimationData()
+        .then()(response => {
+          if (response.code !== 200) {
+            reject('Something error while gaining animation data')
+          } else {
+            resolve(response.data)
+          }
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
   }
-
 }
 
 export default {

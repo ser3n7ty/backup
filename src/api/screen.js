@@ -2,27 +2,33 @@ import request from '@/utils/request'
 
 export function gainSystemInfo() {
   return request({
-    url: '/system-info',
+    url: '/stat/system-info',
     method: 'get'
   })
 }
 
 export function gainTrafficData() {
   return request({
-    url: '/traffic',
+    url: '/stat/traffic',
     method: 'get'
   })
 }
 
 export function gainAverageTime() {
   return request({
-    url: '/time',
+    url: '/stat/time',
     method: 'get'
   })
 }
 export function gainWafNumber() {
   return request({
-    url: '/waf-number',
+    url: '/stat/waf-number',
+    method: 'get'
+  })
+}
+export function gainAnimationData() {
+  return request({
+    url: '/stat/cart',
     method: 'get'
   })
 }

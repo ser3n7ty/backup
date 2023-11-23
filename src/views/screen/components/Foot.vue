@@ -11,25 +11,36 @@
 export default {
   data() {
     return {
+      timer: null,
       currentWafCount: 0,
       onlineCount: 0
     }
   },
-  created() {
+  mounted() {
     this.currentWafCount = 10
     this.onlineCount = 6
-    // TODO:上线时使用
-    // this.updateInfo()
-    // setInterval(this.updateInfo, 60000)
+    // TODO: 上线时使用
+    // this.startUpdatingData()
+  },
+  beforeDestroy() {
+    this.stopUpdatingData()
   },
   methods: {
+    startUpdatingData() {
+      this.updateInfo()
+      this.timer = setInterval(this.updateInfo, 60000)
+    },
     updateInfo() {
       this.$store.dispatch('screen/gainWafNumber')
         .then(data => {
           this.currentWafCount = data['total']
           this.onlineCount = data['online']
         })
+    },
+    stopUpdatingData() {
+      clearInterval(this.timer)
     }
+
   }
 }
 </script>
