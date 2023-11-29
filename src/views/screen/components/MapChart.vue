@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <canvas id="cartoon"> 您的浏览器不支持 canvas </canvas>
+    <canvas ref="canvas"> 您的浏览器不支持 canvas </canvas>
   </div>
 </template>
 
@@ -10,12 +10,16 @@ export default {
   name: 'MapChart',
   data() {
     return {
+      canvas: null,
+      ctx: null,
       timer: null,
-      requestIp: null,
-      wafArr: null
+      playlist: null,
+      wafArr: null,
+      idArr: null
     }
   },
   mounted() {
+    // this.initCart()
     this.initData()
     // this.startUpdatingData()
   },
@@ -23,31 +27,24 @@ export default {
     this.stopUpdatingData()
   },
   methods: {
+    // 获取 waf 和 ID 之间的对应关系
+    initCart() {
+      this.$store.dispatch('screen/initCart')
+        .then(data => {
+          this.wafArr = data.waf
+          this.idArr = data.id
+        })
+    },
+    drawStatic() {
+      this.canvas = this.$refs.canvas
+      if (!this.canvas.getContext) return
+      this.ctx = this.canvas.getContext('2d')
+      this.drawWaf()
+      this.drawClient()
+      this.drawServer()
+      this.drawSchedule()
+    },
     initData() {
-      this.requestIp = '210.56.12.54'
-      this.wafArr = [
-        [
-          {
-            wafName: 'a',
-            wafIp: '192.168.2.1',
-            addrResult: '0'
-          }
-        ],
-        [
-          {
-            wafName: 'b',
-            wafIp: '192.168.2.2',
-            addrResult: '1'
-          }
-        ],
-        [
-          {
-            wafName: 'c',
-            wafIp: '192.168.2.3',
-            addrResult: null
-          }
-        ]
-      ]
     },
     startUpdatingData() {
       this.updateAnimationData()
@@ -56,8 +53,7 @@ export default {
     updateAnimationData() {
       this.$store.dispatch('screen/gainAnimationData')
         .then(data => {
-          this.requestIp = data.requestIp
-          this.wafArr = data.wafArray
+          this.playlist = this.playlist.concat(data)
         })
         .catch(error => {
           this.$message({
@@ -68,6 +64,18 @@ export default {
     },
     stopUpdatingData() {
       clearInterval(this.timer)
+    },
+    drawWaf() {
+
+    },
+    drawClient() {
+
+    },
+    drawSchedule() {
+
+    },
+    drawServer() {
+
     }
   }
 }

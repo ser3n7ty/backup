@@ -1,4 +1,4 @@
-import { gainSystemInfo, gainTrafficData, gainAverageTime, gainWafNumber, gainAnimationData } from '@/api/screen'
+import { gainSystemInfo, gainTrafficData, gainAverageTime, gainWafNumber, gainAnimationData, initCart, getLogs } from '@/api/screen'
 
 const state = {}
 
@@ -74,6 +74,36 @@ const actions = {
         .then()(response => {
           if (response.code !== 200) {
             reject('Something error while gaining animation data')
+          } else {
+            resolve(response.data)
+          }
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+  initCart() {
+    return new Promise((resolve, reject) => {
+      initCart()
+        .then()(response => {
+          if (response.code !== 200) {
+            reject('Something error while gaining initial data')
+          } else {
+            resolve(response.data)
+          }
+        })
+        .catch(error => {
+          reject(error)
+        })
+    })
+  },
+  getLogs() {
+    return new Promise((resolve, reject) => {
+      getLogs()
+        .then()(response => {
+          if (response.code !== 200) {
+            reject('Something error while getting logs')
           } else {
             resolve(response.data)
           }

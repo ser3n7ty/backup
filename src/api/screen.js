@@ -32,3 +32,16 @@ export function gainAnimationData() {
     method: 'get'
   })
 }
+export function initCart() {
+  return request({
+    url: '/stat/init',
+    method: 'get'
+  })
+}
+
+export function getLogs() {
+  return request({
+    url: '/stat/log',
+    method: 'get'
+  })
+}
