@@ -30,7 +30,9 @@ export default {
       logsPerPage: 1, // 每页展示的日志数量
       currentPage: 0, // 当前页数
       isLoading: false, // 标识是否正在加载数据
-      showScrollbar: false
+      showScrollbar: false,
+      loadLogsInterval: null,
+      getLogInterval: null
     }
   },
   computed: {
@@ -57,14 +59,18 @@ export default {
     window.addEventListener('resize', this.setTableHeaderPosition)
   },
   destroyed() {
+    clearInterval(this.getLogInterval)
     window.removeEventListener('resize', this.setTableHeaderPosition)
   },
   methods: {
+    // TODO: 设置定时器
+    // TODO：这里需要多个定时器，需要增加一个定时器用于定时获取后端数据
     async fetchLogs() {
+      // this.getLogInterval = setInterval(() => {
       const logs = await this.getLogsFromBackend() // 这里假设有一个从后端获取日志的函数
-
       this.logs = logs
-
+      console.log(this.logs)
+      // }, 5000)
       // 每秒加载一个日志数据
       this.loadLogsInterval = setInterval(() => {
         if (this.currentPage * this.logsPerPage < this.logs.length) {
@@ -105,7 +111,7 @@ export default {
       // TODO:上线时使用
       // this.$store.dispatch('screen/getLogs')
       //   .then(data => {
-      //     this.logs = data
+      //     return data
       //   })
     },
     getPattern(pattern) {
