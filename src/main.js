@@ -16,13 +16,7 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import * as echarts from 'echarts' // ECharts
 
-// 引入样式
-import 'vue-easytable/libs/theme-default/index.css'
-// 引入组件库
-import VeTable from 'vue-easytable'
-
 Vue.use(ElementUI)
-Vue.use(VeTable)
 Vue.use({ locale })
 
 Vue.config.productionTip = false
