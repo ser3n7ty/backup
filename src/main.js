@@ -16,10 +16,14 @@ import '@/icons' // icon
 import '@/permission' // permission control
 import * as echarts from 'echarts' // ECharts
 
-// set ElementUI lang to EN
-Vue.use(ElementUI, { locale })
-// 如果想要中文版 element-ui，按如下方式声明
-// Vue.use(ElementUI)
+// 引入样式
+import 'vue-easytable/libs/theme-default/index.css'
+// 引入组件库
+import VeTable from 'vue-easytable'
+
+Vue.use(ElementUI)
+Vue.use(VeTable)
+Vue.use({ locale })
 
 Vue.config.productionTip = false
 
