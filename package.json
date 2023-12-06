@@ -1,8 +1,8 @@
 {
   "name": "waf_pool",
-  "version": "4.4.0",
-  "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
-  "author": "Pan <panfree23@gmail.com>",
+  "version": "0.9.0",
+  "description": "A waf_pool management system with vue 2",
+  "author": "Ser3n7ty <youngtingwang@gmail.com>",
   "scripts": {
     "dev": "vue-cli-service serve",
     "build:prod": "vue-cli-service build",
@@ -23,6 +23,7 @@
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
+    "runjs": "^4.4.2",
     "vue": "2.6.10",
     "vue-easytable": "^2.27.1",
     "vue-echarts": "^6.6.1",

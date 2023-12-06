@@ -1,9 +1,9 @@
 .container {
   display: grid;
-  grid-template-columns: 70% 30%; /* 左边区域占70%，右边区域占30% */
+  grid-template-columns: 60% 40%; /* 左边区域占60%，右边区域占40% */
   grid-template-rows: 1fr 1fr;
   gap: 10px;
-  height: 100vh; /* 可根据需要调整高度 */
+  height: 90vh;
 }
 
 .lf {
