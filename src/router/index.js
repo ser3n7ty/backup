@@ -21,12 +21,12 @@ import { Notification } from 'element-ui'
  * redirect: noRedirect           if set noRedirect will not redirect in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
- roles: ['admin','editor']    control the page roles (you can set multiple roles)
- title: 'title'               the name show in sidebar and breadcrumb (recommend set)
- icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
- breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
- activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
- }
+ * roles: ['admin','editor']    control the page roles (you can set multiple roles)
+ * title: 'title'               the name show in sidebar and breadcrumb (recommend set)
+ * icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
+ * breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
+ * activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
+ * }
  */
 
 /**
@@ -57,13 +57,6 @@ export const constantRoutes = [
       component: () => import('@/views/dashboard/index'),
       meta: { title: '控制面板', icon: 'dashboard' }
     }]
-  },
-  // 大屏设置
-  {
-    path: '/screen',
-    component: () => import('@/views/screen'),
-    name: 'Screen',
-    meta: { title: '大屏', icon: 'screen' }
   },
   // Waf 路由设置
   {

@@ -1,0 +1,38 @@
+.container {
+  display: grid;
+  grid-template-columns: 70% 30%; /* 左边区域占70%，右边区域占30% */
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  height: 100vh; /* 可根据需要调整高度 */
+}
+
+.lf {
+  grid-column: 1 / 2;
+  grid-row: 1 / span 2;
+  padding: 10px;
+}
+
+.lf-btm {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+  padding: 10px;
+}
+
+.rg {
+  grid-column: 2 / 3;
+  grid-row: 1 / span 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+}
+
+.rf-top {
+  padding: 10px;
+}
+
+.rg-btm {
+  padding: 10px;
+}
+
+/* 可以根据需要调整每个区域的样式、大小和内边距等 */
