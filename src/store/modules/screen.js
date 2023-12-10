@@ -58,7 +58,7 @@ const actions = {
       gainWafNumber()
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while gaining waf number')
+            reject('Something error while gaining new number')
           } else {
             resolve(response.data)
           }

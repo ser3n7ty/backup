@@ -15,7 +15,7 @@ const actions = {
         .then(response => {
           response.code = undefined
           if (response.code !== 200) {
-            reject('Something error while importing waf')
+            reject('Something error while importing new')
           } else {
             resolve()
           }
@@ -34,7 +34,7 @@ const actions = {
           if (response.code === 200) {
             resolve(response.data)
           } else {
-            reject('Something error while querying all waf')
+            reject('Something error while querying all new')
           }
         })
         .catch(error => {
@@ -42,14 +42,14 @@ const actions = {
         })
     })
   },
-  // 更新 waf 基本信息
+  // 更新 new 基本信息
   // data: { name, ip, port, configUrl, desc}
   updateWaf(data) {
     return new Promise((resolve, reject) => {
       updateWaf(data)
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while updating waf info')
+            reject('Something error while updating new info')
             this.$message({
               message: response.msg,
               type: 'error'
@@ -64,13 +64,13 @@ const actions = {
     })
   },
 
-  // 删除 waf
+  // 删除 new
   deleteWaf(id) {
     return new Promise((resolve, reject) => {
       deleteWaf(id)
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while deleting waf')
+            reject('Something error while deleting new')
             this.$message({
               message: response.msg + ':' + response.status,
               type: 'error'
@@ -85,7 +85,7 @@ const actions = {
     })
   },
 
-  // 改变 waf 使用状态
+  // 改变 new 使用状态
   // enable: 1 表示启用，0 表示禁用
   changeEnable({ id, enable }) {
     return new Promise((resolve, reject) => {
@@ -93,7 +93,7 @@ const actions = {
         .then(response => {
           response.code = undefined
           if (response.code !== 200) {
-            reject('Something error while changing waf status')
+            reject('Something error while changing new status')
             this.$message({
               message: response.msg + ':' + response.status,
               type: 'error'
@@ -114,7 +114,7 @@ const actions = {
         .then((response) => {
           response.code = undefined
           if (response.code !== 200) {
-            reject('Something error while querying waf log')
+            reject('Something error while querying new log')
             this.$message({
               message: response.msg + ':' + response.status,
               type: 'error'

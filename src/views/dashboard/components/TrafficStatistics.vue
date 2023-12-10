@@ -49,7 +49,7 @@ export default {
       // 图表配置
       const option = {
         title: {
-          text: '流量统计折线图'
+          text: '流量统计'
         },
         tooltip: {
           trigger: 'axis'

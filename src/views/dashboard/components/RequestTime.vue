@@ -45,7 +45,7 @@ export default {
       this.responseTimeChart = echarts.init(this.$refs.responseTimeChart)
       const option = {
         title: {
-          text: '平均响应时间趋势图'
+          text: '平均响应时间'
         },
         tooltip: {
           trigger: 'axis',

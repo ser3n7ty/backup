@@ -77,6 +77,26 @@ export const constantRoutes = [
         name: 'Log',
         component: () => import('@/views/waf/log/index'),
         meta: { title: '处理日志', icon: 'log' }
+      },
+      {
+        path: 'new',
+        name: 'newWaf',
+        component: () => import('@/views/waf/new/index'),
+        meta: { title: '导入WAF', icon: 'import' },
+        beforeEnter: (to, from, next) => {
+          if (store.getters.roles !== 'admin') {
+            Notification.error({
+              title: 'Permission Denied',
+              message: 'You are not allowed to access this page.',
+              duration: 5000
+            })
+            // TODO：上线删除
+            // router.push(from.fullPath)
+            next()
+          } else {
+            next()
+          }
+        }
       }
     ]
   },
@@ -86,10 +106,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/staff/info',
     name: 'Staff',
-    meta: {
-      title: '用户',
-      icon: 'user'
-    },
+    meta: { title: '用户', icon: 'user' },
     children: [
       {
         path: 'info',
@@ -98,49 +115,32 @@ export const constantRoutes = [
         meta: { title: '用户信息', icon: 'userInfo' }
       },
       {
+        path: 'new',
+        name: 'new',
+        component: () => import('@/views/staff/new/index'),
+        meta: { title: '人员注册', icon: 'newUser' },
+        beforeEnter: (to, from, next) => {
+          if (store.getters.roles !== 'admin') {
+            Notification.error({
+              title: 'Permission Denied',
+              message: 'You are not allowed to access this page.',
+              duration: 5000
+            })
+            // TODO：上线删除
+            // router.push(from.fullPath)
+            next()
+          } else {
+            next()
+          }
+        }
+      },
+      {
         path: 'test',
         component: () => import('@/views/staff/test/index'),
         name: 'Test',
         meta: { title: 'Test' }
       }
     ]
-  },
-  // 新建 路由设置
-  {
-    // 这里设置嵌套路由，设为 创建人员 和 导入 Waf
-    path: '/new',
-    component: Layout,
-    redirect: '/new/person',
-    name: 'New',
-    meta: { title: '新建', icon: 'new' },
-    children: [
-      {
-        path: 'person',
-        name: 'newPerson',
-        component: () => import('@/views/new/person'),
-        meta: { title: '人员注册', icon: 'newUser' }
-      },
-      {
-        path: 'waf',
-        name: 'newWaf',
-        component: () => import('@/views/new/waf'),
-        meta: { title: '导入 Waf', icon: 'import' }
-      }
-    ],
-    beforeEnter: (to, from, next) => {
-      if (store.getters.roles !== 'admin') {
-        Notification.error({
-          title: 'Permission Denied',
-          message: 'You are not allowed to access this page.',
-          duration: 5000
-        })
-        // TODO：上线删除
-        // router.push(from.fullPath)
-        next()
-      } else {
-        next()
-      }
-    }
   },
 
   // 404 page must be placed at the end !!!

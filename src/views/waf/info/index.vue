@@ -197,13 +197,13 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入 waf 名字', trigger: 'blur' }
+          { required: true, message: '请输入 new 名字', trigger: 'blur' }
         ],
         ip: [
-          { required: true, message: '请输入 waf 的 IP 地址', validator: validateIP, trigger: 'blur' }
+          { required: true, message: '请输入 new 的 IP 地址', validator: validateIP, trigger: 'blur' }
         ],
         port: [
-          { required: true, message: '请输入 waf 的端口', validator: validatePort, trigger: 'blur' }
+          { required: true, message: '请输入 new 的端口', validator: validatePort, trigger: 'blur' }
         ],
         configUrl: [
           { required: true, message: '请输入第三方配置地址', trigger: 'blur' }
@@ -282,7 +282,7 @@ export default {
       this.ids = val.map(v => v.id)
     },
     handleDelete(id) {
-      console.log('Delete waf')
+      console.log('Delete new')
       this.$store.dispatch('waf/deleteWaf', id)
         .catch((error) => {
           this.$message({

@@ -1,30 +1,28 @@
 .container {
-  display: grid;
-  grid-template-columns: 60% 40%; /* 左边区域占60%，右边区域占40% */
-  grid-template-rows: 1fr 1fr;
+  display: flex;
+  flex-direction:row;
   gap: 10px;
-  height: 90vh;
+  height: 100vh; /* 可根据需要调整高度 */
 }
 
 .lf {
-  grid-column: 1 / 2;
-  grid-row: 1 / span 2;
-  padding: 10px;
+  width:60%;
+  //background-color: red;
+  //padding: 10px;
+}
+.lf-top {
+  height:50vh;
+  //background-color: #20a0ff;
 }
 
 .lf-btm {
-  grid-column: 1 / 2;
-  grid-row: 2 / 3;
-  padding: 10px;
+  margin: 10px;
 }
 
 .rg {
-  grid-column: 2 / 3;
-  grid-row: 1 / span 2;
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 10px;
+  width:40%;
+  //background-color: green;
+  //gap: 10px;
 }
 
 .rf-top {
