@@ -13,12 +13,13 @@
       <div class="rf-top">
         <traffic-statistics />
       </div>
+      <div class="rh-mid">
+        <system-information />
+      </div>
       <div class="rg-btm">
         <request-time />
       </div>
-      <div class="rh-mod">
-        <system-information />
-      </div>
+
     </div>
   </div>
 </template>

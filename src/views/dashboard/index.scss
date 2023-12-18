@@ -2,7 +2,7 @@
   display: flex;
   flex-direction:row;
   gap: 10px;
-  height: 100vh; /* 可根据需要调整高度 */
+  height: 88vh; /* 可根据需要调整高度 */
   margin: 10px;
 }
 
@@ -31,6 +31,7 @@
 
 .rg {
   width: 40%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -40,6 +41,16 @@
 .rf-top {
   padding: 10px;
   flex: 1;
+  height: 100%;
+  background-color: #f6f6f6; /* 浅灰色背景 */
+  border-radius: 15px; /* 圆角半径，根据需要调整 */
+  overflow: hidden; /* 避免子元素溢出 */
+}
+
+.rh-mid {
+  padding: 10px;
+  flex: 1;
+  height: 100%;
   background-color: #f6f6f6; /* 浅灰色背景 */
   border-radius: 15px; /* 圆角半径，根据需要调整 */
   overflow: hidden; /* 避免子元素溢出 */
@@ -48,16 +59,8 @@
 .rg-btm {
   padding: 10px;
   flex: 1;
+  height: 100%;
   background-color: #f6f6f6; /* 浅灰色背景 */
   border-radius: 15px; /* 圆角半径，根据需要调整 */
   overflow: hidden; /* 避免子元素溢出 */
 }
-
-.rh-mod {
-  padding: 10px;
-  flex: 1;
-  background-color: #f6f6f6; /* 浅灰色背景 */
-  border-radius: 15px; /* 圆角半径，根据需要调整 */
-  overflow: hidden; /* 避免子元素溢出 */
-}
-/* 可以根据需要调整每个区域的样式、大小和内边距等 */
