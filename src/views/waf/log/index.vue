@@ -10,7 +10,6 @@
         <el-button type="primary" style="margin-left: 5px" @click="load">搜 索</el-button>
       </div>
     </div>
-    <!-- TODO: 点击某一行，通过 uuid 查询更多详细信息 -->
     <div class="table">
       <el-table
         v-loading="loading"
@@ -45,11 +44,11 @@
             <div>
               <span
                 :class="{
-                  'method-badge-get': scope.row.method === 'get',
-                  'method-badge-post': scope.row.method === 'post',
-                  'method-badge-put': scope.row.method === 'put',
-                  'method-badge-delete': scope.row.method === 'delete',
-                  'method-badge-default': !['get', 'post', 'put', 'delete'].includes(scope.row.method)
+                  'method-badge-get': scope.row.method === 'GET',
+                  'method-badge-post': scope.row.method === 'POST',
+                  'method-badge-put': scope.row.method === 'PUT',
+                  'method-badge-delete': scope.row.method === 'DELETE',
+                  'method-badge-default': !['GET', 'POST', 'PUT', 'DELETE'].includes(scope.row.method)
                 }"
               >{{ scope.row.method }} </span>
             </div>
@@ -99,21 +98,23 @@
 </template>
 
 <script>
+// TODO：存在报错
 
 export default {
   name: 'UserInfo',
   data() {
     return {
+      search: null,
       // 上线部署为 true
       loading: false,
       currentPage: 1,
       pageSize: 10,
       total: 0,
       tableData: [
-        { id: 1, method: 'put', sourceip: '192.168.1.2', startTime: '2023-11-02T15:25:24', time: 5726, status: '0' },
-        { id: 2, method: 'get', sourceip: '192.168.1.2', startTime: '2023-11-02T15:25:24', time: 4575, status: '1' },
-        { id: 3, method: 'post', sourceip: '192.168.1.2', startTime: '2023-11-02T15:25:24', time: 4254, status: '0' },
-        { id: 4, method: 'delete', sourceip: '192.168.1.2', startTime: '2023-11-02T15:25:24', time: 3457, status: '0' }
+        { id: 1, method: 'PUT', sourceip: '192.168.1.2', startTime: '2023-11-02 15:25:24', time: 5726, status: '0' },
+        { id: 2, method: 'GET', sourceip: '192.168.1.2', startTime: '2023-11-02 15:25:24', time: 4254, status: '0' },
+        { id: 3, method: 'DELETE', sourceip: '192.168.1.2', startTime: '2023-11-02 15:25:24', time: 4254, status: '1' },
+        { id: 4, method: 'POST', sourceip: '192.168.1.2', startTime: '2023-11-02 15:25:24', time: 3457, status: '0' }
       ]
     }
   },
@@ -142,6 +143,9 @@ export default {
           })
         })
     },
+    handleSelectionChange() {
+      // TODO: 增加批量导出
+    },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize
       this.load()
@@ -159,7 +163,7 @@ export default {
   width: 10px; /* 小色块的宽度 */
   height: 10px; /* 小色块的高度 */
   display: inline-block; /* 行内块元素，以确保文字和小色块在同一行 */
-  background-color: green; /* 已启用的小色块颜色 */
+  background-color: rgb(72, 179, 72); /* 已启用的小色块颜色 */
   margin-right: 5px; /* 用于分隔小色块和文字的间距 */
 }
 
@@ -197,7 +201,7 @@ export default {
 }
 
 .method-badge-delete {
-  background-color: red;
+  background-color: rgb(255, 0, 0);
   color: white;
   padding: 3px 5px;
   border-radius: 5px;

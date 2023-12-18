@@ -1,5 +1,5 @@
 <template>
-  <div ref="trafficChart" style="width: 500px; height: 300px;" />
+  <div ref="trafficChart" style="width: 500px; height: 300px" />
 </template>
 
 <script>
@@ -85,7 +85,11 @@ export default {
               color: 'red'
             }
           }
-        ]
+        ],
+        grid: {
+          left: '8%',
+          containLabel: true
+        }
       }
 
       this.trafficChart.setOption(option)
@@ -152,3 +156,5 @@ export default {
 }
 </script>
 
+<style lang="scss" scoped>
+</style>

@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div class="lf-btm">
     <ve-table
       fixed-header
-      :max-height="280"
+      :max-height="230"
       :columns="columns"
       :table-data="tableData"
       :row-style-option="rowStyleOption"
@@ -12,6 +12,7 @@
 </template>
 
 <script>
+// BUG：存在 warn
 export default {
   name: 'LogDisplay',
   data() {
@@ -122,4 +123,9 @@ export default {
 </script>
 
 <style scoped>
+
+.ve-table {
+  width: 100%;
+  height: 100%;
+}
 </style>

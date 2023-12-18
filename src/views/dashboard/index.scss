@@ -3,34 +3,61 @@
   flex-direction:row;
   gap: 10px;
   height: 100vh; /* 可根据需要调整高度 */
-}
-
-.lf {
-  width:60%;
-  //background-color: red;
-  //padding: 10px;
-}
-.lf-top {
-  height:50vh;
-  //background-color: #20a0ff;
-}
-
-.lf-btm {
   margin: 10px;
 }
 
+.lf {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch; /*子元素占满整个宽度 */
+}
+
+.lf-top {
+  flex: 6;
+  height:50vh;
+  background-color: #f6f6f6; /* 浅灰色背景 */
+  border-radius: 15px; /* 圆角半径，根据需要调整 */
+  overflow: hidden; /* 避免子元素溢出 */
+
+}
+
+.lf-btm {
+  flex: 4;
+  border-radius: 15px; /* 圆角半径，根据需要调整 */
+  overflow: hidden; /* 避免子元素溢出 */
+}
+
 .rg {
-  width:40%;
-  //background-color: green;
-  //gap: 10px;
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch; /*子元素占满整个宽度 */
 }
 
 .rf-top {
   padding: 10px;
+  flex: 1;
+  background-color: #f6f6f6; /* 浅灰色背景 */
+  border-radius: 15px; /* 圆角半径，根据需要调整 */
+  overflow: hidden; /* 避免子元素溢出 */
 }
 
 .rg-btm {
   padding: 10px;
+  flex: 1;
+  background-color: #f6f6f6; /* 浅灰色背景 */
+  border-radius: 15px; /* 圆角半径，根据需要调整 */
+  overflow: hidden; /* 避免子元素溢出 */
 }
 
+.rh-mod {
+  padding: 10px;
+  flex: 1;
+  background-color: #f6f6f6; /* 浅灰色背景 */
+  border-radius: 15px; /* 圆角半径，根据需要调整 */
+  overflow: hidden; /* 避免子元素溢出 */
+}
 /* 可以根据需要调整每个区域的样式、大小和内边距等 */

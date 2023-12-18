@@ -4,16 +4,20 @@
       <div class="lf-top">
         <map-chart />
       </div>
+      <div class="lf-btm">
+        <log-display />
+      </div>
     </div>
-    <div class="lf-btm">
-      <log-display />
-    </div>
+
     <div class="rg">
       <div class="rf-top">
         <traffic-statistics />
       </div>
       <div class="rg-btm">
         <request-time />
+      </div>
+      <div class="rh-mod">
+        <system-information />
       </div>
     </div>
   </div>
@@ -25,6 +29,7 @@ import RequestTime from './components/RequestTime.vue'
 import MapChart from './components/MapChart.vue'
 import TrafficStatistics from './components/TrafficStatistics.vue'
 import LogDisplay from './components/LogDisplay.vue'
+import SystemInformation from './components/SystemInformation.vue'
 
 export default {
   name: 'Dashboard',
@@ -33,7 +38,8 @@ export default {
     RequestTime,
     MapChart,
     TrafficStatistics,
-    LogDisplay
+    LogDisplay,
+    SystemInformation
   },
   data() {
     return {

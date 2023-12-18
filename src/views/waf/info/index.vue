@@ -53,54 +53,42 @@
           label="端 口"
           width="80"
         />
-        <!-- <el-table-column
-          prop="startTime"
-          label="开始时间"
-        />
         <el-table-column
-          prop="time"
-          label="运行时间"
-          width="80"
-        /> -->
-        <!-- TODO: 设置 SPA 的链接跳转 -->
-        <!-- TODO: 修改为点击名字时间的事件 -->
-        <!-- <el-table-column
           prop="configUrl"
-          label="配置地址"
-        /> -->
+          label="管理地址"
+        />
+
         <el-table-column
           prop="description"
           label="描述信息"
         />
+        <!-- BUG: 根据 row 中的 status 字段计算 waf 当前状态 -->
         <el-table-column
           prop="status"
-          label="后台运行状态"
+          label="运行状态"
           width="140"
         >
           <template #default="scope">
             <div>
-              <span :class="{'status-badge-active': scope.row.status === '0', 'status-badge-inactive': scope.row.status === '1'}" />
-              {{ scope.row.status === '0' ? '正常运行' : '已停止' }}
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="enable"
-          label="调度启用状态"
-          width="140"
-        >
-          <template slot-scope="scope">
-            <div>
-              <span :class="{'status-badge-active': scope.row.enable === '0', 'status-badge-inactive': scope.row.enable === '1'}" />
-              {{ scope.row.enable === '0' ? '已启用' : '已停用' }}
-            </div>
+              <span
+                :class="{
+                  'online': scope.row.status === '0',
+                  'offline': scope.row.status === '1',
+                  'stop': scope.row.status === '2',
+                  'abnormal': !['0', '1', '1'].includes(scope.row.status)
+                }"
+              > {{ wafStatus[scope.$index] }}
+              </span></div>
           </template>
         </el-table-column>
 
         <el-table-column label="操 作" width="250%">
           <template #default="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
-            <el-button size="mini" @click="changeEnable">{{ scope.row.enable === '0' ? '下线' : '上线' }}</el-button>
+            <!-- TODO：优化这里的操作，调用同样的函数，传不一样的参数 -->
+            <!-- <el-button v-show="row.status!=='0'" size="mini" @click="changeEnable('0')">上线</el-button>
+            <el-button v-show="row.status!=='1'" size="mini" @click="changeEnable('1')">下线</el-button>
+            <el-button v-show="row.status!=='2'" size="mini" @click="changeEnable('2')">停止</el-button> -->
             <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -122,7 +110,7 @@
       <el-dialog :visible.sync="dialogVisible" title="修改信息" width="30%">
         <el-form
           ref="form"
-          :model="form"
+          :model="ruleForm"
           :rules="rules"
           label-width="120px"
         >
@@ -153,7 +141,7 @@
 
 <script>
 import { validIP } from '@/utils/validate'
-
+// TODO：修改 waf 状态为三种
 export default {
   name: 'UserInfo',
   data() {
@@ -175,17 +163,17 @@ export default {
       enable: '',
       status: '',
       search: '',
-      // 部署后修改为 true
+      // TODO：部署后修改为 true
       loading: false,
       dialogVisible: false,
       currentPage: 1,
       pageSize: 10,
       total: 0,
       tableData: [
-        { id: 1, name: '长亭雷池WAF', ip: '192.168.102.195', port: 8899, enable: '0', status: '1', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
-        { id: 2, name: '这是5个字', ip: '192.168.2.1', port: 8899, enable: '1', status: '1', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
-        { id: 3, name: '很长长长的名字', ip: '192.168.2.1', port: 8899, enable: '1', status: '0', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' },
-        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, enable: '0', status: '0', configUrl: 'localhost', startTime: '2023-11-03T21:47:46', time: 584, description: 'there are some thing...' }
+        { id: 1, name: '长亭雷池WAF', ip: '192.168.102.195', port: 8899, status: '0', configUrl: 'localhost', startTime: '2023-11-03 21:47:46', time: 584, description: 'there are some thing...' },
+        { id: 2, name: '这是5个字', ip: '192.168.2.1', port: 8899, status: '1', configUrl: 'localhost', startTime: '2023-11-03 21:47:46', time: 584, description: 'there are some thing...' },
+        { id: 3, name: '很长长长的名字', ip: '192.168.2.1', port: 8899, status: '2', configUrl: 'localhost', startTime: '2023-11-03 21:47:46', time: 584, description: 'there are some thing...' },
+        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, status: '2', configUrl: 'localhost', startTime: '2023-11-03 21:47:46', time: 584, description: 'there are some thing...' }
       ],
       ids: [],
       ruleForm: {
@@ -207,8 +195,27 @@ export default {
         ],
         configUrl: [
           { required: true, message: '请输入第三方配置地址', trigger: 'blur' }
+        ],
+        description: [
+          { message: '请输入该 Waf 的描述信息', trigger: 'blur' }
         ]
       }
+    }
+  },
+  computed: {
+    // BUG：页面显示状态数组
+    wafStatus() {
+      return this.tableData.map(row => {
+        if (row.status === '0') {
+          return '已上线'
+        } else if (row.status === '1') {
+          return '已下线'
+        } else if (row.status === '2') {
+          return '已停止'
+        } else {
+          return '异常'
+        }
+      })
     }
   },
   methods: {
@@ -233,8 +240,7 @@ export default {
       const temp = JSON.parse(JSON.stringify(row))
       for (const key in temp) {
         if (key !== 'id' && key !== 'enable' && key !== 'status') {
-          console.log(key)
-          this.form[key] = temp[key]
+          this.ruleForm[key] = temp[key]
         }
       }
       this.dialogVisible = true
@@ -245,7 +251,7 @@ export default {
         console.log('表单有效')
         if (valid) {
           this.$store
-            .dispatch('waf/updateWaf', this.form)
+            .dispatch('waf/updateWaf', this.ruleForm)
             .then(response => {
               this.$message({
                 message: response.msg + ':' + response.status,
@@ -260,9 +266,8 @@ export default {
         }
       })
     },
-    // op 为 0 启用，为 1 停用
-    changeEnable(id, enable) {
-      const op = enable === '0' ? '1' : '0'
+    // op 为 0 表示上线， 1 表示下线， 2 表示停止
+    changeEnable(id, op) {
       this.$store
         .dispatch({ type: 'waf/changeEnable', id: id, enable: op })
         .then((res) => {
@@ -324,6 +329,30 @@ export default {
   background-color: red; /* 已停用的小色块颜色 */
   margin-right: 5px;
 }
+.online {
+  background-color: green;
+  color: white; /* 文字颜色 */
+  padding: 3px 5px; /* 调整内边距以获得所需的样式 */
+  border-radius: 5px; /* 圆角边框 */
+}
+.offline {
+  background-color: blue;
+  color: white;
+  padding: 3px 5px;
+  border-radius: 5px;
+}
+.stop {
+  background-color: orange;
+  color: white;
+  padding: 3px 5px;
+  border-radius: 5px;
+}
 
+.abnormal{
+  background-color: red;
+  color: white;
+  padding: 3px 5px;
+  border-radius: 5px;
+}
 </style>
 

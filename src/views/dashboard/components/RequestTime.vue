@@ -68,7 +68,11 @@ export default {
             type: 'line',
             data: this.seriesData
           }
-        ]
+        ],
+        grid: {
+          left: '8%',
+          containLabel: true
+        }
       }
 
       this.responseTimeChart.setOption(option)

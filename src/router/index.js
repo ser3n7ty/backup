@@ -64,7 +64,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/waf/info',
     name: 'Waf',
-    meta: { title: 'Waf', icon: 'waf' },
+    meta: { title: 'Waf 管理', icon: 'waf' },
     children: [
       {
         path: 'info',
@@ -82,7 +82,7 @@ export const constantRoutes = [
         path: 'new',
         name: 'newWaf',
         component: () => import('@/views/waf/new/index'),
-        meta: { title: '导入WAF', icon: 'import' },
+        meta: { title: '导入Waf', icon: 'import' },
         beforeEnter: (to, from, next) => {
           if (store.getters.roles !== 'admin') {
             Notification.error({
@@ -106,7 +106,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/staff/info',
     name: 'Staff',
-    meta: { title: '用户', icon: 'user' },
+    meta: { title: '用户管理', icon: 'user' },
     children: [
       {
         path: 'info',
@@ -133,12 +133,6 @@ export const constantRoutes = [
             next()
           }
         }
-      },
-      {
-        path: 'test',
-        component: () => import('@/views/staff/test/index'),
-        name: 'Test',
-        meta: { title: 'Test' }
       }
     ]
   },

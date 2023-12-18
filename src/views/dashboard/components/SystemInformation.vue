@@ -1,5 +1,5 @@
 <template>
-  <div ref="radarChart" style="width: 400px; height: 300px;" />
+  <div ref="barChart" style="width: 400px; height: 300px;" />
 </template>
 
 <script>
@@ -10,14 +10,8 @@ export default {
   data() {
     return {
       timer: null,
-      radarChart: null,
-      radarData: [
-        { name: '负载均衡', max: 100 },
-        { name: '内存', max: 100 },
-        { name: '带宽', max: 100 },
-        { name: '磁盘', max: 100 },
-        { name: 'CPU', max: 100 }
-      ],
+      barChart: null,
+      xAxisData: ['负载均衡', '内存', '带宽', '磁盘', 'CPU'], // X 轴数据
       indicatorValues: [70, 80, 90, 60, 70] // 用于表示各个维度的值
     }
   },
@@ -31,7 +25,7 @@ export default {
   },
   methods: {
     initRenderChart() {
-      this.radarChart = echarts.init(this.$refs.radarChart)
+      this.barChart = echarts.init(this.$refs.barChart)
       this.renderChart()
     },
     renderChart() {
@@ -39,27 +33,25 @@ export default {
         title: {
           text: '系统性能'
         },
-        // 设置大小
-        grid: {
-          width: '38%',
-          height: '38%'
-        },
         tooltip: {},
-        radar: {
-          indicator: this.radarData
+        xAxis: {
+          type: 'value'
+        },
+        yAxis: {
+          type: 'category',
+          data: this.xAxisData
+        },
+        grid: {
+          left: '8%', // 调整图表向右偏移
+          containLabel: true // 自动计算标签宽度
         },
         series: [{
-          name: '维度分析',
-          type: 'radar',
-          data: [
-            {
-              value: this.indicatorValues,
-              name: '使用率'
-            }
-          ]
+          type: 'bar',
+          data: this.indicatorValues,
+          barWidth: 20
         }]
       }
-      this.radarChart.setOption(option)
+      this.barChart.setOption(option)
     },
     startUpdatingData() {
       this.updateData()
@@ -73,6 +65,7 @@ export default {
           this.indicatorValues[2] = data['storage']
           this.indicatorValues[3] = data['bandwidth']
           this.indicatorValues[4] = data['cpu']
+          this.updateChartWithData() // 更新柱形图数据
         })
         .catch(error => {
           this.$$message({
@@ -81,14 +74,10 @@ export default {
           })
         })
     },
-    // 增量更新
     updateChartWithData() {
-      this.radarChart.setOption({
+      this.barChart.setOption({
         series: [{
-          data: [{
-            value: this.indicatorValues,
-            name: '使用率'
-          }]
+          data: this.indicatorValues
         }]
       })
     },

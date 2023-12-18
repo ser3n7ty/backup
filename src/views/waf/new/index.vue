@@ -36,9 +36,9 @@
       </el-form-item>
       <!-- 描述信息 -->
       <el-form-item
-        label="Waf Desc"
-        desc-quot-
-        prop="描述信息"
+        v-model="ruleForm.description"
+        placeholder="请输入 waf 的描述信息"
+        label="描述信息"
       >
         <el-input
           v-model="ruleForm.description"
@@ -62,7 +62,7 @@
 
 <script>
 import { validIP } from '@/utils/validate'
-
+// TODO: 添加新的导入方式：直接写入镜像名，通过后端启动服务
 export default {
   name: 'ImportWaf',
   data() {
@@ -90,14 +90,14 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入 new 名字', trigger: 'blur' }
+          { required: true, message: '请输入 Waf 名字', trigger: 'blur' }
         ],
         ip: [
-          { required: true, message: '请输入 new 的 IP 地址', trigger: 'blur' },
+          { required: true, message: '请输入 Waf 的 IP 地址', trigger: 'blur' },
           { validator: validateIP, trigger: 'blur' }
         ],
         port: [
-          { required: true, message: '请输入 new 的端口', validator: validatePort, trigger: 'blur' }
+          { required: true, message: '请输入 Waf 的端口', validator: validatePort, trigger: 'blur' }
         ],
         configUrl: [
           { required: true, message: '请输入第三方配置地址', trigger: 'blur' }
