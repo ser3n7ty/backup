@@ -63,7 +63,7 @@ export function updateInfo(data) {
 // data: {oldPassword, newPassword}
 export function changePassword(data) {
   return request({
-    url: '',
+    url: '/root/password',
     method: 'put',
     data
   })

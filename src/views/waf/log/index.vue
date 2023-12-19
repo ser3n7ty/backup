@@ -81,7 +81,7 @@
       </el-table>
     </div>
 
-    <div style="margin: 10px 0">
+    <div style="margin: 10px 0; text-align: center">
 
       <el-pagination
         :current-page="currentPage"
@@ -98,7 +98,6 @@
 </template>
 
 <script>
-// TODO：存在报错
 
 export default {
   name: 'UserInfo',
@@ -118,6 +117,9 @@ export default {
       ]
     }
   },
+  created() {
+
+  },
   methods: {
     load() {
       this.loading = true
@@ -136,9 +138,9 @@ export default {
             })
           }
         })
-        .catch(() => {
+        .catch((err) => {
           this.$message({
-            message: 'Something error',
+            message: 'Error:' + err,
             type: 'error'
           })
         })
@@ -154,6 +156,7 @@ export default {
       this.currentPage = pageNum
       this.load()
     }
+    // TODO：增加动态加载
   }
 }
 </script>

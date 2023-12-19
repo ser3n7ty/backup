@@ -79,6 +79,26 @@ export const constantRoutes = [
         meta: { title: '处理日志', icon: 'log' }
       },
       {
+        path: 'image',
+        name: 'Image',
+        component: () => import('@/views/waf/image/index'),
+        meta: { title: '镜像管理', icon: 'image' },
+        beforeEnter: (to, from, next) => {
+          if (store.getters.roles !== 'admin') {
+            Notification.error({
+              title: 'Permission Denied',
+              message: 'You are not allowed to access this page.',
+              duration: 5000
+            })
+            // TODO：上线删除
+            // router.push(from.fullPath)
+            next()
+          } else {
+            next()
+          }
+        }
+      },
+      {
         path: 'new',
         name: 'newWaf',
         component: () => import('@/views/waf/new/index'),

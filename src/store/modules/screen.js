@@ -4,6 +4,7 @@ const state = {}
 
 const mutations = {}
 
+// TODO:完善调用API的错误处理
 const actions = {
   // 获取 screen/SystemInfo 组件需要的 5 个性能数据
   gainSystemInfo() {

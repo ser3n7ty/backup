@@ -19,7 +19,7 @@ export function queryInfo(pageNum, pageSize, search) {
   })
 }
 
-export function updateWaf(form) {
+export function updateWafInfo(form) {
   return request({
     url: '/waf',
     method: 'put',
@@ -35,7 +35,7 @@ export function deleteWaf(id) {
   })
 }
 
-export function changeEnable(id, enable) {
+export function changeWafStatus(id, enable) {
   const data = {
     id, enable
   }

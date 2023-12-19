@@ -11,7 +11,7 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 // const whiteList = ['/login'] // no redirect whitelist
 const whiteList = [
   '/login', '/404', '/', '/dashboard',
-  '/waf', '/waf/info', '/waf/log', '/waf/new',
+  '/waf', '/waf/info', '/waf/log', '/waf/new', '/waf/image',
   '/staff', '/staff/info', '/staff/test', '/staff/new'
 ]
 

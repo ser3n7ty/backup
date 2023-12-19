@@ -1,32 +1,39 @@
 <template>
+  <!-- TODO: element ui 重写这个组件 -->
   <div class="lf-btm">
-    <ve-table
-      fixed-header
-      :max-height="290"
-      :columns="columns"
-      :table-data="tableData"
-      :row-style-option="rowStyleOption"
-      :virtual-scroll-option="virtualScrollOption"
-    />
+    <el-table
+      v-loading="loading"
+      :data="tableData"
+      :max-height="maxHeight"
+      style="width: 100%"
+      border
+      stripe
+      header-row-class-name="table-header"
+    >
+      <el-table-column
+        v-for="column in columns"
+        :key="column.key"
+        :prop="column.field"
+        :label="column.title"
+        :width="column.width"
+        :fixed="column.fixed"
+        :align="column.align"
+      >
+        <template v-if="column.renderBodyCell" slot-scope="{ row }">
+          <span>{{ column.renderBodyCell({ row, column }) }}</span>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'LogDisplay',
   data() {
     return {
-      temp: null,
-      timer: null,
-      virtualScrollOption: {
-        // 开启虚拟滚动
-        enable: true
-      },
-      rowStyleOption: {
-        stripe: true,
-        hoverHighlight: true,
-        clickHighlight: true
-      },
+      tableData: [],
+      loading: false,
+      maxHeight: 290,
       columns: [
         {
           field: 'index',
@@ -48,10 +55,10 @@ export default {
           key: 'd',
           title: '处理模式',
           align: 'center',
-          renderBodyCell: ({ row, column, rowIndex }) => {
+          renderBodyCell: ({ row, column }) => {
             const pattern = row[column.field]
             const text = pattern === '1' ? '串行' : '并行'
-            return <span> {text} </span>
+            return text
           }
         },
         {
@@ -60,28 +67,29 @@ export default {
           title: '响应结果',
           align: 'center',
           fixed: 'right',
-          renderBodyCell: ({ row, column, rowIndex }) => {
+          renderBodyCell: ({ row, column }) => {
             const result = row[column.field]
             const text = result === '1' ? '拦截' : '放行'
-            return <span> {text} </span>
+            return text
           }
         }
-      ],
-      tableData: [
       ]
     }
   },
   mounted() {
-    console.log('开始更新界面')
+    console.log('开始更新页面')
     this.startUpdatingData()
+  },
+  beforeDestroy() {
+    clearInterval(this.timer)
   },
   methods: {
     startUpdatingData() {
       this.timer = setInterval(this.updateData, 6000)
     },
     updateData() {
-      const newData = []
-      this.temp = [
+      // 模拟新数据
+      const newData = [
         {
           ip: '192.168.202.198',
           time: '2023.12.12 15:51',
@@ -101,30 +109,19 @@ export default {
           result: '1'
         }
       ]
-      // this.$store.dispatch('screen/getLogs')
-      //   .then(data => {
-      //     this.temp = data
-      //   })
-      for (let i = this.temp.length - 1; i >= 0; i--) {
-        newData.push(this.temp[i])
-      }
-      for (let i = 0; i <= this.tableData.length - 1; i++) {
-        newData.push(this.tableData[i])
-      }
-      for (let i = 0; i <= newData.length - 1; ++i) {
-        newData[i]['index'] = i + 1
-      }
-      this.tableData = newData
-      console.log('更新完成')
+
+      // 合并原有数据和新数据
+      this.tableData = [...newData, ...this.tableData.slice(0, 2)]
     }
   }
 }
 </script>
 
 <style scoped>
-
-.ve-table {
-  width: 100%;
-  height: 100%;
+/* 用于调整表格头样式 */
+.table-header {
+  background-color: #f5f7fa;
+  color: #303133;
+  font-weight: bold;
 }
 </style>

@@ -11,6 +11,7 @@ const getDefaultState = () => {
   }
 }
 
+// TODO:完善调用API的错误处理
 const state = getDefaultState()
 
 const mutations = {

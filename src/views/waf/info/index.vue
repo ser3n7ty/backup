@@ -11,11 +11,11 @@
       </div>
 
       <!-- 右侧部分，批量删除按钮 -->
-      <el-popconfirm title="确定删除吗？" @confirm="deleteBatch">
-        <template #reference>
+      <div @click="deleteBatch">
+        <template>
           <el-button type="danger" style="margin-right: 80px;">批量删除</el-button>
         </template>
-      </el-popconfirm>
+      </div>
     </div>
 
     <div class="table">
@@ -27,7 +27,50 @@
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
-        <!-- 表头 -->
+        <!-- *展开行 -->
+        <el-table-column type="expand">
+          <template slot-scope="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item label="ID">
+                <span>{{ props.row.id }}</span>
+              </el-form-item>
+              <el-form-item label="创建时间">
+                <span>{{ props.row.createTime }}</span>
+              </el-form-item>
+              <el-form-item label="Waf 名称">
+                <span>{{ props.row.name }}</span>
+              </el-form-item>
+              <el-form-item label="类型">
+                <span>{{ wafType(props.row) }}</span>
+              </el-form-item>
+              <el-form-item label="IP 地址">
+                <span>{{ props.row.ip }}</span>
+              </el-form-item>
+              <el-form-item label="镜像名称">
+                <span>{{ props.row.image_name }}</span>
+              </el-form-item>
+              <el-form-item label="端口">
+                <span>{{ props.row.port }}</span>
+              </el-form-item>
+              <el-form-item label="CPU 占用">
+                <span>{{ props.row.cpu }}%</span>
+              </el-form-item>
+              <el-form-item label="运行状态">
+                <span>{{ wafType(props.row) }}</span>
+              </el-form-item>
+              <el-form-item label="内存占用">
+                <span>{{ props.row.mem }} MB</span>
+              </el-form-item>
+              <el-form-item label="权值">
+                <span>{{ props.row.weight }}</span>
+              </el-form-item>
+              <el-form-item label="描述信息">
+                <span>{{ props.row.description }}</span>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
+        <!-- *表头 -->
         <el-table-column
           type="selection"
           width="55"
@@ -54,15 +97,36 @@
           width="80"
         />
         <el-table-column
-          prop="configUrl"
-          label="管理地址"
-        />
+          prop="cpu"
+          label="CPU 占用"
+        >
+          <template #default="scope">
+            <span> {{ scope.row.cpu }}%</span>
+          </template>
+        </el-table-column>
 
         <el-table-column
-          prop="description"
-          label="描述信息"
+          prop="mem"
+          label="内存占用"
+        >
+          <template #default="scope">
+            <span> {{ scope.row.mem }} MB</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="type"
+          label="类型"
+        >
+          <template #default="scope">
+            <div>
+              <span>{{ wafType(scope.row) }}</span>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="image_name"
+          label="镜像名称"
         />
-        <!-- BUG: 根据 row 中的 status 字段计算 waf 当前状态 -->
         <el-table-column
           prop="status"
           label="运行状态"
@@ -72,12 +136,11 @@
             <div>
               <span
                 :class="{
-                  'online': scope.row.status === '0',
-                  'offline': scope.row.status === '1',
-                  'stop': scope.row.status === '2',
-                  'abnormal': !['0', '1', '1'].includes(scope.row.status)
+                  'online': scope.row.status === 0,
+                  'offline': scope.row.status === 1,
+                  'abnormal': ![0, 1].includes(scope.row.status)
                 }"
-              > {{ wafStatus[scope.$index] }}
+              > {{ wafStatus(scope.row) }}
               </span></div>
           </template>
         </el-table-column>
@@ -86,16 +149,15 @@
           <template #default="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
             <!-- TODO：优化这里的操作，调用同样的函数，传不一样的参数 -->
-            <!-- <el-button v-show="row.status!=='0'" size="mini" @click="changeEnable('0')">上线</el-button>
-            <el-button v-show="row.status!=='1'" size="mini" @click="changeEnable('1')">下线</el-button>
-            <el-button v-show="row.status!=='2'" size="mini" @click="changeEnable('2')">停止</el-button> -->
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
+            <el-button v-show="scope.row.status == 1" size="mini" @click="changeWafStatus('0')">上线</el-button>
+            <el-button v-show="scope.row.status == 0" size="mini" @click="changeWafStatus('1')">下线</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">移除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-
-    <div style="margin: 10px 0">
+    <!-- * Footer -->
+    <div style="margin: 10px 0;">
 
       <el-pagination
         :current-page="currentPage"
@@ -103,6 +165,7 @@
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
+        style="text-align: center"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
@@ -123,8 +186,13 @@
           <el-form-item label="端口" prop="port">
             <el-input v-model="ruleForm.port" style="width: 80%" />
           </el-form-item>
-          <el-form-item label="配置信息" prop="configUrl">
-            <el-input v-model="ruleForm.configUrl" style="width: 80%" />
+          <el-form-item label="类型" prop="type">
+            <el-radio v-model="ruleForm.type" label="0">Docker</el-radio>
+            <el-radio v-model="ruleForm.type" label="1">软件 Waf</el-radio>
+            <el-radio v-model="ruleForm.type" label="2">其他</el-radio>
+          </el-form-item>
+          <el-form-item v-if="editImageName" label="镜像名称" prop="image_name">
+            <el-input v-model="ruleForm.image_name" style="width: 80%" />
           </el-form-item>
           <el-form-item label="描述信息" prop="description">
             <el-input v-model="ruleForm.description" type="textarea" style="width: 80%" />
@@ -132,7 +200,7 @@
         </el-form>
         <div style="text-align: right; padding-right: 40px">
           <el-button @click="dialogVisible = false">取 消</el-button>
-          <el-button type="primary" @click="save">确 认</el-button>
+          <el-button type="primary" @click="handleSave">确 认</el-button>
         </div>
       </el-dialog>
     </div>
@@ -141,7 +209,6 @@
 
 <script>
 import { validIP } from '@/utils/validate'
-// TODO：修改 waf 状态为三种
 export default {
   name: 'UserInfo',
   data() {
@@ -160,41 +227,45 @@ export default {
       }
     }
     return {
-      enable: '',
-      status: '',
       search: '',
       // TODO：部署后修改为 true
       loading: false,
       dialogVisible: false,
+      editImageName: false,
       currentPage: 1,
       pageSize: 10,
       total: 0,
       tableData: [
-        { id: 1, name: '长亭雷池WAF', ip: '192.168.102.195', port: 8899, status: '0', configUrl: 'localhost', startTime: '2023-11-03 21:47:46', time: 584, description: 'there are some thing...' },
-        { id: 2, name: '这是5个字', ip: '192.168.2.1', port: 8899, status: '1', configUrl: 'localhost', startTime: '2023-11-03 21:47:46', time: 584, description: 'there are some thing...' },
-        { id: 3, name: '很长长长的名字', ip: '192.168.2.1', port: 8899, status: '2', configUrl: 'localhost', startTime: '2023-11-03 21:47:46', time: 584, description: 'there are some thing...' },
-        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, status: '2', configUrl: 'localhost', startTime: '2023-11-03 21:47:46', time: 584, description: 'there are some thing...' }
+        { id: 1, name: '长亭雷池WAF', ip: '192.168.102.195', port: 8899, status: 0, configUrl: 'localhost', weight: 9, cpu: '15.12', mem: '55.222', type: 0, image_name: 'hahha', createTime: '2023-11-03 21:47:46', description: 'there are some thing...' },
+        { id: 2, name: '这是5个字', ip: '192.168.2.1', port: 8899, status: 1, configUrl: 'localhost', weight: 9, cpu: '15.12', mem: '55.222', type: 1, image_name: 'hahha', createTime: '2023-11-03 21:47:46', description: 'there are some thing...' },
+        { id: 3, name: '很长长长的名字', ip: '192.168.2.1', port: 8899, status: 2, configUrl: 'localhost', weight: 7, cpu: '15.12', mem: '55.222', type: 2, image_name: 'hahha', createTime: '2023-11-03 21:47:46', description: 'there are some thing...' },
+        { id: 4, name: 'hah', ip: '192.168.2.1', port: 8899, status: 2, configUrl: 'localhost', weight: 8, cpu: '15.12', mem: '55.222', type: 0, image_name: 'hahha', createTime: '2023-11-03 21:47:46', description: 'there are some thing...' }
       ],
       ids: [],
       ruleForm: {
         name: '',
         ip: '',
         port: '',
+        type: '',
+        image_name: '',
         configUrl: '',
         description: ''
       },
       rules: {
         name: [
-          { required: true, message: '请输入 new 名字', trigger: 'blur' }
+          { required: true, message: '请输入名字', trigger: 'blur' }
         ],
         ip: [
-          { required: true, message: '请输入 new 的 IP 地址', validator: validateIP, trigger: 'blur' }
+          { required: true, message: '请输入 Waf 的 IP 地址', validator: validateIP, trigger: 'blur' }
         ],
         port: [
-          { required: true, message: '请输入 new 的端口', validator: validatePort, trigger: 'blur' }
+          { required: true, message: '请输入端口', validator: validatePort, trigger: 'blur' }
         ],
         configUrl: [
           { required: true, message: '请输入第三方配置地址', trigger: 'blur' }
+        ],
+        type: [
+          { required: true, message: '请选择 Waf 类型' }
         ],
         description: [
           { message: '请输入该 Waf 的描述信息', trigger: 'blur' }
@@ -203,19 +274,47 @@ export default {
     }
   },
   computed: {
-    // BUG：页面显示状态数组
     wafStatus() {
-      return this.tableData.map(row => {
-        if (row.status === '0') {
+      // 通过 Map 方法遍历 tableData 中的每一行数据
+      // 并根据 type 属性的值返回相应的字符串
+      // 最终得到一个包含了所有类型对应字符串的数组
+      // return this.tableData.map(row => {
+      //   if (row.status === 0) {
+      //     return '已上线'
+      //   } else if (row.status === 1) {
+      //     return '已下线'
+      //   } else {
+      //     return '异常'
+      //   }
+      return row => {
+        if (row.status === 0) {
           return '已上线'
-        } else if (row.status === '1') {
+        } else if (row.status === 1) {
           return '已下线'
-        } else if (row.status === '2') {
-          return '已停止'
         } else {
           return '异常'
         }
-      })
+      }
+    },
+    wafType() {
+      return row => {
+        if (row.type === 0) {
+          return 'Docker'
+        } else if (row.status === 1) {
+          return '软件 Waf'
+        } else {
+          return '其他'
+        }
+      }
+    }
+  },
+  watch: {
+    'ruleForm.type': function(newVal) {
+      if (newVal === '0') {
+        this.editImageName = true
+      } else {
+        this.editImageName = false
+      }
     }
   },
   methods: {
@@ -229,9 +328,9 @@ export default {
           this.total = data.total
           this.search = ''
         })
-        .catch(() => {
+        .catch(error => {
           this.$message({
-            message: 'Something error',
+            message: error.message || '页面加载出错',
             type: 'error'
           })
         })
@@ -239,22 +338,26 @@ export default {
     handleEdit(row) {
       const temp = JSON.parse(JSON.stringify(row))
       for (const key in temp) {
-        if (key !== 'id' && key !== 'enable' && key !== 'status') {
+        if (key !== 'id' && key !== 'status' && key !== 'type') {
           this.ruleForm[key] = temp[key]
         }
       }
       this.dialogVisible = true
     },
-    save() {
-      console.log(this.$refs['form'])
+    handleSave() {
       this.$refs['form'].validate((valid) => {
-        console.log('表单有效')
         if (valid) {
           this.$store
-            .dispatch('waf/updateWaf', this.ruleForm)
+            .dispatch('waf/updateWafInfo', this.ruleForm)
             .then(response => {
               this.$message({
                 message: response.msg + ':' + response.status,
+                type: 'success'
+              })
+            })
+            .catch(error => {
+              this.$message({
+                message: error.msg || '保存信息失败',
                 type: 'error'
               })
             })
@@ -266,35 +369,50 @@ export default {
         }
       })
     },
-    // op 为 0 表示上线， 1 表示下线， 2 表示停止
-    changeEnable(id, op) {
+    // op 为 0 表示上线， 1 表示下线
+    changeWafStatus(id, op) {
       this.$store
-        .dispatch({ type: 'waf/changeEnable', id: id, enable: op })
-        .then((res) => {
+        .dispatch({ type: 'waf/changeWafStatus', id: id, op: op })
+        .then(response => {
           this.$message({
-            message: op === '0' ? '成功启用' : '成功停用',
+            message: response.msg + ':' + response.status,
+            type: 'success'
+          })
+          // 更新完成后刷新页面
+          this.load()
+        })
+        .catch(error => {
+          this.$message({
+            message: error.message || '更新 Waf 状态出错',
+            type: 'error'
+          })
+        })
+    },
+    handleDelete(id) {
+      this.$store
+        .dispatch('waf/deleteWaf', id)
+        .then((response) => {
+          this.$message({
+            message: response.msg + ':' + response.status,
             type: 'success'
           })
         })
-        .catch((err) => {
+        .catch(error => {
           this.$message({
-            message: err,
+            message: error.msg || '移除 Waf 失败',
             type: 'error'
           })
         })
     },
+    deleteBatch() {
+      console.log(this.ids)
+      this.ids.forEach(id => {
+        this.handleDelete(id)
+      })
+    },
+    //* 处理页面变化
     handleSelectionChange(val) {
       this.ids = val.map(v => v.id)
-    },
-    handleDelete(id) {
-      console.log('Delete new')
-      this.$store.dispatch('waf/deleteWaf', id)
-        .catch((error) => {
-          this.$message({
-            message: error,
-            type: 'error'
-          })
-        })
     },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize
@@ -303,32 +421,12 @@ export default {
     handleCurrentChange(pageNum) {
       this.currentPage = pageNum
       this.load()
-    },
-    deleteBatch() {
-      this.ids.forEach(id => {
-        this.handleDelete(id)
-      })
     }
   }
 }
 </script>
 
 <style scoped>
-.status-badge-active {
-  width: 10px; /* 小色块的宽度 */
-  height: 10px; /* 小色块的高度 */
-  display: inline-block; /* 行内块元素，以确保文字和小色块在同一行 */
-  background-color: green; /* 已启用的小色块颜色 */
-  margin-right: 5px; /* 用于分隔小色块和文字的间距 */
-}
-
-.status-badge-inactive {
-  width: 10px;
-  height: 10px;
-  display: inline-block;
-  background-color: red; /* 已停用的小色块颜色 */
-  margin-right: 5px;
-}
 .online {
   background-color: green;
   color: white; /* 文字颜色 */
@@ -341,12 +439,6 @@ export default {
   padding: 3px 5px;
   border-radius: 5px;
 }
-.stop {
-  background-color: orange;
-  color: white;
-  padding: 3px 5px;
-  border-radius: 5px;
-}
 
 .abnormal{
   background-color: red;
@@ -354,5 +446,17 @@ export default {
   padding: 3px 5px;
   border-radius: 5px;
 }
+.demo-table-expand {
+    font-size: 0;
+  }
+  .demo-table-expand label {
+    width: 90px;
+    color: #99a9bf;
+  }
+  .demo-table-expand .el-form-item {
+    margin-right: 0;
+    margin-bottom: 0;
+    width: 50%;
+  }
 </style>
 

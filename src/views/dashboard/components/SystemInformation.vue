@@ -11,8 +11,8 @@ export default {
     return {
       timer: null,
       barChart: null,
-      xAxisData: ['负载均衡', '内存', '带宽', '磁盘', 'CPU'], // X 轴数据
-      indicatorValues: [70, 80, 90, 60, 70] // 用于表示各个维度的值
+      xAxisData: ['负载均衡', '内存', '磁盘', 'CPU'], // X 轴数据
+      indicatorValues: [70, 80, 90, 60] // 用于表示各个维度的值
     }
   },
   mounted() {
@@ -63,7 +63,6 @@ export default {
           this.indicatorValues[0] = data['loadBalancing']
           this.indicatorValues[1] = data['memory']
           this.indicatorValues[2] = data['storage']
-          this.indicatorValues[3] = data['bandwidth']
           this.indicatorValues[4] = data['cpu']
           this.updateChartWithData() // 更新柱形图数据
         })

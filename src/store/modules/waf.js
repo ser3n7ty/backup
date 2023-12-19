@@ -1,10 +1,9 @@
-import { add, queryInfo, updateWaf, deleteWaf, changeEnable, queryLog } from '@/api/waf'
+import { add, queryInfo, updateWafInfo, deleteWaf, changeWafStatus, queryLog } from '@/api/waf'
 
 const state = {}
 
 const mutations = {}
 
-// TODO:优化 resolve()
 const actions = {
 
   // 导入 Waf
@@ -15,13 +14,11 @@ const actions = {
         .then(response => {
           response.code = undefined
           if (response.code !== 200) {
-            reject('Something error while importing new')
-          } else {
-            resolve()
+            reject(new Error(response.msg + ':' + response.status))
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '导入 Waf 出错'))
         })
     })
   },
@@ -34,100 +31,81 @@ const actions = {
           if (response.code === 200) {
             resolve(response.data)
           } else {
-            reject('Something error while querying all new')
+            reject(new Error(response.msg + ':' + response.status))
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '查询 Waf 出错'))
         })
     })
   },
-  // 更新 new 基本信息
+  // 更新 Waf 基本信息
   // data: { name, ip, port, configUrl, desc}
-  updateWaf(data) {
+  updateWafInfo(form) {
     return new Promise((resolve, reject) => {
-      updateWaf(data)
+      updateWafInfo(form)
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while updating new info')
-            this.$message({
-              message: response.msg,
-              type: 'error'
-            })
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '更新 Waf 基本信息出错'))
         })
     })
   },
-
   // 删除 new
   deleteWaf(id) {
     return new Promise((resolve, reject) => {
       deleteWaf(id)
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while deleting new')
-            this.$message({
-              message: response.msg + ':' + response.status,
-              type: 'error'
-            })
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '移除 Waf 出错'))
         })
     })
   },
 
-  // 改变 new 使用状态
-  // enable: 1 表示启用，0 表示禁用
-  changeEnable({ id, enable }) {
+  // 改变 Waf 状态
+  // op: 0 上线， 1 下线
+  changeWafStatus({ id, op }) {
     return new Promise((resolve, reject) => {
-      changeEnable({ id, enable })
+      changeWafStatus({ id, op })
         .then(response => {
-          response.code = undefined
+          response.code = null
           if (response.code !== 200) {
-            reject('Something error while changing new status')
-            this.$message({
-              message: response.msg + ':' + response.status,
-              type: 'error'
-            })
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '更新 Waf 状态出错'))
         })
     })
   },
 
+  // Query 参数
   queryWafLog({ pageNum, pageSize, search }) {
     return new Promise((resolve, reject) => {
       queryLog(({ pageNum, pageSize, search }))
         .then((response) => {
-          response.code = undefined
+          response.code = null
           if (response.code !== 200) {
-            reject('Something error while querying new log')
-            this.$message({
-              message: response.msg + ':' + response.status,
-              type: 'error'
-            })
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response.data)
           }
         })
         .catch(error => {
-          this.$message({
-            message: error,
-            type: 'error'
-          })
+          reject(new Error(error.message || '请求日志出错'))
         })
     })
   }
