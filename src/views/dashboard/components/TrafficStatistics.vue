@@ -1,5 +1,5 @@
 <template>
-  <div ref="trafficChart" style="width: 500px; height: 300px;" />
+  <div ref="trafficChart" style="width: 500px; height: 300px" />
 </template>
 
 <script>
@@ -27,6 +27,7 @@ echarts.use([
 export default {
   data() {
     return {
+      timer: null,
       data: null,
       xAxisData: [], // 存储横轴数据
       totalRequests: [], // 存储总请求数数据
@@ -35,8 +36,11 @@ export default {
   },
   mounted() {
     this.initChart()
-    this.updateChartData() // 更新图表展示初始化数据
-    setInterval(this.updateChartData, 600000) // 每隔10分钟更新一次数据（模拟实时数据更新）
+    // TODO：上线时使用
+    this.startUpdatingData()
+  },
+  beforeDestroy() {
+    this.stopUpdatingData()
   },
   methods: {
     initChart() {
@@ -45,7 +49,7 @@ export default {
       // 图表配置
       const option = {
         title: {
-          text: '流量统计折线图'
+          text: '流量统计'
         },
         tooltip: {
           trigger: 'axis'
@@ -81,10 +85,18 @@ export default {
               color: 'red'
             }
           }
-        ]
+        ],
+        grid: {
+          left: '8%',
+          containLabel: true
+        }
       }
 
       this.trafficChart.setOption(option)
+    },
+    startUpdatingData() {
+      this.updateChartData() // 更新图表展示初始化数据
+      this.timer = setInterval(this.updateChartData, 3000) // 每隔10分钟更新一次数据（模拟实时数据更新）
     },
     updateChartData() {
       // 更新数据
@@ -94,7 +106,7 @@ export default {
       const total = Math.floor(Math.random() * 100) + 50 // 总请求数量（50-150）
       const malicious = Math.floor(Math.random() * 20) // 恶意请求数量（0-20）
 
-      // TODO：调用 api 获取最新数据
+      // 调用 api 获取最新数据
       // const total = this.data['total']
       // const malicious = this.data['malicious']
 
@@ -136,8 +148,13 @@ export default {
             type: 'error'
           })
         })
+    },
+    stopUpdatingData() {
+      clearInterval(this.timer)
     }
   }
 }
 </script>
 
+<style lang="scss" scoped>
+</style>

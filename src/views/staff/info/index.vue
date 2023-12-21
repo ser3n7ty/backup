@@ -64,7 +64,7 @@
       </el-table>
     </div>
 
-    <div style="margin: 10px 0">
+    <div style="margin: 10px 0; text-align: center">
 
       <el-pagination
         :current-page="currentPage"

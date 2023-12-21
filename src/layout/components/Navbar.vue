@@ -16,16 +16,47 @@
               主页
             </el-dropdown-item>
           </router-link>
-          <!-- TODO: 添加修改密码 -->
-          <el-dropdown-item divided @click="handleEdit">
-            <span style="display:block;">修改密码</span>
-          </el-dropdown-item>
+          <div @click="visible = true">
+            <el-dropdown-item divided>
+              <span style="display:block;">修改密码</span>
+            </el-dropdown-item>
+          </div>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">注销</span>
           </el-dropdown-item>
+
         </el-dropdown-menu>
       </el-dropdown>
+      <div class="pop">
+        <el-dialog :visible.sync="visible" title="修改用户密码" width="30%">
+          <el-form ref="form" :rules="rule" :model="form" label-width="120px">
+            <div class="pwdInput">
+              <el-form-item label="旧密码" prop="oldPwd">
+                <el-input
+                  v-model="form.oldPwd"
+                  placeholder="请输入当前用户的现有密码"
+                  style="width: 80%; position: relative"
+                  tabindex="2"
+                />
+              </el-form-item>
+              <el-form-item label="新密码" prop="newPwd">
+                <el-input
+                  v-model="form.newPwd"
+                  placeholder="请输入用户新密码"
+                  style="width: 80%; position: relative"
+                  tabindex="2"
+                />
+              </el-form-item>
+            </div>
+            <div style="text-align: right; padding-right: 40px">
+              <el-button @click="visible = false">取 消</el-button>
+              <el-button type="primary" @click="handleSubmitPwd">确 认</el-button>
+            </div>
+          </el-form>
+        </el-dialog>
+      </div>
     </div>
+
   </div>
 </template>
 
@@ -33,6 +64,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import { validPwd } from '@/utils/validate'
 
 export default {
   name: 'Navbar',
@@ -41,11 +73,32 @@ export default {
     Hamburger
   },
   data() {
+    const validatePwd = (rule, value, callback) => {
+      if (!validPwd(value)) {
+        callback(new Error('密码格式不正确，请输入长度为8-16位的同时包含大小写字母和特殊符号(不包含空格的密码'))
+      } else {
+        callback()
+      }
+    }
     return {
+      visible: false,
       name: '',
       email: '',
       roles: '',
-      permissions: ''
+      permissions: '',
+      form: {
+        oldPwd: '',
+        newPwd: ''
+      },
+      rule: {
+        oldPwd: [
+          { required: true, message: '请输入现有的用户密码', trigger: 'blur' }
+        ],
+        newPwd: [
+          { required: true, message: '请输入新密码', trigger: 'blur' },
+          { validator: validatePwd, trigger: 'blur' }
+        ]
+      }
     }
   },
   computed: {
@@ -62,31 +115,9 @@ export default {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     },
-    getUserInfo() {
-      this.$dispatch('user/getUserInfo')
-        .then(response => {
-          if (response.code !== 200) {
-            this.$message({
-              message: 'Something error while getting current user info',
-              type: 'error'
-            })
-          } else {
-            const data = response.data
-            this.name = data.username
-            this.email = data.email
-            this.roles = data.roles
-            this.permissions = data.permissions
-          }
-        })
-        .catch(error => {
-          this.$message({
-            message: error,
-            type: 'error'
-          })
-        })
-    },
-    handleEdit() {
-      this.getUserInfo()
+    handleSubmitPwd() {
+      console.log('修改密码')
+      this.$store.dispatch('user/')
     }
   }
 }

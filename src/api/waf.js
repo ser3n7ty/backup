@@ -19,7 +19,7 @@ export function queryInfo(pageNum, pageSize, search) {
   })
 }
 
-export function updateWaf(form) {
+export function updateWafInfo(form) {
   return request({
     url: '/waf',
     method: 'put',
@@ -35,7 +35,7 @@ export function deleteWaf(id) {
   })
 }
 
-export function changeEnable(id, enable) {
+export function changeWafStatus(id, enable) {
   const data = {
     id, enable
   }
@@ -54,5 +54,35 @@ export function queryLog({ pageNum, pageSize, search }) {
     url: '/request',
     method: 'get',
     data
+  })
+}
+
+export function queryImage() {
+  return request({
+    url: '/image',
+    method: 'get'
+  })
+}
+
+export function deleteImage(id) {
+  return request({
+    url: '/image',
+    method: 'delete',
+    id
+  })
+}
+
+export function createContainer({ name, imageId }) {
+  return request({
+    url: '/image/container/{name}/{imageId}',
+    method: 'get'
+  })
+}
+
+export function uploadImage(file) {
+  return request({
+    url: '/image/upload',
+    method: 'post',
+    file
   })
 }

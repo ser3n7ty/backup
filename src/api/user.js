@@ -59,11 +59,11 @@ export function updateInfo(data) {
   })
 }
 
-// 修改用户密码
-// data: {oldPassword, newPassword}
+// 管理员修改用户密码
+// data: newPassword
 export function changePassword(data) {
   return request({
-    url: '',
+    url: '/root/password',
     method: 'put',
     data
   })
@@ -74,5 +74,15 @@ export function sendVerifyCode(email) {
   return request({
     url: '/email/sendCode/{email}',
     method: 'get'
+  })
+}
+
+// 当前用户修改自身密码
+export function changeCurrentPassword({ oldPassword, newPassword }) {
+  const data = { oldPassword, newPassword }
+  return request({
+    url: '/user/password',
+    method: 'put',
+    data
   })
 }

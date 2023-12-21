@@ -21,12 +21,12 @@ import { Notification } from 'element-ui'
  * redirect: noRedirect           if set noRedirect will not redirect in the breadcrumb
  * name:'router-name'             the name is used by <keep-alive> (must set!!!)
  * meta : {
- roles: ['admin','editor']    control the page roles (you can set multiple roles)
- title: 'title'               the name show in sidebar and breadcrumb (recommend set)
- icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
- breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
- activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
- }
+ * roles: ['admin','editor']    control the page roles (you can set multiple roles)
+ * title: 'title'               the name show in sidebar and breadcrumb (recommend set)
+ * icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
+ * breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
+ * activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
+ * }
  */
 
 /**
@@ -58,20 +58,13 @@ export const constantRoutes = [
       meta: { title: '控制面板', icon: 'dashboard' }
     }]
   },
-  // 大屏设置
-  {
-    path: '/screen',
-    component: () => import('@/views/screen'),
-    name: 'Screen',
-    meta: { title: '大屏', icon: 'screen' }
-  },
   // Waf 路由设置
   {
     path: '/waf',
     component: Layout,
     redirect: '/waf/info',
     name: 'Waf',
-    meta: { title: 'Waf', icon: 'waf' },
+    meta: { title: 'Waf 管理', icon: 'waf' },
     children: [
       {
         path: 'info',
@@ -84,6 +77,46 @@ export const constantRoutes = [
         name: 'Log',
         component: () => import('@/views/waf/log/index'),
         meta: { title: '处理日志', icon: 'log' }
+      },
+      {
+        path: 'image',
+        name: 'Image',
+        component: () => import('@/views/waf/image/index'),
+        meta: { title: '镜像管理', icon: 'image' },
+        beforeEnter: (to, from, next) => {
+          if (store.getters.roles !== 'admin') {
+            Notification.error({
+              title: 'Permission Denied',
+              message: 'You are not allowed to access this page.',
+              duration: 5000
+            })
+            // TODO：上线删除
+            // router.push(from.fullPath)
+            next()
+          } else {
+            next()
+          }
+        }
+      },
+      {
+        path: 'new',
+        name: 'newWaf',
+        component: () => import('@/views/waf/new/index'),
+        meta: { title: '导入Waf', icon: 'import' },
+        beforeEnter: (to, from, next) => {
+          if (store.getters.roles !== 'admin') {
+            Notification.error({
+              title: 'Permission Denied',
+              message: 'You are not allowed to access this page.',
+              duration: 5000
+            })
+            // TODO：上线删除
+            // router.push(from.fullPath)
+            next()
+          } else {
+            next()
+          }
+        }
       }
     ]
   },
@@ -93,10 +126,7 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/staff/info',
     name: 'Staff',
-    meta: {
-      title: '用户',
-      icon: 'user'
-    },
+    meta: { title: '用户管理', icon: 'user' },
     children: [
       {
         path: 'info',
@@ -105,49 +135,26 @@ export const constantRoutes = [
         meta: { title: '用户信息', icon: 'userInfo' }
       },
       {
-        path: 'test',
-        component: () => import('@/views/staff/test/index'),
-        name: 'Test',
-        meta: { title: 'Test' }
+        path: 'new',
+        name: 'new',
+        component: () => import('@/views/staff/new/index'),
+        meta: { title: '人员注册', icon: 'newUser' },
+        beforeEnter: (to, from, next) => {
+          if (store.getters.roles !== 'admin') {
+            Notification.error({
+              title: 'Permission Denied',
+              message: 'You are not allowed to access this page.',
+              duration: 5000
+            })
+            // TODO：上线删除
+            // router.push(from.fullPath)
+            next()
+          } else {
+            next()
+          }
+        }
       }
     ]
-  },
-  // 新建 路由设置
-  {
-    // 这里设置嵌套路由，设为 创建人员 和 导入 Waf
-    path: '/new',
-    component: Layout,
-    redirect: '/new/person',
-    name: 'New',
-    meta: { title: '新建', icon: 'new' },
-    children: [
-      {
-        path: 'person',
-        name: 'newPerson',
-        component: () => import('@/views/new/person'),
-        meta: { title: '人员注册', icon: 'newUser' }
-      },
-      {
-        path: 'waf',
-        name: 'newWaf',
-        component: () => import('@/views/new/waf'),
-        meta: { title: '导入 Waf', icon: 'import' }
-      }
-    ],
-    beforeEnter: (to, from, next) => {
-      if (store.getters.roles !== 'admin') {
-        Notification.error({
-          title: 'Permission Denied',
-          message: 'You are not allowed to access this page.',
-          duration: 5000
-        })
-        // TODO：上线删除
-        // router.push(from.fullPath)
-        next()
-      } else {
-        next()
-      }
-    }
   },
 
   // 404 page must be placed at the end !!!

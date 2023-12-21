@@ -1,4 +1,4 @@
-import { gainSystemInfo, gainTrafficData, gainAverageTime, gainWafNumber } from '@/api/screen'
+import { gainSystemInfo, gainTrafficData, gainAverageTime, gainWafNumber, gainAnimationData, initCart, getLogs } from '@/api/screen'
 
 const state = {}
 
@@ -10,15 +10,14 @@ const actions = {
     return new Promise((resolve, reject) => {
       gainSystemInfo()
         .then(response => {
-          response.code = undefined
           if (response.code !== 200) {
-            reject('Something error while gaining system info')
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response.data)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '获取系统数据出错'))
         })
     })
   },
@@ -28,13 +27,13 @@ const actions = {
       gainTrafficData()
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while gaining traffic statistics')
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response.data)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '获取请求统计信息出错'))
         })
     })
   },
@@ -43,7 +42,22 @@ const actions = {
       gainAverageTime()
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while gaining average address time')
+            reject(new Error(response.msg + ':' + response.status))
+          } else {
+            resolve(response.data)
+          }
+        })
+        .catch(error => {
+          reject(new Error(error.message || '获取平均响应时间出错'))
+        })
+    })
+  },
+  gainWafNumber() {
+    return new Promise((resolve, reject) => {
+      gainWafNumber()
+        .then(response => {
+          if (response.code !== 200) {
+            reject('Something error while gaining new number')
           } else {
             resolve(response.data)
           }
@@ -53,22 +67,51 @@ const actions = {
         })
     })
   },
-  gainWafNumber() {
+  gainAnimationData() {
     return new Promise((resolve, reject) => {
-      gainWafNumber()
+      gainAnimationData()
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while gaining waf number')
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response.data)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '获取动画数据出错'))
+        })
+    })
+  },
+  initCart() {
+    return new Promise((resolve, reject) => {
+      initCart()
+        .then(response => {
+          if (response.code !== 200) {
+            reject(new Error(response.msg + ':' + response.status))
+          } else {
+            resolve(response.data)
+          }
+        })
+        .catch(error => {
+          reject(new Error(error.message || '初始化动画出错'))
+        })
+    })
+  },
+  getLogs() {
+    return new Promise((resolve, reject) => {
+      getLogs()
+        .then(response => {
+          if (response.code !== 200) {
+            reject(new Error(response.msg + ':' + response.status))
+          } else {
+            resolve(response)
+          }
+        })
+        .catch(error => {
+          reject(new Error(error.message || '获取显示日志数据出错'))
         })
     })
   }
-
 }
 
 export default {

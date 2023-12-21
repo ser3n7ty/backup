@@ -1,5 +1,5 @@
 /* eslint-disable no-throw-literal */
-import { login, register, query, getUserInfo, deleteUser, updateInfo, changePassword, logout, sendVerifyCode } from '@/api/user'
+import { login, register, query, getUserInfo, deleteUser, updateInfo, changePassword, logout, sendVerifyCode, changeCurrentPassword } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -29,7 +29,7 @@ const mutations = {
   }
 }
 
-// TODO：优化 resolve()
+// TODO:统一错误处理的逻辑
 const actions = {
   // user login
   login({ commit }, info) {
@@ -70,7 +70,7 @@ const actions = {
   },
 
   // query all users
-  query({ commit }, { pageNum, pageSize, search }) {
+  query({ pageNum, pageSize, search }) {
     return new Promise((resolve, reject) => {
       query({ pageNum, pageSize, search })
         .then(({ code, list }) => {
@@ -131,12 +131,16 @@ const actions = {
   },
 
   // 删除用户
-  deleteUser({ commit }, id) {
+  deleteUser(id) {
     return new Promise((resolve, reject) => {
       deleteUser(id)
-        .then(({ code }) => {
-          if (code !== 200) {
+        .then(response => {
+          if (response.code !== 200) {
             reject('Something error while deleting user')
+            this.$message({
+              message: response.msg + ':' + response.status,
+              type: 'error'
+            })
           } else {
             resolve()
           }
@@ -148,33 +152,48 @@ const actions = {
   },
 
   // 更新某个用户信息
-  updateInfo({ commit }, form) {
+  updateInfo(form) {
     return new Promise((resolve, reject) => {
       updateInfo(form)
         .then(response => {
           if (response.code === 200) {
-            resolve()
+            resolve(response)
           } else {
-            reject('Something error while updating user info')
+            reject(new Error(response.msg + ':' + response.status))
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '更新用户信息出错'))
         })
     })
   },
 
   // 修改用户密码
-  changePassword({ commit }, { newPassword }) {
+  changePassword({ newPassword }) {
     return new Promise((resolve, reject) => {
       changePassword(newPassword)
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while changing password')
+            reject(new Error(response.msg + ':' + response.status))
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '修改密码出错'))
+        })
+    })
+  },
+
+  // 修改当前用户的密码
+  changeCurrentPassword({ oldPassword, newPassword }) {
+    return new Promise((reject) => {
+      changeCurrentPassword(oldPassword, newPassword)
+        .then(response => {
+          if (response.code !== 200) {
+            reject(new Error(response.msg + ':' + response.status))
+          }
+        })
+        .catch(error => {
+          reject(new Error(error.message || '修改密码出错'))
         })
     })
   },
@@ -183,9 +202,13 @@ const actions = {
   sendVerifyCode(email) {
     return new Promise((resolve, reject) => {
       sendVerifyCode(email)
-        .then(code => {
-          if (code !== 200) {
+        .then(response => {
+          if (response.code !== 200) {
             reject('Something error while sending auth code')
+            this.$message({
+              message: response.msg + ':' + response.status,
+              type: 'error'
+            })
           } else {
             resolve()
           }
