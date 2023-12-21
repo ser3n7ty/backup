@@ -62,7 +62,7 @@
 
 <script>
 import { validIP } from '@/utils/validate'
-// TODO: 添加新的导入方式：直接写入镜像名，通过后端启动服务
+
 export default {
   name: 'ImportWaf',
   data() {

@@ -9,6 +9,12 @@
         <el-input v-model="search" placeholder="输入要查找的内容" style="width: 60%" clearable />
         <el-button type="primary" style="margin-left: 5px" @click="load">搜 索</el-button>
       </div>
+      <!-- 右侧部分，批量导出按钮 -->
+      <div @click="exportLog">
+        <template>
+          <el-button type="primary" style="margin-right: 80px;">批量导出</el-button>
+        </template>
+      </div>
     </div>
     <div class="table">
       <el-table
@@ -100,7 +106,7 @@
 <script>
 
 export default {
-  name: 'UserInfo',
+  name: 'WafLog',
   data() {
     return {
       search: null,
@@ -114,7 +120,8 @@ export default {
         { id: 2, method: 'GET', sourceip: '192.168.1.2', startTime: '2023-11-02 15:25:24', time: 4254, status: '0' },
         { id: 3, method: 'DELETE', sourceip: '192.168.1.2', startTime: '2023-11-02 15:25:24', time: 4254, status: '1' },
         { id: 4, method: 'POST', sourceip: '192.168.1.2', startTime: '2023-11-02 15:25:24', time: 3457, status: '0' }
-      ]
+      ],
+      ids: []
     }
   },
   created() {
@@ -126,27 +133,22 @@ export default {
       this.$store
         .dispatch('waf/queryWafLog', this.currentPage, this.pageSize, this.search)
         .then((res) => {
-          if (res.status === 'success') {
-            this.loading = false
-            this.tableData = res.data.list
-            this.total = res.data.total
-            this.search = ''
-          } else {
-            this.$message({
-              message: res.msg,
-              type: 'error'
-            })
-          }
+          this.loading = false
+          this.tableData = res.data.list
+          this.total = res.data.total
+          this.search = ''
         })
-        .catch((err) => {
+        .catch((error) => {
           this.$message({
-            message: 'Error:' + err,
+            message: error.message || '页面加载出错',
             type: 'error'
           })
         })
     },
-    handleSelectionChange() {
-      // TODO: 增加批量导出
+    exportLog() {
+    },
+    handleSelectionChange(val) {
+      this.ids = val.map(v => v.id)
     },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize
@@ -156,7 +158,6 @@ export default {
       this.currentPage = pageNum
       this.load()
     }
-    // TODO：增加动态加载
   }
 }
 </script>

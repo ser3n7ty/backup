@@ -88,7 +88,7 @@ export default {
       // 随机生成模拟数据
       const aveTime = Math.floor(Math.random() * 100) + 80
 
-      // TODO：调用 api 获取最新数据
+      // 调用 api 获取最新数据
       // if (this.data === null) {
       //   const aveTime = this.seriesData[this.seriesData.length - 1]
       // } else {

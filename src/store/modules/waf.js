@@ -1,4 +1,5 @@
 import { add, queryInfo, updateWafInfo, deleteWaf, changeWafStatus, queryLog } from '@/api/waf'
+import { queryImage, deleteImage, createContainer, uploadImage } from '@/api/waf'
 
 const state = {}
 
@@ -12,7 +13,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       add(data)
         .then(response => {
-          response.code = undefined
           if (response.code !== 200) {
             reject(new Error(response.msg + ':' + response.status))
           }
@@ -97,7 +97,6 @@ const actions = {
     return new Promise((resolve, reject) => {
       queryLog(({ pageNum, pageSize, search }))
         .then((response) => {
-          response.code = null
           if (response.code !== 200) {
             reject(new Error(response.msg + ':' + response.status))
           } else {
@@ -108,8 +107,71 @@ const actions = {
           reject(new Error(error.message || '请求日志出错'))
         })
     })
-  }
+  },
 
+  queryImage() {
+    return new Promise((resolve, reject) => {
+      queryImage()
+        .then((response) => {
+          if (response.code !== 200) {
+            reject(new Error(response.msg + ':' + response.status))
+          } else {
+            resolve(response.data)
+          }
+        })
+        .catch(error => {
+          reject(new Error(error.message || '请求日志出错'))
+        })
+    })
+  },
+
+  deleteImage(id) {
+    return new Promise((resolve, reject) => {
+      deleteImage(id)
+        .then((response) => {
+          if (response.code !== 200) {
+            reject(new Error(response.msg + ':' + response.status))
+          } else {
+            resolve(response)
+          }
+        })
+        .catch(error => {
+          reject(new Error(error.message || '移除镜像出错'))
+        })
+    })
+  },
+
+  createContainer({ name, imageId }) {
+    return new Promise((resolve, reject) => {
+      createContainer({ name, imageId })
+        .then((response) => {
+          if (response.code !== 200) {
+            reject(new Error(response.msg + ':' + response.status))
+          } else {
+            resolve(response)
+          }
+        })
+        .catch(error => {
+          reject(new Error(error.message || '创建镜像实例出错'))
+        })
+    })
+  },
+
+  uploadImage(file) {
+    return new Promise((resolve, reject) => {
+      uploadImage(file)
+        .then((response) => {
+          if (response.code !== 200) {
+            reject(new Error(response.msg + ':' + response.status))
+          } else {
+            resolve(response)
+          }
+        })
+        .catch(error => {
+          reject(new Error(error.message || '上传镜像出错'))
+        })
+    })
+  }
 }
 
 export default {

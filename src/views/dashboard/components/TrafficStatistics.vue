@@ -106,7 +106,7 @@ export default {
       const total = Math.floor(Math.random() * 100) + 50 // 总请求数量（50-150）
       const malicious = Math.floor(Math.random() * 20) // 恶意请求数量（0-20）
 
-      // TODO：调用 api 获取最新数据
+      // 调用 api 获取最新数据
       // const total = this.data['total']
       // const malicious = this.data['malicious']
 

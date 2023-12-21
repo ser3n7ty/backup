@@ -1,5 +1,5 @@
 /* eslint-disable no-throw-literal */
-import { login, register, query, getUserInfo, deleteUser, updateInfo, changePassword, logout, sendVerifyCode } from '@/api/user'
+import { login, register, query, getUserInfo, deleteUser, updateInfo, changePassword, logout, sendVerifyCode, changeCurrentPassword } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -11,7 +11,6 @@ const getDefaultState = () => {
   }
 }
 
-// TODO:完善调用API的错误处理
 const state = getDefaultState()
 
 const mutations = {
@@ -30,6 +29,7 @@ const mutations = {
   }
 }
 
+// TODO:统一错误处理的逻辑
 const actions = {
   // user login
   login({ commit }, info) {
@@ -159,15 +159,11 @@ const actions = {
           if (response.code === 200) {
             resolve(response)
           } else {
-            reject('Something error while updating user info')
-            this.$message({
-              message: response.msg + ':' + response.status,
-              type: 'error'
-            })
+            reject(new Error(response.msg + ':' + response.status))
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '更新用户信息出错'))
         })
     })
   },
@@ -178,15 +174,26 @@ const actions = {
       changePassword(newPassword)
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while changing password')
-            this.$message({
-              message: response.msg + ':' + response.status,
-              type: 'error'
-            })
+            reject(new Error(response.msg + ':' + response.status))
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '修改密码出错'))
+        })
+    })
+  },
+
+  // 修改当前用户的密码
+  changeCurrentPassword({ oldPassword, newPassword }) {
+    return new Promise((reject) => {
+      changeCurrentPassword(oldPassword, newPassword)
+        .then(response => {
+          if (response.code !== 200) {
+            reject(new Error(response.msg + ':' + response.status))
+          }
+        })
+        .catch(error => {
+          reject(new Error(error.message || '修改密码出错'))
         })
     })
   },

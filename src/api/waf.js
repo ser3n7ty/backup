@@ -56,3 +56,33 @@ export function queryLog({ pageNum, pageSize, search }) {
     data
   })
 }
+
+export function queryImage() {
+  return request({
+    url: '/image',
+    method: 'get'
+  })
+}
+
+export function deleteImage(id) {
+  return request({
+    url: '/image',
+    method: 'delete',
+    id
+  })
+}
+
+export function createContainer({ name, imageId }) {
+  return request({
+    url: '/image/container/{name}/{imageId}',
+    method: 'get'
+  })
+}
+
+export function uploadImage(file) {
+  return request({
+    url: '/image/upload',
+    method: 'post',
+    file
+  })
+}

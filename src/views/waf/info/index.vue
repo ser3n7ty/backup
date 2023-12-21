@@ -148,7 +148,6 @@
         <el-table-column label="操 作" width="250%">
           <template #default="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
-            <!-- TODO：优化这里的操作，调用同样的函数，传不一样的参数 -->
             <el-button v-show="scope.row.status == 1" size="mini" @click="changeWafStatus('0')">上线</el-button>
             <el-button v-show="scope.row.status == 0" size="mini" @click="changeWafStatus('1')">下线</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">移除</el-button>
@@ -210,7 +209,7 @@
 <script>
 import { validIP } from '@/utils/validate'
 export default {
-  name: 'UserInfo',
+  name: 'WafInfo',
   data() {
     const validateIP = (rule, value, callback) => {
       if (!validIP(value)) {
@@ -405,7 +404,6 @@ export default {
         })
     },
     deleteBatch() {
-      console.log(this.ids)
       this.ids.forEach(id => {
         this.handleDelete(id)
       })

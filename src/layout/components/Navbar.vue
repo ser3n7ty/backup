@@ -116,8 +116,8 @@ export default {
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     },
     handleSubmitPwd() {
-      // TODO: 完成当前用户修改密码的业务逻辑
       console.log('修改密码')
+      this.$store.dispatch('user/')
     }
   }
 }

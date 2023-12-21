@@ -4,22 +4,20 @@ const state = {}
 
 const mutations = {}
 
-// TODO:完善调用API的错误处理
 const actions = {
   // 获取 screen/SystemInfo 组件需要的 5 个性能数据
   gainSystemInfo() {
     return new Promise((resolve, reject) => {
       gainSystemInfo()
         .then(response => {
-          response.code = undefined
           if (response.code !== 200) {
-            reject('Something error while gaining system info')
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response.data)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '获取系统数据出错'))
         })
     })
   },
@@ -29,13 +27,13 @@ const actions = {
       gainTrafficData()
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while gaining traffic statistics')
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response.data)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '获取请求统计信息出错'))
         })
     })
   },
@@ -44,13 +42,13 @@ const actions = {
       gainAverageTime()
         .then(response => {
           if (response.code !== 200) {
-            reject('Something error while gaining average address time')
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response.data)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '获取平均响应时间出错'))
         })
     })
   },
@@ -72,45 +70,45 @@ const actions = {
   gainAnimationData() {
     return new Promise((resolve, reject) => {
       gainAnimationData()
-        .then()(response => {
+        .then(response => {
           if (response.code !== 200) {
-            reject('Something error while gaining animation data')
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response.data)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '获取动画数据出错'))
         })
     })
   },
   initCart() {
     return new Promise((resolve, reject) => {
       initCart()
-        .then()(response => {
+        .then(response => {
           if (response.code !== 200) {
-            reject('Something error while gaining initial data')
+            reject(new Error(response.msg + ':' + response.status))
           } else {
             resolve(response.data)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '初始化动画出错'))
         })
     })
   },
   getLogs() {
     return new Promise((resolve, reject) => {
       getLogs()
-        .then()(response => {
+        .then(response => {
           if (response.code !== 200) {
-            reject('Something error while getting logs')
+            reject(new Error(response.msg + ':' + response.status))
           } else {
-            resolve(response.data)
+            resolve(response)
           }
         })
         .catch(error => {
-          reject(error)
+          reject(new Error(error.message || '获取显示日志数据出错'))
         })
     })
   }
