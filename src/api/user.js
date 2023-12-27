@@ -17,7 +17,7 @@ export function register(data) {
 }
 
 // 查询所有用户信息
-// data: {pageNum, pageSize, search}
+// data: {search}
 export function query(data) {
   return request({
     url: '/user/query',

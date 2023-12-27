@@ -22,7 +22,6 @@
       <el-table
         v-loading="loading"
         :data="tableData"
-        border
         stripe
         style="width: 100%"
         @selection-change="handleSelectionChange"
@@ -150,7 +149,7 @@
             <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
             <el-button v-show="scope.row.status == 1" size="mini" @click="changeWafStatus('0')">上线</el-button>
             <el-button v-show="scope.row.status == 0" size="mini" @click="changeWafStatus('1')">下线</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">移除</el-button>
+            <el-button size="mini" type="danger" @click="Delete(scope.row)">移除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -159,16 +158,10 @@
     <div style="margin: 10px 0;">
 
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 20]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+        layout="total"
         :total="total"
         style="text-align: center"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
       />
-
       <el-dialog :visible.sync="dialogVisible" title="修改信息" width="30%">
         <el-form
           ref="form"
@@ -320,7 +313,7 @@ export default {
     load() {
       this.loading = true
       this.$store
-        .dispatch('waf/queryWafInfo', this.currentPage, this.pageSize, this.search)
+        .dispatch('waf/queryWafInfo', this.search)
         .then((data) => {
           this.loading = false
           this.tableData = data.list
@@ -387,6 +380,10 @@ export default {
           })
         })
     },
+    Delete(row) {
+      this.handleDelete(row.id)
+      this.load()
+    },
     handleDelete(id) {
       this.$store
         .dispatch('waf/deleteWaf', id)
@@ -407,18 +404,11 @@ export default {
       this.ids.forEach(id => {
         this.handleDelete(id)
       })
+      this.load()
     },
-    //* 处理页面变化
+    //* 处理多选
     handleSelectionChange(val) {
       this.ids = val.map(v => v.id)
-    },
-    handleSizeChange(pageSize) {
-      this.pageSize = pageSize
-      this.load()
-    },
-    handleCurrentChange(pageNum) {
-      this.currentPage = pageNum
-      this.load()
     }
   }
 }

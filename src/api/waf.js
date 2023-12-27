@@ -8,10 +8,8 @@ export function add(data) {
   })
 }
 
-export function queryInfo(pageNum, pageSize, search) {
-  const data = {
-    pageNum, pageSize, search
-  }
+export function queryInfo(search) {
+  const data = search
   return request({
     url: '/waf',
     method: 'get',

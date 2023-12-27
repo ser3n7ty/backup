@@ -22,8 +22,8 @@ const actions = {
         })
     })
   },
-  // 查询某页 Waf 信息
-  // data: {pageNum, pageSize, search}
+  // 查询 Waf 信息
+  // data: search
   queryWafInfo(data) {
     return new Promise((resolve, reject) => {
       queryInfo(data)

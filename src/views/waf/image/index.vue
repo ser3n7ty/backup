@@ -20,7 +20,6 @@
       <el-table
         v-loading="loading"
         :data="tableData"
-        border
         stripe
         style="width: 100%"
       >
@@ -57,6 +56,13 @@
         </el-table-column>
       </el-table>
     </div>
+    <div class="footer">
+      <el-pagination
+        layout="total"
+        :total="total"
+        style="text-align: center"
+      />
+    </div>
   </div>
 </template>
 
@@ -69,6 +75,7 @@ export default {
       // 上线部署为 true
       search: null,
       loading: false,
+      total: 0,
       tableData: [
         { id: 1, name: 'image', tag: '1.0', imageId: '78854555', createTime: '111', updateTime: '222' },
         { id: 2, name: 'image', tag: '1.0', imageId: '78854555', createTime: '', updateTime: '' }
