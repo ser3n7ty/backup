@@ -20,12 +20,6 @@ export function gainAverageTime() {
     method: 'get'
   })
 }
-export function gainWafNumber() {
-  return request({
-    url: '/stat/waf-number',
-    method: 'get'
-  })
-}
 export function gainAnimationData() {
   return request({
     url: '/stat/cart',

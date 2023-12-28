@@ -12,7 +12,8 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = [
   '/login', '/404', '/', '/dashboard',
   '/waf', '/waf/info', '/waf/log', '/waf/new', '/waf/image',
-  '/staff', '/staff/info', '/staff/test', '/staff/new'
+  '/staff', '/staff/info', '/staff/test', '/staff/new',
+  '/scheduler', '/scheduler/site', '/scheduler/list', '/scheduler/cert'
 ]
 
 // 检查是否携带 token

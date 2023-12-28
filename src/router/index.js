@@ -58,6 +58,33 @@ export const constantRoutes = [
       meta: { title: '控制面板', icon: 'dashboard' }
     }]
   },
+  {
+    path: '/scheduler',
+    component: Layout,
+    redirect: '/scheduler/site',
+    name: 'scheduler',
+    meta: { title: '调度器管理', icon: 'scheduler' },
+    children: [
+      {
+        path: 'site',
+        name: 'Site',
+        component: () => import('@/views/scheduler/site/index'),
+        meta: { title: '网站配置', icon: 'site' }
+      },
+      {
+        path: 'list',
+        name: 'List',
+        component: () => import('@/views/scheduler/list/index'),
+        meta: { title: '防护配置', icon: 'rule' }
+      }
+      // {
+      //   path: 'cert',
+      //   name: 'Cert',
+      //   component: () => import('@/views/scheduler/cert/index'),
+      //   meta: { title: '证书配置', icon: 'cert' }
+      // }
+    ]
+  },
   // Waf 路由设置
   {
     path: '/waf',

@@ -119,8 +119,8 @@ export default {
     },
     gainData() {
       this.$store.dispatch('screen/gainAverageTime')
-        .then(data => {
-          this.data = data
+        .then(res => {
+          this.data = res.data
         })
         .catch(error => {
           this.$message({

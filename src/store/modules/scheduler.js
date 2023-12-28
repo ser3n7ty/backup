@@ -1,14 +1,14 @@
-import { gainSystemInfo, gainTrafficData, gainAverageTime, gainAnimationData, initCart, getLogs } from '@/api/screen'
+import { changeWeight, uploadImage, modifyProtectionMode, acquireSiteInfo, updateSiteInfo, deleteSite } from '@/api/scheduler'
 
 const state = {}
 
 const mutations = {}
 
 const actions = {
-  // 获取 screen/SystemInfo 组件需要的 5 个性能数据
-  gainSystemInfo() {
+  // 修改 waf 的选择权重
+  changeWeight(data) {
     return new Promise((resolve, reject) => {
-      gainSystemInfo()
+      changeWeight(data)
         .then(response => {
           if (response.code !== 200) {
             reject(new Error(response.msg + ':' + response.status))
@@ -17,14 +17,14 @@ const actions = {
           }
         })
         .catch(error => {
-          reject(new Error(error.message || '获取系统数据出错'))
+          reject(new Error(error.message || '修改权重出错'))
         })
     })
   },
-  // 获取 screen/TrafficStatistics 组件需要的 总请求数 和 恶意请求数
-  gainTrafficData() {
+
+  uploadImage(data) {
     return new Promise((resolve, reject) => {
-      gainTrafficData()
+      uploadImage(data)
         .then(response => {
           if (response.code !== 200) {
             reject(new Error(response.msg + ':' + response.status))
@@ -33,13 +33,13 @@ const actions = {
           }
         })
         .catch(error => {
-          reject(new Error(error.message || '获取请求统计信息出错'))
+          reject(new Error(error.message || '上传镜像文件失败'))
         })
     })
   },
-  gainAverageTime() {
+  modifyProtectionMode(data) {
     return new Promise((resolve, reject) => {
-      gainAverageTime()
+      modifyProtectionMode(data)
         .then(response => {
           if (response.code !== 200) {
             reject(new Error(response.msg + ':' + response.status))
@@ -48,13 +48,13 @@ const actions = {
           }
         })
         .catch(error => {
-          reject(new Error(error.message || '获取平均响应时间出错'))
+          reject(new Error(error.message || '修改防护模式失败'))
         })
     })
   },
-  gainAnimationData() {
+  acquireSiteInfo(data) {
     return new Promise((resolve, reject) => {
-      gainAnimationData()
+      acquireSiteInfo(data)
         .then(response => {
           if (response.code !== 200) {
             reject(new Error(response.msg + ':' + response.status))
@@ -63,13 +63,13 @@ const actions = {
           }
         })
         .catch(error => {
-          reject(new Error(error.message || '获取动画数据出错'))
+          reject(new Error(error.message || '获取网站信息失败'))
         })
     })
   },
-  initCart() {
+  updateSiteInfo(data) {
     return new Promise((resolve, reject) => {
-      initCart()
+      updateSiteInfo(data)
         .then(response => {
           if (response.code !== 200) {
             reject(new Error(response.msg + ':' + response.status))
@@ -78,13 +78,13 @@ const actions = {
           }
         })
         .catch(error => {
-          reject(new Error(error.message || '初始化动画出错'))
+          reject(new Error(error.message || '更新站点失败'))
         })
     })
   },
-  getLogs() {
+  deleteSite(data) {
     return new Promise((resolve, reject) => {
-      getLogs()
+      deleteSite(data)
         .then(response => {
           if (response.code !== 200) {
             reject(new Error(response.msg + ':' + response.status))
@@ -93,10 +93,11 @@ const actions = {
           }
         })
         .catch(error => {
-          reject(new Error(error.message || '获取显示日志数据出错'))
+          reject(new Error(error.message || '删除站点失败'))
         })
     })
   }
+
 }
 
 export default {

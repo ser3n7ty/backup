@@ -2,7 +2,7 @@
   <div class="app-container">
     <!--  功能区域 -->
     <el-tabs v-model="activeName">
-      <el-tab-pane label="镜像总览" name="overview">
+      <el-tab-pane label="证书" name="cert">
         <div class="overview">
           <el-table
             v-loading="loading"
@@ -14,26 +14,6 @@
               prop="id"
               label="ID"
               width="60"
-            />
-            <el-table-column
-              prop="name"
-              label="镜像名称"
-            />
-            <el-table-column
-              prop="tag"
-              label="镜像标签"
-            />
-            <el-table-column
-              prop="imageId"
-              label="镜像uuid"
-            />
-            <el-table-column
-              prop="createTime"
-              label="导入时间"
-            />
-            <el-table-column
-              prop="updateTime"
-              label="修改时间"
             />
             <el-table-column label="操 作" width="250%">
               <template #default="scope">
@@ -52,18 +32,17 @@
           />
         </div>
       </el-tab-pane>
-      <el-tab-pane label="上传镜像" name="upload">
-        <!-- * 自定义上传方法 -->
+      <el-tab-pane label="上传证书" name="upload">
+        <!-- TODO: 修改为自定义的上传方法 -->
         <el-upload
           class="upload-demo"
           drag
-          action=""
-          :before-upload="handleBeforeUpload"
+          action="https://jsonplaceholder.typicode.com/posts/"
           multiple
         >
           <i class="el-icon-upload" />
           <div class="el-upload__text" style="text-align: center">将文件拖到此处，或<em>点击上传</em></div>
-          <div slot="tip" class="el-upload__tip" style="text-align: center">只能上传tar文件</div>
+          <div slot="tip" class="el-upload__tip" style="text-align: center">上传.cert文件和</div>
         </el-upload>
       </el-tab-pane>
     </el-tabs>
@@ -136,28 +115,6 @@ export default {
         .catch(err => {
           this.$message({
             message: err,
-            type: 'error'
-          })
-        })
-    },
-    handleBeforeUpload(file) {
-      const formData = new FormData()
-      formData.append('file', file)
-      this.uploadFormData(formData)
-      // 阻止默认的上传行为
-      return false
-    },
-    uploadFormData(formData) {
-      this.$store.dispatch('schedule/uploadImage', formData)
-        .then(response => {
-          this.$message({
-            message: response.msg + ':' + response.status || '成功上传镜像文件',
-            type: 'success'
-          })
-        })
-        .catch(error => {
-          this.$message({
-            message: error.message || '上传镜像文件失败',
             type: 'error'
           })
         })

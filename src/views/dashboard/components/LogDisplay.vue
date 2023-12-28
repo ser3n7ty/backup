@@ -67,7 +67,6 @@ export default {
     }
   },
   mounted() {
-    console.log('开始更新界面')
     this.startUpdatingData()
   },
   methods: {
@@ -114,9 +113,8 @@ export default {
         newData[i].uniqueIdentifier = `unique${this.uniqueIdCounter++}`
       }
       this.tableData = [...newData, ...this.tableData]
-      console.log(this.tableData)
     },
-    tableRowClassName({ row, rowIndex }) {
+    tableRowClassName({ row }) {
       if (row.result === '0') {
         return 'warning-row'
       }

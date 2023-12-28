@@ -22,7 +22,6 @@
       <el-table
         v-loading="loading"
         :data="tableData"
-        border
         stripe
         style="width: 100%"
         @selection-change="handleSelectionChange"
@@ -58,22 +57,17 @@
           <template #default="scope">
             <el-button size="mini" @click="handleEditInfo(scope.row)">编辑信息</el-button>
             <el-button size="mini" @click="handleEditPwd(scope.row)">修改密码</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除用户</el-button>
+            <el-button size="mini" type="danger" @click="Delete(scope.row)">删除用户</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <el-divider />
 
-    <div style="margin: 10px 0; text-align: center">
-
+    <div style="text-align: center">
       <el-pagination
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 20]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
+        layout="total"
         :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
       />
       <el-dialog :visible.sync="infoDialogVisible" title="修改基本信息" width="30%">
         <el-form ref="infoForm" :rules="infoRule" :model="infoForm" label-width="120px">
@@ -148,13 +142,11 @@ export default {
       }
     }
     return {
-      search: '',
-      currentPage: 1,
-      pageSize: 10,
       total: 0,
+      search: '',
       tableData: [
         { id: 1, username: 'admin', email: 'test@example.com', role: 'admin', permission: 'all things' },
-        { id: 1, username: 'admin', email: 'test@example.com', role: 'admin', permission: 'all things' }
+        { id: 2, username: 'admin', email: 'test@example.com', role: 'admin', permission: 'all things' }
       ],
       ids: [],
 
@@ -182,7 +174,6 @@ export default {
         ]
       },
       passwordType: 'password',
-
       // 部署后修改为 true
       loading: false,
       infoDialogVisible: false,
@@ -196,8 +187,6 @@ export default {
       this.$store
         .dispatch({
           type: 'user/query',
-          pageNum: this.currentPage,
-          pageSize: this.pageSize,
           search: this.search
         })
         .then((res) => {
@@ -282,6 +271,10 @@ export default {
     handleSelectionChange(val) {
       this.ids = val.map(v => v.id)
     },
+    Delete(row) {
+      this.handleDelete(row.id)
+      this.load()
+    },
     handleDelete(id) {
       this.$store.dispatch('user/deleteUser', id)
         .then((res) => {
@@ -299,18 +292,11 @@ export default {
           })
         })
     },
-    handleSizeChange(pageSize) {
-      this.pageSize = pageSize
-      this.load()
-    },
-    handleCurrentChange(pageNum) {
-      this.currentPage = pageNum
-      this.load()
-    },
     deleteBatch() {
       this.ids.forEach(id => {
         this.handleDelete(id)
       })
+      this.load()
     }
   }
 }

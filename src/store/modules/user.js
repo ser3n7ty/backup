@@ -72,7 +72,7 @@ const actions = {
   // query all users
   query({ pageNum, pageSize, search }) {
     return new Promise((resolve, reject) => {
-      query({ pageNum, pageSize, search })
+      query({ search })
         .then(({ code, list }) => {
           if (code === 200) {
             resolve(list)

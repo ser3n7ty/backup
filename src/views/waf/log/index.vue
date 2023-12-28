@@ -20,7 +20,6 @@
       <el-table
         v-loading="loading"
         :data="tableData"
-        border
         stripe
         style="width: 100%"
         @selection-change="handleSelectionChange"
@@ -91,7 +90,7 @@
 
       <el-pagination
         :current-page="currentPage"
-        :page-sizes="[5, 10, 20]"
+        :page-sizes="[10, 20, 5000, 10000]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -124,9 +123,6 @@ export default {
       ids: []
     }
   },
-  created() {
-
-  },
   methods: {
     load() {
       this.loading = true
@@ -145,7 +141,44 @@ export default {
           })
         })
     },
+    // BUG: 导出选中的日志信息
     exportLog() {
+      if (this.ids.length === 0) {
+        this.$message({
+          message: 'Please select items to export.',
+          type: 'warning'
+        })
+        return
+      }
+      // Filter selected items from the tableData based on their IDs
+      const selectedData = this.tableData.filter(item => this.ids.includes(item.id))
+      const columns = [
+        { key: 'id', label: 'ID' },
+        { key: 'sourceip', label: '源 IP' },
+        { key: 'method', label: '请求方法' },
+        { key: 'startTime', label: '请求发起时间' },
+        { key: 'time', label: '处理时间' },
+        { key: 'status', label: '响应状态' }
+      ]
+      // Create CSV content
+      const header = columns.map(column => column.label).join(',') + '\n'
+      const rows = selectedData.map(item => columns.map(column => item[column.key]).join(',')).join('\n')
+      const csvContent = header + rows
+
+      // Create a Blob object with the CSV content
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+      const link = document.createElement('a')
+
+      // Create a download link and trigger the download
+      if (navigator.msSaveBlob) {
+        navigator.msSaveBlob(blob, 'export.csv')
+      } else {
+        link.href = URL.createObjectURL(blob)
+        link.setAttribute('download', 'export.csv')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      }
     },
     handleSelectionChange(val) {
       this.ids = val.map(v => v.id)

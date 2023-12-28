@@ -59,11 +59,11 @@ export default {
     },
     updateData() {
       this.$store.dispatch('screen/gainSystemInfo')
-        .then(data => {
-          this.indicatorValues[0] = data['loadBalancing']
-          this.indicatorValues[1] = data['memory']
-          this.indicatorValues[2] = data['storage']
-          this.indicatorValues[4] = data['cpu']
+        .then(res => {
+          this.indicatorValues[0] = res.data['loadBalancing']
+          this.indicatorValues[1] = res.data['memory']
+          this.indicatorValues[2] = res.data['storage']
+          this.indicatorValues[4] = res.data['cpu']
           this.updateChartWithData() // 更新柱形图数据
         })
         .catch(error => {
