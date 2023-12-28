@@ -75,14 +75,14 @@ export const constantRoutes = [
         path: 'list',
         name: 'List',
         component: () => import('@/views/scheduler/list/index'),
-        meta: { title: '规则配置', icon: 'rule' }
-      },
-      {
-        path: 'cert',
-        name: 'Cert',
-        component: () => import('@/views/scheduler/cert/index'),
-        meta: { title: '证书配置', icon: 'cert' }
+        meta: { title: '防护配置', icon: 'rule' }
       }
+      // {
+      //   path: 'cert',
+      //   name: 'Cert',
+      //   component: () => import('@/views/scheduler/cert/index'),
+      //   meta: { title: '证书配置', icon: 'cert' }
+      // }
     ]
   },
   // Waf 路由设置

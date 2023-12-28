@@ -25,3 +25,9 @@ export function validIP(ip) {
   const ipReg = /^((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))(\.((2((5[0-5])|([0-4]\d)))|([0-1]?\d{1,2}))){3}$/
   return ipReg.test(ip)
 }
+
+// 格式: http(s)://ipv4:port
+export function validServer(data) {
+  const regex = /^(https?:\/\/)(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})$/
+  return regex.test(data)
+}

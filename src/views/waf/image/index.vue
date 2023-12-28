@@ -1,68 +1,73 @@
 <template>
   <div class="app-container">
     <!--  功能区域 -->
-    <div style="margin: 10px 0" />
-    <!-- 搜索框 -->
-    <div class="search" style="margin: 10px 0; display: flex; justify-content: space-between; align-items: center;">
-      <!-- 左侧部分，搜索框和查询按钮 -->
-      <div style="width: 60%; display: flex; align-items: center;">
-        <el-input v-model="search" placeholder="输入要查找的内容" style="width: 60%" clearable />
-        <el-button type="primary" style="margin-left: 5px" @click="load">搜 索</el-button>
-      </div>
-      <div>
-        <template>
-          <el-button type="primary" style="margin-right: 70px;" @click="importImage">导入镜像</el-button>
-          <!-- <el-button type="danger" style="margin-right: 70px;" @click="deleteBatch">批量删除</el-button> -->
-        </template>
-      </div>
-    </div>
-    <div class="table">
-      <el-table
-        v-loading="loading"
-        :data="tableData"
-        stripe
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="id"
-          label="ID"
-          width="60"
-        />
-        <el-table-column
-          prop="name"
-          label="镜像名称"
-        />
-        <el-table-column
-          prop="tag"
-          label="镜像标签"
-        />
-        <el-table-column
-          prop="imageId"
-          label="镜像uuid"
-        />
-        <el-table-column
-          prop="createTime"
-          label="导入时间"
-        />
-        <el-table-column
-          prop="updateTime"
-          label="修改时间"
-        />
-        <el-table-column label="操 作" width="250%">
-          <template #default="scope">
-            <el-button size="mini" type="primary" @click="createContainer(scope.row.imageId)">创建实例</el-button>
-            <el-button size="mini" type="danger" @click="deleteImage(scope.row.id)">移除镜像</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div class="footer">
-      <el-pagination
-        layout="total"
-        :total="total"
-        style="text-align: center"
-      />
-    </div>
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="镜像总览" name="overview">
+        <div class="overview">
+          <el-table
+            v-loading="loading"
+            :data="tableData"
+            stripe
+            style="width: 100%"
+          >
+            <el-table-column
+              prop="id"
+              label="ID"
+              width="60"
+            />
+            <el-table-column
+              prop="name"
+              label="镜像名称"
+            />
+            <el-table-column
+              prop="tag"
+              label="镜像标签"
+            />
+            <el-table-column
+              prop="imageId"
+              label="镜像uuid"
+            />
+            <el-table-column
+              prop="createTime"
+              label="导入时间"
+            />
+            <el-table-column
+              prop="updateTime"
+              label="修改时间"
+            />
+            <el-table-column label="操 作" width="250%">
+              <template #default="scope">
+                <el-button size="mini" type="primary" @click="createContainer(scope.row.imageId)">创建实例</el-button>
+                <el-button size="mini" type="danger" @click="deleteImage(scope.row.id)">移除镜像</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <el-divider />
+        <div class="footer">
+          <el-pagination
+            layout="total"
+            :total="total"
+            style="text-align: center"
+          />
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="上传镜像" name="upload">
+        <!-- * 自定义上传方法 -->
+        <el-upload
+          class="upload-demo"
+          drag
+          action=""
+          :before-upload="handleBeforeUpload"
+          multiple
+        >
+          <i class="el-icon-upload" />
+          <div class="el-upload__text" style="text-align: center">将文件拖到此处，或<em>点击上传</em></div>
+          <div slot="tip" class="el-upload__tip" style="text-align: center">只能上传tar文件</div>
+        </el-upload>
+      </el-tab-pane>
+    </el-tabs>
+
   </div>
 </template>
 
@@ -76,6 +81,7 @@ export default {
       search: null,
       loading: false,
       total: 0,
+      activeName: 'overview',
       tableData: [
         { id: 1, name: 'image', tag: '1.0', imageId: '78854555', createTime: '111', updateTime: '222' },
         { id: 2, name: 'image', tag: '1.0', imageId: '78854555', createTime: '', updateTime: '' }
@@ -90,7 +96,8 @@ export default {
       this.$store
         .dispatch('waf/queryImage', this.search)
         .then((res) => {
-          this.tableData = res
+          this.tableData = res.data
+          this.total = length(res.data)
         })
         .catch((err) => {
           this.$message({
@@ -133,70 +140,55 @@ export default {
           })
         })
     },
-    importImage() {
+    handleBeforeUpload(file) {
+      const formData = new FormData()
+      formData.append('file', file)
+      this.uploadFormData(formData)
+      // 阻止默认的上传行为
+      return false
+    },
+    uploadFormData(formData) {
+      this.$store.dispatch('schedule/uploadImage', formData)
+        .then(response => {
+          this.$message({
+            message: response.msg + ':' + response.status || '成功上传镜像文件',
+            type: 'success'
+          })
+        })
+        .catch(error => {
+          this.$message({
+            message: error.message || '上传镜像文件失败',
+            type: 'error'
+          })
+        })
     }
-    // deleteBatch() {
-    //   console.log('批量删除')
-    // }
   }
 }
 </script>
 
 <style scoped>
-.status-badge-release {
-  width: 10px; /* 小色块的宽度 */
-  height: 10px; /* 小色块的高度 */
-  display: inline-block; /* 行内块元素，以确保文字和小色块在同一行 */
-  background-color: rgb(72, 179, 72); /* 已启用的小色块颜色 */
-  margin-right: 5px; /* 用于分隔小色块和文字的间距 */
-}
-
-.status-badge-intercept {
-  width: 10px;
-  height: 10px;
-  display: inline-block;
-  background-color: red; /* 已停用的小色块颜色 */
-  margin-right: 5px;
-}
 .pagination-container {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.method-badge-get {
-  background-color: green;
-  color: white; /* 文字颜色 */
-  padding: 3px 5px; /* 调整内边距以获得所需的样式 */
-  border-radius: 5px; /* 圆角边框 */
+
+.upload-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px; /* 设置上传区域高度 */
 }
 
-.method-badge-post {
-  background-color: blue;
-  color: white;
-  padding: 3px 5px;
-  border-radius: 5px;
+.upload-demo {
+  height: 50%;
+  width: 100%; /* 设置上传区域宽度 */
+  text-align: center;
 }
 
-.method-badge-put {
-  background-color: orange;
-  color: white;
-  padding: 3px 5px;
-  border-radius: 5px;
+.el-upload__text em {
+  color: #409EFF; /* 设置强调文字颜色 */
+  font-style: normal; /* 设置强调文字为正常样式 */
 }
-
-.method-badge-delete {
-  background-color: rgb(255, 0, 0);
-  color: white;
-  padding: 3px 5px;
-  border-radius: 5px;
-}
-
-.method-badge-default {
-  background-color: gray;
-  color: white;
-  padding: 3px 5px;
-  border-radius: 5px;
-}
-
 </style>
 

@@ -6,6 +6,7 @@ import settings from './modules/settings'
 import user from './modules/user'
 import waf from './modules/waf'
 import screen from './modules/screen'
+import scheduler from './modules/scheduler'
 
 Vue.use(Vuex)
 
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
     settings,
     user,
     waf,
-    screen
+    screen,
+    scheduler
   },
   getters
 })

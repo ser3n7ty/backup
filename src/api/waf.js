@@ -33,15 +33,17 @@ export function deleteWaf(id) {
   })
 }
 
-export function changeWafStatus(id, enable) {
-  const data = {
-    id, enable
+export function changeWafStatus(data) {
+  // 0 表示上线， 1 表示下线
+  if (data.op === 0) {
+    return request({
+      url: '/waf/online/{data.id}'
+    })
+  } else if (data.op === 1) {
+    return request({
+      url: '/waf/offline/{data.id}'
+    })
   }
-  return request({
-    url: '/waf',
-    method: 'put',
-    data
-  })
 }
 
 export function queryLog({ pageNum, pageSize, search }) {

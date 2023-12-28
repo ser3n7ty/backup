@@ -72,7 +72,7 @@
         <!-- *表头 -->
         <el-table-column
           type="selection"
-          width="55"
+          width="30"
         />
         <el-table-column
           prop="id"
@@ -88,7 +88,7 @@
         <el-table-column
           prop="ip"
           label="IP 地址"
-          width="150"
+          width="130"
         />
         <el-table-column
           prop="port"
@@ -143,17 +143,34 @@
               </span></div>
           </template>
         </el-table-column>
-
+        <el-table-column label="权重" width="100">
+          <template #default="scope">
+            <el-select
+              v-model="scope.row.weight"
+              placeholder="请选择"
+              size="small"
+              @change="handleChangeWeight(scope.row)"
+            >
+              <el-option
+                v-for="number in numbers"
+                :key="number"
+                :label="number.toString()"
+                :value="number"
+              />
+            </el-select>
+          </template>
+        </el-table-column>
         <el-table-column label="操 作" width="250%">
           <template #default="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
-            <el-button v-show="scope.row.status == 1" size="mini" @click="changeWafStatus('0')">上线</el-button>
-            <el-button v-show="scope.row.status == 0" size="mini" @click="changeWafStatus('1')">下线</el-button>
+            <el-button v-show="scope.row.status == 1" size="mini" @click="changeWafStatus(scope.row.id, 0)">上线</el-button>
+            <el-button v-show="scope.row.status == 0" size="mini" @click="changeWafStatus(scope.row.id, 1)">下线</el-button>
             <el-button size="mini" type="danger" @click="Delete(scope.row)">移除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <el-divider />
     <!-- * Footer -->
     <div style="margin: 10px 0;">
 
@@ -262,7 +279,8 @@ export default {
         description: [
           { message: '请输入该 Waf 的描述信息', trigger: 'blur' }
         ]
-      }
+      },
+      numbers: Array.from({ length: 10 }, (_, index) => index + 1)
     }
   },
   computed: {
@@ -314,10 +332,10 @@ export default {
       this.loading = true
       this.$store
         .dispatch('waf/queryWafInfo', this.search)
-        .then((data) => {
+        .then((res) => {
           this.loading = false
-          this.tableData = data.list
-          this.total = data.total
+          this.tableData = res.data.list
+          this.total = res.data.total
           this.search = ''
         })
         .catch(error => {
@@ -363,8 +381,9 @@ export default {
     },
     // op 为 0 表示上线， 1 表示下线
     changeWafStatus(id, op) {
+      const data = { id: id, op: op }
       this.$store
-        .dispatch({ type: 'waf/changeWafStatus', id: id, op: op })
+        .dispatch({ type: 'waf/changeWafStatus', data })
         .then(response => {
           this.$message({
             message: response.msg + ':' + response.status,
@@ -406,9 +425,24 @@ export default {
       })
       this.load()
     },
-    //* 处理多选
     handleSelectionChange(val) {
       this.ids = val.map(v => v.id)
+    },
+    handleChangeWeight(row) {
+      const data = { id: row.id, weight: row.weight }
+      this.$store.dispatch('scheduler/changeWeight', data)
+        .then(res => {
+          this.$message({
+            message: '权重修改成功',
+            type: 'success'
+          })
+        })
+        .catch(err => {
+          this.$message({
+            message: err.message | '修改权重失败',
+            type: 'error'
+          })
+        })
     }
   }
 }

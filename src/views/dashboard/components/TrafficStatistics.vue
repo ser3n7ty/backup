@@ -139,12 +139,12 @@ export default {
     },
     gainTrafficData() {
       this.$store.dispatch('screen/gainTrafficData')
-        .then(data => {
-          this.data = data
+        .then(res => {
+          this.data = res.data
         })
         .catch(error => {
           this.$message({
-            message: error,
+            message: error.msg | '获取统计数据出错',
             type: 'error'
           })
         })

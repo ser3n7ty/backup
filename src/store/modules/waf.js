@@ -29,7 +29,7 @@ const actions = {
       queryInfo(data)
         .then(response => {
           if (response.code === 200) {
-            resolve(response.data)
+            resolve(response)
           } else {
             reject(new Error(response.msg + ':' + response.status))
           }
@@ -75,9 +75,9 @@ const actions = {
 
   // 改变 Waf 状态
   // op: 0 上线， 1 下线
-  changeWafStatus({ id, op }) {
+  changeWafStatus(data) {
     return new Promise((resolve, reject) => {
-      changeWafStatus({ id, op })
+      changeWafStatus(data)
         .then(response => {
           response.code = null
           if (response.code !== 200) {
@@ -87,7 +87,7 @@ const actions = {
           }
         })
         .catch(error => {
-          reject(new Error(error.message || '更新 Waf 状态出错'))
+          reject(new Error(error.message || '修改 Waf 状态失败'))
         })
     })
   },
@@ -100,7 +100,7 @@ const actions = {
           if (response.code !== 200) {
             reject(new Error(response.msg + ':' + response.status))
           } else {
-            resolve(response.data)
+            resolve(response)
           }
         })
         .catch(error => {
@@ -116,7 +116,7 @@ const actions = {
           if (response.code !== 200) {
             reject(new Error(response.msg + ':' + response.status))
           } else {
-            resolve(response.data)
+            resolve(response)
           }
         })
         .catch(error => {

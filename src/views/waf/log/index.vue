@@ -90,7 +90,7 @@
 
       <el-pagination
         :current-page="currentPage"
-        :page-sizes="[5, 10, 20]"
+        :page-sizes="[10, 20, 5000, 10000]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
