@@ -160,10 +160,7 @@ export default {
           this.loading = false
         })
         .catch(error => {
-          this.$message({
-            message: '获取数据出错' || error.message,
-            type: 'error'
-          })
+          this.$message.error('获取数据出错' || error.message)
         })
     },
     addSite() {
@@ -198,16 +195,10 @@ export default {
               this.acquireSiteInfo()
             })
             .catch(error => {
-              this.$message({
-                message: error.msg || '保存网站信息失败',
-                type: 'error'
-              })
+              this.$message.error(error.msg || '保存网站信息失败')
             })
         } else {
-          this.$message({
-            message: '表单无效',
-            type: 'error'
-          })
+          this.$message.error('表单无效')
         }
       })
     },
@@ -218,7 +209,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('scheduler/deleteSite', row.id)
-          .then(response => {
+          .then(() => {
             this.$message({
               message: '删除成功',
               type: 'success'
@@ -226,10 +217,7 @@ export default {
             this.acquireSiteInfo()
           })
           .catch(error => {
-            this.$message({
-              message: '修改失败' | error.message,
-              type: 'error'
-            })
+            this.$message.error('修改失败' | error.message)
           })
       })
         .catch(() => {})
@@ -237,14 +225,11 @@ export default {
     handleProtectionMode(row) {
       const data = { id: row.id, mode: row.mode }
       this.$store.dispatch('scheduler/modifyProtectionMode', data)
-        .then(response => {
+        .then(() => {
           this.acquireSiteInfo()
         })
         .catch(error => {
-          this.$message({
-            message: '修改失败' | error.message,
-            type: 'error'
-          })
+          this.$message.error('修改失败' | error.message)
         })
     }
   }

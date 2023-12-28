@@ -1,4 +1,5 @@
 import { changeWeight, uploadImage, modifyProtectionMode, acquireSiteInfo, updateSiteInfo, deleteSite } from '@/api/scheduler'
+import { getSchedulerWafInfo, modifyOnlineWaf } from '@/api/scheduler'
 
 const state = {}
 
@@ -94,6 +95,37 @@ const actions = {
         })
         .catch(error => {
           reject(new Error(error.message || '删除站点失败'))
+        })
+    })
+  },
+  getSchedulerWafInfo() {
+    return new Promise((resolve, reject) => {
+      getSchedulerWafInfo()
+        .then(response => {
+          if (response.code !== 200) {
+            reject(new Error(response.msg + ':' + response.status))
+          } else {
+            resolve(response)
+          }
+        })
+        .catch(error => {
+          reject(new Error(error.message || '获取信息失败'))
+        })
+    })
+  },
+
+  modifyOnlineWaf(ids) {
+    return new Promise((resolve, reject) => {
+      modifyOnlineWaf(ids)
+        .then(response => {
+          if (response.code !== 200) {
+            reject(new Error(response.msg + ':' + response.status))
+          } else {
+            resolve(response)
+          }
+        })
+        .catch(error => {
+          reject(new Error(error.message || '获取信息失败'))
         })
     })
   }

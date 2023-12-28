@@ -100,10 +100,7 @@ export default {
           this.total = length(res.data)
         })
         .catch((err) => {
-          this.$message({
-            message: 'Error:' + err,
-            type: 'error'
-          })
+          this.$message.error('Error:' + err)
         })
     },
     createContainer(imageId) {
@@ -116,10 +113,7 @@ export default {
           })
         })
         .catch(err => {
-          this.$message({
-            message: err,
-            type: 'error'
-          })
+          this.$message.error('Error:' + err)
         })
     },
     deleteImage(id) {
@@ -134,10 +128,7 @@ export default {
           this.load()
         })
         .catch(err => {
-          this.$message({
-            message: err,
-            type: 'error'
-          })
+          this.$message.error('Error:' + err)
         })
     },
     handleBeforeUpload(file) {
@@ -156,10 +147,7 @@ export default {
           })
         })
         .catch(error => {
-          this.$message({
-            message: error.message || '上传镜像文件失败',
-            type: 'error'
-          })
+          this.$message.error(error.message || '上传镜像文件失败')
         })
     }
   }

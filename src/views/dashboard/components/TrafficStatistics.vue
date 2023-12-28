@@ -143,10 +143,7 @@ export default {
           this.data = res.data
         })
         .catch(error => {
-          this.$message({
-            message: error.msg | '获取统计数据出错',
-            type: 'error'
-          })
+          this.$message.error(error.msg | '获取统计数据出错')
         })
     },
     stopUpdatingData() {

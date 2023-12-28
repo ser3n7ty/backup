@@ -196,17 +196,11 @@ export default {
             this.total = res.data.total
             this.search = ''
           } else {
-            this.$message({
-              message: res.msg,
-              type: 'error'
-            })
+            this.$message.error(res.msg)
           }
         })
-        .catch(() => {
-          this.$message({
-            message: 'Something error',
-            type: 'error'
-          })
+        .catch(error => {
+          this.$message.error('Error: ' + error)
         })
     },
     handleEditInfo(row) {
@@ -232,10 +226,7 @@ export default {
               }
             })
             .catch(error => {
-              this.$message({
-                message: error,
-                type: 'error'
-              })
+              this.$message.error(error)
             })
         }
       })
@@ -250,10 +241,7 @@ export default {
               }
             })
             .catch(error => {
-              this.$message({
-                message: error,
-                type: 'error'
-              })
+              this.$message.error(error)
             })
         }
       })
@@ -279,17 +267,11 @@ export default {
       this.$store.dispatch('user/deleteUser', id)
         .then((res) => {
           if (res.status !== 'success') {
-            this.$message({
-              message: res.msg,
-              type: 'error'
-            })
+            this.$message.error(res.msg)
           }
         })
         .catch((error) => {
-          this.$message({
-            message: error,
-            type: 'error'
-          })
+          this.$message.error(error)
         })
     },
     deleteBatch() {
