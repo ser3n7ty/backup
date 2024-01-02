@@ -56,7 +56,6 @@
               />
             </template>
           </el-table-column>
-          <!-- TODO：站点操作 -->
           <el-table-column label="操 作" width="250%">
             <template #default="scope">
               <el-button size="mini" @click="handleEdit(scope.row)">编 辑</el-button>
@@ -122,8 +121,8 @@ export default {
       loading: false,
       total: 0,
       tableData: [
-        { id: 1, domain: 'hah', upstreamServer: 'http://192.168.2.122:5555', mode: 1, comment: '' },
-        { id: 2, domain: 'hah', upstreamServer: 'http://192.168.2.122:5555', mode: 0, comment: '' },
+        { id: 1, domain: 'cas.hdu.edu.cn', upstreamServer: 'http://192.168.2.122:5555', mode: 1, comment: '杭电网安学院' },
+        { id: 2, domain: '', upstreamServer: 'http://192.168.2.122:5555', mode: 0, comment: '' },
         { id: 3, domain: 'hah', upstreamServer: 'http://192.168.2.122:5555', mode: 1, comment: '' },
         { id: 4, domain: 'hah', upstreamServer: 'http://192.168.2.122:5555', mode: 0, comment: '' },
         { id: 5, domain: 'hah', upstreamServer: 'http://192.168.2.122:5555', mode: 1, comment: '' }

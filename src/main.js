@@ -15,15 +15,9 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 import * as echarts from 'echarts' // ECharts
-// 引入样式
-import 'vue-easytable/libs/theme-default/index.css'
-// 引入组件库
-import VueEasytable from 'vue-easytable'
 
 Vue.use(ElementUI)
 Vue.use({ locale })
-Vue.use(VueEasytable)
-
 Vue.config.productionTip = false
 
 new Vue({

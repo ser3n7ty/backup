@@ -21,7 +21,6 @@
               type="info"
               show-icon
               center
-              close-text="知道了"
             />
             <el-divider />
             <div class="shuttle">
@@ -56,15 +55,15 @@ export default {
       selectedValue: this.onlineNumber,
       activeName: 'general',
       wafData: [
-        { id: 1, name: 'hah', status: 1 },
-        { id: 2, name: 'hah', status: 0 },
-        { id: 3, name: 'hah', status: 0 },
-        { id: 4, name: 'hah', status: 1 },
-        { id: 5, name: 'hah', status: 0 },
-        { id: 6, name: 'hah', status: 2 },
+        { id: 1, name: '长亭雷池Waf', status: 1 },
+        { id: 2, name: 'Openresty', status: 0 },
+        { id: 3, name: 'X-waf', status: 0 },
+        { id: 4, name: 'NAXSI', status: 1 },
+        { id: 5, name: 'httpwaf', status: 0 },
+        { id: 6, name: 'coraza', status: 2 },
         { id: 7, name: 'hah', status: 1 },
-        { id: 8, name: 'hah', status: 2 },
-        { id: 9, name: 'hah', status: 0 }
+        { id: 8, name: 'VeryNginx', status: 2 },
+        { id: 9, name: 'NGX_WAF', status: 0 }
       ],
       data: [],
       value: []
