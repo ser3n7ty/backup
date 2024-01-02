@@ -29,7 +29,6 @@ const mutations = {
   }
 }
 
-// TODO:统一错误处理的逻辑
 const actions = {
   // user login
   login({ commit }, info) {

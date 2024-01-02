@@ -135,13 +135,10 @@ export default {
           this.search = ''
         })
         .catch((error) => {
-          this.$message({
-            message: error.message || '页面加载出错',
-            type: 'error'
-          })
+          this.$message.error(error.message || '页面加载出错')
         })
     },
-    // BUG: 导出选中的日志信息
+
     exportLog() {
       if (this.ids.length === 0) {
         this.$message({

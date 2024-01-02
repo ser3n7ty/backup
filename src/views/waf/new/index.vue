@@ -125,10 +125,7 @@ export default {
             })
           this.$refs[form].resetFields()
         } else {
-          this.$message({
-            message: '表单无效',
-            type: 'error'
-          })
+          this.$message.error('表单无效')
           return false
         }
       })

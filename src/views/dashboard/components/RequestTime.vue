@@ -123,10 +123,7 @@ export default {
           this.data = res.data
         })
         .catch(error => {
-          this.$message({
-            message: error,
-            type: 'error'
-          })
+          this.$message.error(error)
         })
     },
     stopUpdatingData() {

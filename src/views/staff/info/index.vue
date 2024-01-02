@@ -56,7 +56,7 @@
         <el-table-column label="操 作" width="300">
           <template #default="scope">
             <el-button size="mini" @click="handleEditInfo(scope.row)">编辑信息</el-button>
-            <el-button size="mini" @click="handleEditPwd(scope.row)">修改密码</el-button>
+            <!-- <el-button size="mini" @click="handleEditPwd(scope.row)">修改密码</el-button> -->
             <el-button size="mini" type="danger" @click="Delete(scope.row)">删除用户</el-button>
           </template>
         </el-table-column>
@@ -90,7 +90,7 @@
         </el-form>
       </el-dialog>
 
-      <el-dialog :visible.sync="pwdDialogVisible" title="修改用户密码" width="30%">
+      <!--  <el-dialog :visible.sync="pwdDialogVisible" title="修改用户密码" width="30%">
         <el-form ref="pwdForm" :rules="pwdRule" :model="pwdForm" label-width="120px">
           <div class="pwdInput">
             <el-form-item label="新密码" prop="password">
@@ -115,14 +115,14 @@
             <el-button type="primary" @click="handleSubmitPwd">确 认</el-button>
           </div>
         </el-form>
-      </el-dialog>
+      </el-dialog> -->
     </div>
   </div>
 </template>
 
 <script>
 import { validEmail } from '@/utils/validate'
-import { validPwd } from '@/utils/validate'
+// import { validPwd } from '@/utils/validate'
 
 export default {
   name: 'UserInfo',
@@ -134,13 +134,13 @@ export default {
         callback()
       }
     }
-    const validatePwd = (rule, value, callback) => {
-      if (!validPwd(value)) {
-        callback(new Error('password format is not correct'))
-      } else {
-        callback()
-      }
-    }
+    // const validatePwd = (rule, value, callback) => {
+    //   if (!validPwd(value)) {
+    //     callback(new Error('password format is not correct'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       total: 0,
       search: '',
@@ -164,20 +164,19 @@ export default {
           { validator: validateEmail, message: '邮箱格式不正确', trigger: 'blur' }
         ]
       },
-      pwdForm: {
-        password: ''
-      },
-      pwdRule: {
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
-          { validator: validatePwd, trigger: 'blur' }
-        ]
-      },
-      passwordType: 'password',
-      // 部署后修改为 true
+      // pwdForm: {
+      //   password: ''
+      // },
+      // pwdRule: {
+      //   password: [
+      //     { required: true, message: '请输入密码', trigger: 'blur' },
+      //     { validator: validatePwd, trigger: 'blur' }
+      //   ]
+      // },
+      // passwordType: 'password',
       loading: false,
-      infoDialogVisible: false,
-      pwdDialogVisible: false
+      infoDialogVisible: false
+      // pwdDialogVisible: false
 
     }
   },
@@ -196,17 +195,11 @@ export default {
             this.total = res.data.total
             this.search = ''
           } else {
-            this.$message({
-              message: res.msg,
-              type: 'error'
-            })
+            this.$message.error(res.msg)
           }
         })
-        .catch(() => {
-          this.$message({
-            message: 'Something error',
-            type: 'error'
-          })
+        .catch(error => {
+          this.$message.error('Error: ' + error)
         })
     },
     handleEditInfo(row) {
@@ -218,9 +211,9 @@ export default {
       }
       this.infoDialogVisible = true
     },
-    handleEditPwd(row) {
-      this.pwdDialogVisible = true
-    },
+    // handleEditPwd(row) {
+    //   this.pwdDialogVisible = true
+    // },
     handleSubmitInfo() {
       console.log(this.$refs['infoForm'])
       this.$refs['infoForm'].validate((valid) => {
@@ -232,42 +225,36 @@ export default {
               }
             })
             .catch(error => {
-              this.$message({
-                message: error,
-                type: 'error'
-              })
+              this.$message.error(error)
             })
         }
       })
     },
-    handleSubmitPwd() {
-      this.$refs['pwdForm'].validate((valid) => {
-        if (valid) {
-          this.$store.dispatch('user/changePassword', this.pwdForm)
-            .then(response => {
-              if (response.code === 200) {
-                this.pwdDialogVisible = false
-              }
-            })
-            .catch(error => {
-              this.$message({
-                message: error,
-                type: 'error'
-              })
-            })
-        }
-      })
-    },
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
-    },
+    // handleSubmitPwd() {
+    //   this.$refs['pwdForm'].validate((valid) => {
+    //     if (valid) {
+    //       this.$store.dispatch('user/changePassword', this.pwdForm)
+    //         .then(response => {
+    //           if (response.code === 200) {
+    //             this.pwdDialogVisible = false
+    //           }
+    //         })
+    //         .catch(error => {
+    //           this.$message.error(error)
+    //         })
+    //     }
+    //   })
+    // },
+    // showPwd() {
+    //   if (this.passwordType === 'password') {
+    //     this.passwordType = ''
+    //   } else {
+    //     this.passwordType = 'password'
+    //   }
+    //   this.$nextTick(() => {
+    //     this.$refs.password.focus()
+    //   })
+    // },
     handleSelectionChange(val) {
       this.ids = val.map(v => v.id)
     },
@@ -279,17 +266,11 @@ export default {
       this.$store.dispatch('user/deleteUser', id)
         .then((res) => {
           if (res.status !== 'success') {
-            this.$message({
-              message: res.msg,
-              type: 'error'
-            })
+            this.$message.error(res.msg)
           }
         })
         .catch((error) => {
-          this.$message({
-            message: error,
-            type: 'error'
-          })
+          this.$message.error(error)
         })
     },
     deleteBatch() {

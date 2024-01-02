@@ -81,10 +81,7 @@ export default {
       //     newData = response.data
       //   })
       //   .catch(err => {
-      //     this.$message({
-      //       message: err,
-      //       type: 'error'
-      //     })
+      //     this.$message.error(err)
       //   })
       newData = [
         {

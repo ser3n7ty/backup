@@ -59,3 +59,18 @@ export function deleteSite(data) {
     data
   })
 }
+
+export function getSchedulerWafInfo() {
+  return request({
+    url: '/scheduler/waf',
+    method: 'get'
+  })
+}
+
+export function modifyOnlineWaf(ids) {
+  return request({
+    url: 'scheduler/waf',
+    method: 'post',
+    ids
+  })
+}

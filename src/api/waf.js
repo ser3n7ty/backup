@@ -37,11 +37,13 @@ export function changeWafStatus(data) {
   // 0 表示上线， 1 表示下线
   if (data.op === 0) {
     return request({
-      url: '/waf/online/{data.id}'
+      url: '/waf/online/{data.id}',
+      method: 'get'
     })
   } else if (data.op === 1) {
     return request({
-      url: '/waf/offline/{data.id}'
+      url: '/waf/offline/{data.id}',
+      method: 'get'
     })
   }
 }

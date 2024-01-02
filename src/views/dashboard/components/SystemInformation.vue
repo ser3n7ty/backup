@@ -67,10 +67,7 @@ export default {
           this.updateChartWithData() // 更新柱形图数据
         })
         .catch(error => {
-          this.$$message({
-            message: error,
-            type: 'error'
-          })
+          this.$message.error(error)
         })
     },
     updateChartWithData() {
